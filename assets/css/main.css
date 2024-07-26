@@ -1273,3 +1273,26 @@ section,
 .starter-section {
   /* Add your styles here */
 }
+
+.resume-item a {
+  text-decoration: none;
+  color: #0066cc;
+  font-weight: bold;
+  position: relative;
+}
+.resume-item a::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: -3px;
+  left: 0;
+  background-color: #149ddd;
+  visibility: hidden;
+  transform: scaleX(0);
+  transition: all 0.3s ease-in-out;
+}
+.resume-item a:hover::after {
+  visibility: visible;
+  transform: scaleX(1);
+}
