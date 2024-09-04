@@ -740,7 +740,7 @@ section,
   line-height: 18px;
   font-size: 18px;
   font-weight: 600;
-  text-transform: uppercase;
+
   color: color-mix(in srgb, var(--default-color), transparent 20%);
   margin-bottom: 10px;
 }
@@ -1297,4 +1297,9 @@ section,
   transform: scaleX(1);
 }
 
-
+.large-text {
+  font-size: 20px; /* 調整字體大小 */
+  letter-spacing: 1px; /* 調整字間距 */
+  font-weight: bold; /* 設置為粗體 */
+  color: #696969; /* 設置文字顏色 */
+}
