@@ -57,3 +57,43 @@ jQuery(document).ready(function($) {
 
 
 });
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const navbar = document.getElementById('sideNavbar');
+  
+    function checkOverlap() {
+      const sections = document.querySelectorAll('section'); // 獲取所有段落內容
+      let isOverlapping = false;
+  
+      sections.forEach((section) => {
+        const sectionRect = section.getBoundingClientRect();
+        const navbarRect = navbar.getBoundingClientRect();
+  
+        // 檢查是否有交疊
+        if (
+          navbarRect.right > sectionRect.left &&
+          navbarRect.left < sectionRect.right &&
+          navbarRect.bottom > sectionRect.top &&
+          navbarRect.top < sectionRect.bottom
+        ) {
+          isOverlapping = true;
+        }
+      });
+  
+      // 根據檢測結果隱藏或顯示導覽列
+      if (isOverlapping) {
+        navbar.classList.add('hidden');
+      } else {
+        navbar.classList.remove('hidden');
+      }
+    }
+  
+    // 監聽畫面大小變化或滾動時重新檢測
+    window.addEventListener('resize', checkOverlap);
+    window.addEventListener('scroll', checkOverlap);
+  
+    // 初次檢測
+    checkOverlap();
+  });
+  
