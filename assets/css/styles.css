@@ -3,11 +3,11 @@ body {
   font-family: 'Lato', arial, sans-serif;
   color: #434343;
   background: #dae3e7;
-  font-size: 16px;
+  font-size: 14 px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   letter-spacing: 0.5px;
-  line-height: 2;
+  line-height: 1.5;
   transition: background-color 0.5s ease;
 }
 
