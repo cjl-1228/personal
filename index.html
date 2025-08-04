@@ -32,10 +32,84 @@
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <style>
+        .fixed-menu {
+            position: fixed;
+            /* 讓選單固定在視窗中 */
+            top: 0;
+            /* 固定在視窗頂部 */
+            left: 0;
+            /* 固定在視窗左側 */
+            width: 100%;
+            /* 讓選單橫跨整個寬度 */
+            background-color: #333;
+            /* 選單背景色 */
+            padding: 10px 0;
+            /* 內部間距 */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            /* 增加一點陰影效果 */
+            z-index: 1000;
+            /* 確保選單在其他內容之上 */
+        }
+
+        .fixed-menu ul {
+            list-style: none;
+            /* 移除列表項目符號 */
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            /* 選單項目置中 */
+        }
+
+        .fixed-menu li {
+            display: inline-block;
+            /* 讓選單項目水平排列 */
+            margin: 0 15px;
+        }
+
+        .fixed-menu a {
+            color: white;
+            /* 連結文字顏色 */
+            text-decoration: none;
+            /* 移除連結下劃線 */
+            font-weight: bold;
+            padding: 5px 10px;
+            transition: background-color 0.3s ease;
+            /* 滑鼠懸停動畫 */
+        }
+
+        .fixed-menu a:hover {
+            background-color: #555;
+            /* 滑鼠懸停時的背景色 */
+            border-radius: 5px;
+        }
+
+        /* 為了解決固定選單遮擋內容的問題，可以在選單下方添加一個佔位元素 */
+        body {
+            padding-top: 60px;
+            /* 這裡的 60px 應該等於你的 .fixed-menu 的高度 + padding */
+        }
+    </style>
 </head>
+
+
 
 <body>
 
+    <nav class="fixed-menu">
+        <ul>
+            <li><a href="#Biography">Biography</a></li>
+            <li><a href="#education">Education</a></li>
+            <li><a href="#experiences">Experiences</a></li>
+            <li><a href="#research">Research</a></li>
+            <li><a href="#Publications">Publications</a></li>
+            <li><a href="#Projects">Projects</a></li>
+            <li><a href="#honors">Honors</a></li>
+            <li><a href="#certificates">Certificates</a></li>
+            <li><a href="#developments">Developments</a></li>
+
+        </ul>
+    </nav>
 
 
 
@@ -88,21 +162,15 @@
     <div class="container sections-wrapper">
         <div class="row">
             <div class="primary col-md-12 col-sm-12 col-xs-12">
-                <section id="about" class="about section">
+                <section id="Biography" class="about section">
                     <div class="section-inner">
-                        <h2 class="heading">About</h2>
+                        <h2 class="heading">Biography</h2>
                         <div class="content">
-                            <p>Jie-Long Chen is a graduate student in Information Management at National Yunlin
-                                University of Science and Technology, awarded a prestigious NT$600,000 merit
-                                scholarship. He has solid experience in algorithms, system development, and AI
-                                applications. Previously, he worked as a software development intern at CTBC Bank and
-                                has served as a teaching assistant for multiple university-level programming courses, as
-                                well as a private IT tutor. His research has earned recognition with an Outstanding
-                                Paper Award at the ICIM International Conference, and he serves as a reviewer for the
-                                IEEE Conference on Computational Intelligence in Bioinformatics and Computational
-                                Biology (CIBCB). He has developed a wide range of application systems across fields such
-                                as educational technology, financial technology, and daily life solutions, demonstrating
-                                extensive project execution and cross-disciplinary collaboration skills.
+                            <p>Jie-long Chen is currently a master's student in the Department of Information Management
+                                at National Yunlin University of Science and Technology. He received his B.S. degree in
+                                Information Management from National Pingtung University in Jan 2024. His
+                                research interests include algorithms, software system development, AI applications, and
+                                digital learning in technology.
                             </p>
 
 
@@ -153,13 +221,14 @@
                                 <li>演算法</li>
                                 <li>軟體系統開發</li>
                                 <li>人工智慧應用</li>
+                                <li>科技數位學習</li>
                             </ul>
 
                         </div><!--//content-->
                     </div><!--//section-inner-->
                 </section><!--//section-->
 
-                <section id="certificates" class="experience section">
+                <section id="Publications" class="experience section">
                     <div class="section-inner">
                         <h2 class="heading">Publications</h2>
                         <div class="content">
@@ -186,7 +255,7 @@
                                         Federated Learning for Cervical Cancer Binary Classification
                                         ,
                                         International Forum on Medical Imaging,
-                                        2026/01/12-14, Kaohsiung. (Submitted) 
+                                        2026/01/12-14, Kaohsiung. (Submitted)
                                     </li>
                                     <li style="line-height: 1.5; margin-bottom: 4px;">
                                         <u>Jie-Long Chen</u>, Ching-Chung Chen, Arthur Chang,
@@ -219,7 +288,7 @@
                     </div><!--//section-inner-->
                 </section><!--//section-->
 
-                <section id="certificates" class="experience section">
+                <section id="Projects" class="experience section">
                     <div class="section-inner">
                         <h2 class="heading">Projects </h2>
                         <div class="content">
