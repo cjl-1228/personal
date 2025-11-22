@@ -389,8 +389,11 @@
             if (inputVal === PASSWORD) {
                 // 密碼正確：淡出鎖定畫面
                 lockScreen.classList.add('hidden');
-                // 恢復網頁滾動
-                document.body.style.overflow = '';
+                
+                // --- 修正點在這裡 ---
+                // 原本是 '' (清除)，改為 'auto' (允許滾動) 以覆蓋 CSS 的設定
+                document.body.style.overflow = 'auto'; 
+                
             } else {
                 // 密碼錯誤：清空輸入框並搖晃卡片
                 lockInput.value = '';
