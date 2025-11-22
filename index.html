@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,29 +9,33 @@
         /* --- 1. 基礎設定與 CSS 變數 (Theming) --- */
         :root {
             /* 淺色模式 (預設) */
-            --primary: #2c3e50;       
-            --accent: #3498db;        
-            --bg-body: #f8f9fa;       
-            --bg-content: #ffffff;    
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --bg-body: #f8f9fa;
+            --bg-content: #ffffff;
             --text-main: #333333;
             --text-secondary: #666666;
             --border-color: #e9ecef;
             --nav-bg: #ffffff;
-            --card-shadow: 0 0 20px rgba(0,0,0,0.05);
+            --card-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
             --edu-logo-bg: #ffffff;
         }
 
         /* 深色模式設定 */
         [data-theme="dark"] {
-            --primary: #a5c3eb;       /* 較亮的藍色，適合深底 */
-            --accent: #3498db;        
-            --bg-body: #121212;       /* 深黑背景 */
-            --bg-content: #1e1e1e;    /* 卡片深灰 */
-            --text-main: #e0e0e0;     /* 淺灰文字 */
+            --primary: #a5c3eb;
+            /* 較亮的藍色，適合深底 */
+            --accent: #3498db;
+            --bg-body: #121212;
+            /* 深黑背景 */
+            --bg-content: #1e1e1e;
+            /* 卡片深灰 */
+            --text-main: #e0e0e0;
+            /* 淺灰文字 */
             --text-secondary: #a0a0a0;
             --border-color: #333333;
             --nav-bg: #1e1e1e;
-            --card-shadow: 0 0 20px rgba(0,0,0,0.5);
+            --card-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
             --edu-logo-bg: #2d2d2d;
         }
 
@@ -39,14 +44,16 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            transition: background-color 0.3s ease, color 0.3s ease; /* 平滑過渡顏色 */
+            transition: background-color 0.3s ease, color 0.3s ease;
+            /* 平滑過渡顏色 */
         }
 
         body {
             background-color: var(--bg-body);
             color: var(--text-main);
             line-height: 1.6;
-            padding-top: 70px; /* 稍微增加高度避免擋住 */
+            padding-top: 70px;
+            /* 稍微增加高度避免擋住 */
         }
 
         /* --- 2. 導航列 (Navigation) --- */
@@ -56,7 +63,7 @@
             left: 0;
             width: 100%;
             background: var(--nav-bg);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             z-index: 1000;
             height: 60px;
         }
@@ -108,7 +115,8 @@
             transition: all 0.3s;
         }
 
-        .nav-links a:hover, .nav-links a.active {
+        .nav-links a:hover,
+        .nav-links a.active {
             color: var(--primary);
             border-bottom-color: var(--accent);
         }
@@ -157,7 +165,7 @@
             border-radius: 50%;
             overflow: hidden;
             border: 4px solid var(--bg-content);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             background-color: #eee;
         }
 
@@ -187,7 +195,8 @@
 
         .contact-info span {
             margin: 0 10px;
-            display: inline-block; /* 防止手機版換行時擠在一起 */
+            display: inline-block;
+            /* 防止手機版換行時擠在一起 */
         }
 
         /* --- 5. Sections & Items --- */
@@ -251,7 +260,8 @@
         .item-title {
             font-weight: bold;
             font-size: 1.1rem;
-            color: var(--text-main); /* 深色模式需變色 */
+            color: var(--text-main);
+            /* 深色模式需變色 */
         }
 
         .item-subtitle {
@@ -276,33 +286,38 @@
             padding-left: 20px;
             margin-top: 5px;
         }
-        
+
         .item-desc li {
             margin-bottom: 5px;
         }
 
         /* --- 6. RWD 手機版調整 (關鍵修改) --- */
         @media (max-width: 768px) {
+
             /* 導航列變為漢堡選單模式 */
             .hamburger {
-                display: flex; /* 顯示漢堡按鈕 */
+                display: flex;
+                /* 顯示漢堡按鈕 */
             }
 
             .nav-links {
                 position: absolute;
-                top: 60px; /* 接在導航列下方 */
+                top: 60px;
+                /* 接在導航列下方 */
                 left: 0;
                 width: 100%;
                 background-color: var(--nav-bg);
                 flex-direction: column;
                 align-items: center;
                 padding: 20px 0;
-                box-shadow: 0 10px 10px rgba(0,0,0,0.1);
-                
+                box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+
                 /* 隱藏選單的動畫設定 */
-                transform: translateY(-150%); /* 預設移出畫面 */
+                transform: translateY(-150%);
+                /* 預設移出畫面 */
                 opacity: 0;
-                pointer-events: none; /* 隱藏時不可點擊 */
+                pointer-events: none;
+                /* 隱藏時不可點擊 */
                 transition: all 0.3s ease;
                 z-index: 999;
             }
@@ -319,7 +334,7 @@
                 text-align: center;
                 margin: 10px 0;
             }
-            
+
             .nav-links a {
                 display: block;
                 width: 100%;
@@ -333,28 +348,30 @@
                 border-radius: 0;
                 box-shadow: none;
             }
-            
+
             .edu-logo {
                 width: 50px;
                 height: 50px;
             }
-            
+
             .item-header {
                 flex-direction: column;
             }
-            
+
             .item-date {
                 margin-bottom: 5px;
             }
-            
+
             /* 調整按鈕位置 */
             .theme-toggle-btn {
-                margin-left: auto; /* 推到右邊，但在漢堡左邊 */
+                margin-left: auto;
+                /* 推到右邊，但在漢堡左邊 */
                 margin-right: 15px;
             }
         }
     </style>
 </head>
+
 <body>
 
     <nav>
@@ -389,7 +406,7 @@
 
             <h1>Jie-Long Chen (陳杰龍)</h1>
             <p>AI Researcher | Software Engineer</p>
-            
+
             <div class="contact-info">
                 <span>📧 zaq5891097@gmail.com</span> |
                 <span>📍 Taiwan</span>
@@ -397,8 +414,8 @@
         </header>
 
         <section id="edu">
-            <h2>Education</h2> 
-            
+            <h2>Education</h2>
+
             <div class="item edu-item">
                 <div class="edu-logo">
                     <img src="assets/NYCU.png" alt="NYCU Logo">
@@ -459,7 +476,7 @@
                 <div class="item-desc">
                     <ul style="margin-top: 10px;">
                         <li>
-                            <b>Fundamentals of Programming (C++)</b> @ Taiwan AI College Alliance (TAICA)<br>
+                            <b>Fundamentals of Programming (C++)</b> @ Taiwan AI College Alliance<br>
                             <span style="font-size: 0.9rem; color: var(--text-secondary);">Sep 2025 – Present</span>
                         </li>
                         <li style="margin-top: 8px;">
@@ -492,23 +509,27 @@
                 <div class="item-desc">
                     <ul style="list-style-type: none; padding-left: 0;">
                         <li style="margin-bottom: 15px;">
-                            1. <b>Jie-Long Chen</b>, Tung-Chieh Kuo, Arthur Chang*. "Effects of Client Number and Non-IID Data Distributions on Federated Learning for Cervical Cancer Binary Classification." 
+                            1. <b>Jie-Long Chen</b>, Tung-Chieh Kuo, Arthur Chang*. "Effects of Client Number and
+                            Non-IID Data Distributions on Federated Learning for Cervical Cancer Binary Classification."
                             <i>International Forum on Medical Imaging in Asia (IFMIA)</i>, Kaohsiung, Jan 2026.
                         </li>
                         <li style="margin-bottom: 15px;">
-                            2. <b>陳杰龍</b>, 張榮昇. "跨資料集聯邦學習於子宮頸癌抹片影像分類之研究." 
+                            2. <b>陳杰龍</b>, 張榮昇. "跨資料集聯邦學習於子宮頸癌抹片影像分類之研究."
                             <i>台灣網際網路研討會暨全國計算機會議</i>, 宜蘭縣, Oct 2025.
                         </li>
                         <li style="margin-bottom: 15px;">
-                            3. <b>Jie-Long Chen*</b>, Ching-Chung Chen, Arthur Chang. "A Comparative Analysis of Machine Learning Algorithms for Wheat Disease Classification in Taiwan Using the Orange Data Mining Tool." 
-                            <i>IEEE Conference on Computational Intelligence in Bioinformatics and Computational Biology (CIBCB)</i>, Tainan, Aug 2025.
+                            3. <b>Jie-Long Chen*</b>, Ching-Chung Chen, Arthur Chang. "A Comparative Analysis of Machine
+                            Learning Algorithms for Wheat Disease Classification in Taiwan Using the Orange Data Mining
+                            Tool."
+                            <i>IEEE Conference on Computational Intelligence in Bioinformatics and Computational Biology
+                                (CIBCB)</i>, Tainan, Aug 2025.
                         </li>
                         <li style="margin-bottom: 15px;">
-                            4. <b>陳杰龍</b>, 郭東婕, 張榮昇. "少樣本學習下資料擴增與遷移學習對蕈類影像分類." 
+                            4. <b>陳杰龍</b>, 郭東婕, 張榮昇. "少樣本學習下資料擴增與遷移學習對蕈類影像分類."
                             <i>第15屆網路智能與應用研討會</i>, 雲林縣, July 2025.
                         </li>
                         <li style="margin-bottom: 15px;">
-                            5. <b>陳杰龍*</b>, 鄭琬瑩, 蕭文峰. "資訊科技輔助教學對特教生國語學習成效之研究." 
+                            5. <b>陳杰龍*</b>, 鄭琬瑩, 蕭文峰. "資訊科技輔助教學對特教生國語學習成效之研究."
                             <i>第36屆國際資訊管理學術研討會</i>, 台北市, May 2025.
                         </li>
                     </ul>
@@ -521,10 +542,13 @@
                 </div>
                 <div class="item-desc">
                     <ul style="list-style-type: circle; padding-left: 20px;">
-                        <li style="margin-bottom: 10px;">"A Posture Detection System Based on Image Recognition and Machine Learning."</li>
-                        <li style="margin-bottom: 10px;">Wen-Feng Hsiao, Min-Chun Tsai, <b>Jie-Long Chen*</b>. "Real-Time Facial Expression Detection for Gamified Applications."</li>
+                        <li style="margin-bottom: 10px;">"A Posture Detection System Based on Image Recognition and
+                            Machine Learning."</li>
+                        <li style="margin-bottom: 10px;">Wen-Feng Hsiao, Min-Chun Tsai, <b>Jie-Long Chen*</b>.
+                            "Real-Time Facial Expression Detection for Gamified Applications."</li>
                         <li style="margin-bottom: 10px;"><b>陳杰龍</b>, 鄭琬瑩, 蕭文峰*. "應用於特殊教育中文學習之遊戲化學習平台的先導與可行性研究."</li>
-                        <li style="margin-bottom: 10px;">"Polarity Mark for Xie-hou-u in Taiwanese Min Nan language."</li>
+                        <li style="margin-bottom: 10px;">"Polarity Mark for Xie-hou-u in Taiwanese Min Nan language."
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -550,13 +574,16 @@
                 <div class="item-desc">
                     <ul style="margin-top: 5px;">
                         <li style="margin-bottom: 5px;">
-                            <b>Reviewer</b>, IEEE Conference on Computational Intelligence in Bioinformatics and Computational Biology (CIBCB), 2025.
+                            <b>Reviewer</b>, IEEE Conference on Computational Intelligence in Bioinformatics and
+                            Computational Biology (CIBCB), 2025.
                         </li>
                         <li style="margin-bottom: 5px;">
-                            <b>NSTC Research Creativity Award (國科會大專學生研究創作獎)</b>, National Science and Technology Council, 2024.
+                            <b>NSTC Research Creativity Award (國科會大專學生研究創作獎)</b>, National Science and Technology
+                            Council, 2024.
                         </li>
                         <li style="margin-bottom: 5px;">
-                            <b>Qualified Programmer (Ranked Tier 2)</b>, Bank of Taiwan Recruitment Exam (臺灣銀行新進人員甄試), 2024.
+                            <b>Qualified Programmer (Ranked Tier 2)</b>, Bank of Taiwan Recruitment Exam (臺灣銀行新進人員甄試),
+                            2024.
                         </li>
                     </ul>
                 </div>
@@ -569,8 +596,10 @@
                     <ul style="margin-top: 5px;">
                         <li style="margin-bottom: 5px;"><b>Best Presentation Award</b>, ICIM 2025.</li>
                         <li style="margin-bottom: 5px;"><b>1st Place</b>, 28th InnoServe Awards, 2023.</li>
-                        <li style="margin-bottom: 5px;"><b>3rd Place</b>, NPTU College of Computer Science Project Competition, 2023.</li>
-                        <li style="margin-bottom: 5px;"><b>Finalist</b>, Gjun Inc. Python Programming Competition, 2022.</li>
+                        <li style="margin-bottom: 5px;"><b>3rd Place</b>, NPTU College of Computer Science Project
+                            Competition, 2023.</li>
+                        <li style="margin-bottom: 5px;"><b>Finalist</b>, Gjun Inc. Python Programming Competition, 2022.
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -580,11 +609,14 @@
                 </div>
                 <div class="item-desc">
                     <ul style="margin-top: 5px;">
-                        <li style="margin-bottom: 5px;"><b>Wang Chiu-Hsiung Honorary Scholarship</b> (NT$600,000), YunTech, 2024.</li>
+                        <li style="margin-bottom: 5px;"><b>Wang Chiu-Hsiung Honorary Scholarship</b> (NT$600,000),
+                            YunTech, 2024.</li>
+                        <li style="margin-bottom: 5px;"><b>Graduate Entrance Scholarship</b> (NT$30,000), YunTech, 2024.
+                        </li>
                         <li style="margin-bottom: 5px;"><b>Academic Excellence Award - 2nd Place</b>, NPTU, 2024.</li>
-                        <li style="margin-bottom: 5px;"><b>Presidential Award (書卷獎) x 5</b>, NPTU, 2020-2024.</li>
                         <li style="margin-bottom: 5px;"><b>Early Graduation</b>, NPTU, 2024.</li>
-                        <li style="margin-bottom: 5px;"><b>Graduate Entrance Scholarship</b>, YunTech, 2024.</li>
+                        <li style="margin-bottom: 5px;"><b>Presidential Award (書卷獎) x 5</b>, NPTU, 2020-2024.</li>
+
                     </ul>
                 </div>
             </div>
@@ -601,8 +633,10 @@
                         <li style="margin-bottom: 8px;"><b>AI Application Planner (Level 1)</b>, MOEA, 2025.</li>
                         <li style="margin-bottom: 8px;"><b>TQC+ Object-Oriented Programming (Java)</b>, 2021.</li>
                         <li style="margin-bottom: 8px;"><b>TQC+ Programming Language (Python 3)</b>, 2020.</li>
-                        <li style="margin-bottom: 8px;"><b>Level B Technician for Computer Software Application</b>, 2020.</li>
-                        <li style="margin-bottom: 8px;"><b>Level C Technician for Computer Hardware Repair</b>, 2023.</li>
+                        <li style="margin-bottom: 8px;"><b>Level B Technician for Computer Software Application</b>,
+                            2020.</li>
+                        <li style="margin-bottom: 8px;"><b>Level C Technician for Computer Hardware Repair</b>, 2023.
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -611,7 +645,9 @@
                     <span class="item-title">Language Proficiency</span>
                 </div>
                 <div class="item-desc">
-                    <ul><li><b>TOEIC: 550</b> (Continuously improving...)</li></ul>
+                    <ul>
+                        <li><b>TOEIC: 550</b> (Continuously improving...)</li>
+                    </ul>
                 </div>
             </div>
         </section>
@@ -689,7 +725,7 @@
         // 1. 深色模式切換 (Dark Mode Toggle)
         const themeToggleBtn = document.getElementById('theme-toggle');
         const body = document.body;
-        
+
         // 檢查是否有儲存的設定，若無則看系統偏好
         const savedTheme = localStorage.getItem('theme');
         const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -723,7 +759,7 @@
         // 點擊任何一個連結後，自動收起選單
         navLinks.forEach(link => {
             link.addEventListener('click', () => {
-                if(window.innerWidth <= 768) {
+                if (window.innerWidth <= 768) {
                     navLinksContainer.classList.remove('active');
                 }
             });
@@ -765,4 +801,5 @@
         });
     </script>
 </body>
+
 </html>
