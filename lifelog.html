@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My LifeLog | 生活日誌</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* --- 1. 基礎設定 --- */
+        :root {
+            --primary-color: #5b8c85;
+            --primary-dark: #3e6b65;
+            --bg-color: #f3f6f8;
+            --card-bg: #ffffff;
+            --text-color: #444;
+            --line-color: #e0e0e0;
+            --shadow-card: 0 10px 20px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 15px 30px rgba(91, 140, 133, 0.15);
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+            /* 初始狀態禁止滾動，等待解鎖 */
+            overflow: hidden; 
+        }
+
+        /* =========================================
+           🔒 鎖定畫面樣式 (新增部分)
+           ========================================= */
+        .lock-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            z-index: 9999; /* 最上層，蓋住所有內容 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.6s;
+        }
+
+        /* 解鎖後的狀態 class */
+        .lock-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .lock-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            width: 85%;
+            max-width: 340px;
+            backdrop-filter: blur(10px);
+            transform: translateY(0);
+        }
+
+        .lock-card h2 {
+            margin: 0 0 10px 0;
+            color: var(--primary-dark);
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+
+        .lock-card p {
+            margin: 0 0 25px 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .lock-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 20px;
+            outline: none;
+            box-sizing: border-box;
+            transition: all 0.3s;
+            letter-spacing: 5px; /* 讓密碼星號分開一點 */
+            color: var(--primary-dark);
+        }
+
+        .lock-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(91, 140, 133, 0.1);
+        }
+
+        .lock-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.1s;
+        }
+
+        .lock-btn:hover {
+            background: var(--primary-dark);
+        }
+        
+        .lock-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 錯誤時的搖晃動畫 */
+        .shake {
+            animation: shake 0.4s cubic-bezier(.36, .07, .19, .97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+
+        /* --- Header (搜尋欄搬走了) --- */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            /* padding-bottom 留空間給視覺重疊的效果 */
+            padding: 40px 20px 60px 20px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        header p {
+            margin-top: 10px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        /* --- 導覽列容器 --- */
+        .tag-menu-container {
+            position: sticky;
+            top: 0;
+            background: rgba(243, 246, 248, 0.98);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 100;
+            padding: 15px 0 5px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: -40px; /* 負邊距 */
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+        }
+
+        /* --- 搜尋框容器 --- */
+        .search-container {
+            position: relative;
+            width: 90%;
+            max-width: 500px;
+            margin-bottom: 15px;
+            z-index: 102;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            outline: none;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            background: white;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 6px 20px rgba(91, 140, 133, 0.25);
+        }
+
+        /* --- 標籤選單 --- */
+        .tag-scroll-view {
+            display: flex;
+            gap: 10px;
+            padding: 0 20px 10px 20px;
+            max-width: 800px;
+            width: 100%;
+            box-sizing: border-box;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .tag-scroll-view::-webkit-scrollbar { display: none; }
+
+        .filter-btn {
+            white-space: nowrap;
+            padding: 6px 18px;
+            border: 1px solid transparent;
+            border-radius: 20px;
+            background: white;
+            color: #666;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            user-select: none;
+        }
+
+        .filter-btn:hover { background: #fff; transform: translateY(-1px); color: var(--primary-color); }
+        .filter-btn.active { background: var(--primary-color); color: white; box-shadow: 0 4px 10px rgba(91, 140, 133, 0.4); }
+
+        /* --- 年份導覽列 --- */
+        .year-nav {
+            text-align: center;
+            padding: 5px 0 10px 0;
+            width: 100%;
+            border-top: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        .year-btn {
+            display: inline-block;
+            margin: 0 5px;
+            padding: 4px 12px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
+        .year-btn:hover { background: rgba(91, 140, 133, 0.1); }
+
+        /* --- 時間軸結構 --- */
+        .timeline-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 20px 80px 20px;
+            position: relative;
+            min-height: 400px;
+        }
+
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 35px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--line-color);
+            border-radius: 2px;
+            z-index: 0;
+        }
+
+        /* --- 卡片樣式 --- */
+        .year-header { position: relative; text-align: center; margin: 40px 0 30px 0; z-index: 2; clear: both; }
+        .year-header span { background: var(--primary-color); color: white; padding: 6px 24px; border-radius: 50px; font-size: 1.3rem; font-weight: bold; box-shadow: 0 4px 10px rgba(91, 140, 133, 0.3); display: inline-block; position: relative; z-index: 2; }
+        .year-header::after { content: ''; position: absolute; top: 50%; left: 40px; right: 0; height: 2px; background: #e0e0e0; z-index: 1; opacity: 0.5; }
+
+        .log-entry { position: relative; margin-bottom: 40px; padding-left: 40px; opacity: 0; animation: fadeIn 0.6s forwards; }
+        @keyframes fadeIn { to { opacity: 1; } }
+        .log-entry::before { content: ''; position: absolute; left: 7px; top: 20px; width: 16px; height: 16px; background: var(--primary-color); border: 4px solid #fff; border-radius: 50%; box-shadow: 0 0 0 2px var(--line-color); z-index: 1; transition: transform 0.3s ease; }
+        .log-entry:hover::before { transform: scale(1.2); background: #f8b500; }
+
+        .card { background: var(--card-bg); border-radius: 16px; padding: 24px; box-shadow: var(--shadow-card); transition: transform 0.3s ease, box-shadow 0.3s ease; border: 1px solid rgba(0, 0, 0, 0.02); }
+        .card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+
+        .card-date { font-size: 0.9rem; color: var(--primary-color); font-weight: 700; margin-bottom: 8px; display: block; letter-spacing: 0.5px; }
+        .card-title { margin: 0 0 10px 0; font-size: 1.4rem; color: #333; font-weight: 700; }
+        .card-text { margin-bottom: 15px; color: #555; white-space: pre-line; font-size: 1rem; }
+
+        .media-gallery { display: grid; gap: 8px; margin-top: 15px; border-radius: 12px; overflow: hidden; }
+        .media-gallery.single { grid-template-columns: 1fr; }
+        .media-gallery.multi { grid-template-columns: repeat(2, 1fr); }
+        .media-item { position: relative; padding-top: 75%; background: #eee; cursor: pointer; overflow: hidden; }
+        .media-gallery.single .media-item { padding-top: 0; background: transparent; }
+        .media-item img, .media-item video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; }
+        .media-item:hover img { transform: scale(1.05); }
+        .media-gallery.single .media-item img, .media-gallery.single .media-item video { position: relative; height: auto; object-fit: contain; border-radius: 8px; }
+
+        .tags { margin-top: 15px; }
+        .tag { display: inline-block; background: #edf2f7; padding: 5px 12px; border-radius: 15px; font-size: 0.8rem; margin-right: 6px; color: #555; transition: all 0.2s; }
+        .tag:hover { background: #e2e8f0; color: var(--primary-color); }
+
+        .no-result { text-align: center; padding: 50px; color: #888; }
+
+        /* Lightbox */
+        .lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 2000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .lightbox.active { opacity: 1; pointer-events: auto; }
+        .lightbox img { max-width: 90%; max-height: 90%; border-radius: 5px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); }
+        .lightbox-close { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; }
+
+        @media (max-width: 600px) {
+            header { padding: 30px 15px 70px 15px; }
+            header h1 { font-size: 2rem; }
+            .tag-menu-container { margin-top: -45px; }
+            .timeline-container::before { left: 18px; }
+            .log-entry { padding-left: 32px; }
+            .log-entry::before { left: -6px; }
+            .year-header::after { left: 20px; }
+            .media-gallery.multi { grid-template-columns: 1fr; }
+        }
+
+        @media (min-width: 600px) and (max-width: 900px) {
+            .timeline-container::before { left: 28px; }
+            .log-entry { padding-left: 36px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="lock-screen" class="lock-screen">
+        <div class="lock-card">
+            <h2>Welcome Back</h2>
+            <p>請輸入密碼以檢視日記</p>
+            <input type="password" id="lock-input" class="lock-input" placeholder="Password" inputmode="numeric">
+            <button onclick="checkPassword()" class="lock-btn">進入日記</button>
+        </div>
+    </div>
+
+    <header>
+        <h1>My LifeLog</h1>
+        <p>記錄生活的每一個瞬間</p>
+    </header>
+
+    <div class="tag-menu-container">
+        <div class="search-container">
+            <input type="text" id="search-input" class="search-input" placeholder="🔍 搜尋日記...">
+        </div>
+
+        <div id="tag-menu" class="tag-scroll-view"></div>
+
+        <nav id="year-nav" class="year-nav"></nav>
+    </div>
+
+    <div class="timeline-container" id="log-container"></div>
+
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img id="lightbox-img" src="" alt="Full size">
+    </div>
+
+    <script>
+        /* * ==========================================
+         * 🔒 鎖定功能邏輯 (新增)
+         * ==========================================
+         */
+        const PASSWORD = "1025"; // ✨ 請在這裡修改您的密碼 ✨
+        
+        const lockScreen = document.getElementById('lock-screen');
+        const lockInput = document.getElementById('lock-input');
+        const lockCard = document.querySelector('.lock-card');
+
+        // 檢查密碼函數
+        function checkPassword() {
+            const inputVal = lockInput.value;
+            if (inputVal === PASSWORD) {
+                // 密碼正確：淡出鎖定畫面
+                lockScreen.classList.add('hidden');
+                // 恢復網頁滾動
+                document.body.style.overflow = '';
+            } else {
+                // 密碼錯誤：清空輸入框並搖晃卡片
+                lockInput.value = '';
+                lockCard.classList.add('shake');
+                
+                // 0.4秒後移除搖晃class，以便下次觸發
+                setTimeout(() => {
+                    lockCard.classList.remove('shake');
+                }, 400);
+            }
+        }
+
+        // 支援按 Enter 鍵送出
+        lockInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+
+        // 頁面載入時，確保焦點在密碼框
+        window.onload = function() {
+            lockInput.focus();
+        };
+
+
+        /* * ==========================================
+         * 資料區 (維持不變)
+         * ==========================================
+         */
+        const logData = [
+            {
+                date: "2025-11-21",
+                title: "雲科獎學金",
+                content: "今天第三次獎學金進來了，還有一次可以領，當時會懷疑自己的決定，但或許人生沒有甚麼對錯，也沒有後悔，因為你不知道選了另外一條路會不會更好或更壞，無從比較。",
+                media: [
+                    { type: 'image', src: 'assets/lifelog/2025_11_22.jpg' },
+                ],
+                tags: ["碩士", "獎學金"]
+            },
+            {
+                date: "2025-10-05",
+                title: "家裡聚餐",
+                content: "好好吃喔",
+                media: [
+                    { type: 'image', src: 'assets/lifelog/2025_10_5.jpg' },
+                    { type: 'image', src: 'assets/lifelog/2025_10_5_2.jpg' },
+                ],
+                tags: ["美食"]
+            },
+            {
+                date: "2025-10-21",
+                title: "實驗室聚餐",
+                content: "一年級都沒有==",
+                media: [
+                    { type: 'image', src: 'assets/lifelog/2025_10_21.jpg' },
+                ],
+                tags: ["美食", "碩士"]
+            }, 
+        ];
+
+        /* * ==========================================
+         * 邏輯區
+         * ==========================================
+         */
+        const container = document.getElementById('log-container');
+        const navContainer = document.getElementById('year-nav');
+        const tagMenuContainer = document.getElementById('tag-menu');
+        const searchInput = document.getElementById('search-input');
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+
+        let activeTag = null;
+
+        init();
+
+        function init() {
+            generateTagMenu();
+            renderLogs(logData);
+        }
+
+        function generateTagMenu() {
+            const allTags = new Set();
+            logData.forEach(log => {
+                log.tags.forEach(tag => allTags.add(tag));
+            });
+
+            const sortedTags = Array.from(allTags).sort();
+
+            let html = `<button class="filter-btn active" onclick="filterByTag(null, this)">全部</button>`;
+
+            sortedTags.forEach(tag => {
+                const count = logData.filter(d => d.tags.includes(tag)).length;
+                html += `<button class="filter-btn" onclick="filterByTag('${tag}', this)">#${tag} (${count})</button>`;
+            });
+
+            tagMenuContainer.innerHTML = html;
+        }
+
+        window.filterByTag = function (tagName, btnElement) {
+            if (document.getElementById('tag-menu').classList.contains('active')) return;
+
+            activeTag = tagName;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+            searchInput.value = '';
+
+            if (tagName === null) {
+                renderLogs(logData);
+            } else {
+                const filtered = logData.filter(log => log.tags.includes(tagName));
+                renderLogs(filtered);
+            }
+        };
+
+        searchInput.addEventListener('input', (e) => {
+            const keyword = e.target.value.toLowerCase().trim();
+            if (keyword) {
+                document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                activeTag = null;
+            }
+
+            const filteredData = logData.filter(log => {
+                const matchTitle = log.title.toLowerCase().includes(keyword);
+                const matchContent = log.content.toLowerCase().includes(keyword);
+                const matchTags = log.tags.some(tag => tag.toLowerCase().includes(keyword));
+                const matchDate = log.date.includes(keyword);
+                return matchTitle || matchContent || matchTags || matchDate;
+            });
+
+            renderLogs(filteredData);
+        });
+
+        function renderLogs(data) {
+            data.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            if (data.length === 0) {
+                container.innerHTML = '<div class="no-result">找不到相關的日記 🥲</div>';
+                navContainer.innerHTML = '';
+                return;
+            }
+
+            let htmlContent = '';
+            let currentYear = null;
+            let yearsFound = new Set();
+
+            data.forEach((log, index) => {
+                const logYear = log.date.substring(0, 4);
+                yearsFound.add(logYear);
+
+                if (logYear !== currentYear) {
+                    currentYear = logYear;
+                    htmlContent += `
+                    <div class="year-header" id="year-${currentYear}">
+                        <span>${currentYear}</span>
+                    </div>
+                `;
+                }
+
+                let mediaHtml = '';
+                if (log.media && log.media.length > 0) {
+                    const layoutClass = log.media.length === 1 ? 'single' : 'multi';
+                    mediaHtml = `<div class="media-gallery ${layoutClass}">`;
+                    log.media.forEach(item => {
+                        if (item.type === 'image') {
+                            mediaHtml += `<div class="media-item" onclick="openLightbox('${item.src}')"><img src="${item.src}" loading="lazy"></div>`;
+                        } else if (item.type === 'video') {
+                            mediaHtml += `<div class="media-item"><video controls playsinline><source src="${item.src}" type="video/mp4"></video></div>`;
+                        }
+                    });
+                    mediaHtml += `</div>`;
+                }
+
+                const tagsHtml = log.tags.map(tag => `<span class="tag">#${tag}</span>`).join('');
+
+                htmlContent += `
+                <div class="log-entry" style="animation-delay: ${index * 0.1}s">
+                    <div class="card">
+                        <span class="card-date">${log.date}</span>
+                        <h3 class="card-title">${log.title}</h3>
+                        <div class="card-text">${log.content}</div>
+                        ${mediaHtml}
+                        <div class="tags">${tagsHtml}</div>
+                    </div>
+                </div>
+            `;
+            });
+
+            container.innerHTML = htmlContent;
+            renderNav(yearsFound);
+        }
+
+        function renderNav(yearsSet) {
+            const years = Array.from(yearsSet).sort((a, b) => b - a);
+            let navHtml = '';
+            years.forEach(year => {
+                navHtml += `<a href="#year-${year}" class="year-btn">${year}</a>`;
+            });
+            navContainer.innerHTML = navHtml;
+
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        const headerOffset = 180;
+                        const elementPosition = target.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                        window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+                    }
+                });
+            });
+        }
+
+        /* * 功能：燈箱 (Lightbox) */
+        window.openLightbox = function (src) {
+            lightboxImg.src = src;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        window.closeLightbox = function () {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        /* * 滑鼠滾輪支援 */
+        const slider = document.getElementById('tag-menu');
+        slider.addEventListener('wheel', (e) => {
+            if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                e.preventDefault();
+                slider.scrollLeft += e.deltaY;
+            }
+        });
+
+    </script>
+
+</body>
+
+</html>
