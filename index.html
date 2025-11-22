@@ -1,455 +1,770 @@
 <!DOCTYPE html>
-<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
-<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
-<!--[if !IE]><!-->
-<html lang="en"> <!--<![endif]-->
-
+<html lang="zh-TW">
 <head>
-    <title>陳杰龍．Jie-Long Chen</title>
-    <!-- Meta -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Responsive HTML5 Website landing Page for Developers">
-    <meta name="author" content="3rd Wave Media">
-    <link rel="shortcut icon" href="favicon.ico">
-    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,300italic,400italic' rel='stylesheet'
-        type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
-    <!-- Global CSS -->
-    <link rel="stylesheet" href="assets/plugins/bootstrap/css/bootstrap.min.css">
-    <!-- Plugins CSS -->
-    <link rel="stylesheet" href="assets/plugins/font-awesome/css/font-awesome.css">
-    <!-- github acitivity css -->
-    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/octicons/2.0.2/octicons.min.css">
-    <link rel="stylesheet" href="http://caseyscarborough.github.io/github-activity/github-activity-0.1.0.min.css">
-
-    <!-- Theme CSS -->
-    <link id="theme-style" rel="stylesheet" href="assets/css/styles.css">
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
+    <title>Jie-Long Chen</title>
     <style>
-        .fixed-menu {
-            position: fixed;
-            /* 讓選單固定在視窗中 */
-            top: 0;
-            /* 固定在視窗頂部 */
-            left: 0;
-            /* 固定在視窗左側 */
-            width: 100%;
-            /* 讓選單橫跨整個寬度 */
-            background-color: #051a21;
-            /* 選單背景色 */
-            padding: 10px 0;
-            /* 內部間距 */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            /* 增加一點陰影效果 */
-            z-index: 1000;
-            /* 確保選單在其他內容之上 */
+        /* --- 1. 基礎設定與 CSS 變數 (Theming) --- */
+        :root {
+            /* 淺色模式 (預設) */
+            --primary: #2c3e50;       
+            --accent: #3498db;        
+            --bg-body: #f8f9fa;       
+            --bg-content: #ffffff;    
+            --text-main: #333333;
+            --text-secondary: #666666;
+            --border-color: #e9ecef;
+            --nav-bg: #ffffff;
+            --card-shadow: 0 0 20px rgba(0,0,0,0.05);
+            --edu-logo-bg: #ffffff;
         }
 
-        .fixed-menu ul {
-            list-style: none;
-            /* 移除列表項目符號 */
+        /* 深色模式設定 */
+        [data-theme="dark"] {
+            --primary: #a5c3eb;       /* 較亮的藍色，適合深底 */
+            --accent: #3498db;        
+            --bg-body: #121212;       /* 深黑背景 */
+            --bg-content: #1e1e1e;    /* 卡片深灰 */
+            --text-main: #e0e0e0;     /* 淺灰文字 */
+            --text-secondary: #a0a0a0;
+            --border-color: #333333;
+            --nav-bg: #1e1e1e;
+            --card-shadow: 0 0 20px rgba(0,0,0,0.5);
+            --edu-logo-bg: #2d2d2d;
+        }
+
+        * {
             margin: 0;
             padding: 0;
-            text-align: center;
-            /* 選單項目置中 */
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease; /* 平滑過渡顏色 */
         }
 
-        .fixed-menu li {
-            display: inline-block;
-            /* 讓選單項目水平排列 */
-            margin: 0 15px;
-        }
-
-        .fixed-menu a {
-            color: white;
-            /* 連結文字顏色 */
-            text-decoration: none;
-            /* 移除連結下劃線 */
-            font-weight: bold;
-            padding: 5px 10px;
-            transition: background-color 0.3s ease;
-            /* 滑鼠懸停動畫 */
-        }
-
-        .fixed-menu a:hover {
-            background-color: #555;
-            /* 滑鼠懸停時的背景色 */
-            border-radius: 5px;
-        }
-
-        /* 為了解決固定選單遮擋內容的問題，可以在選單下方添加一個佔位元素 */
         body {
-            padding-top: 60px;
-            /* 這裡的 60px 應該等於你的 .fixed-menu 的高度 + padding */
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding-top: 70px; /* 稍微增加高度避免擋住 */
+        }
+
+        /* --- 2. 導航列 (Navigation) --- */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--nav-bg);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 1000;
+            height: 60px;
+        }
+
+        .nav-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+            position: relative;
+        }
+
+        /* 手機版漢堡按鈕 (預設隱藏) */
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            background: none;
+            border: none;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: var(--text-main);
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 5px 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary);
+            border-bottom-color: var(--accent);
+        }
+
+        /* 深色模式切換按鈕 */
+        .theme-toggle-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 5px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            margin-left: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle-btn:hover {
+            background-color: var(--border-color);
+        }
+
+        /* --- 3. 主要容器 --- */
+        main {
+            max-width: 900px;
+            margin: 40px auto;
+            background: var(--bg-content);
+            padding: 60px;
+            box-shadow: var(--card-shadow);
+            border-radius: 8px;
+        }
+
+        /* --- 4. Header --- */
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 40px;
+        }
+
+        .profile-img-container {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px auto;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid var(--bg-content);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            background-color: #eee;
+        }
+
+        .profile-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .contact-info {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .contact-info span {
+            margin: 0 10px;
+            display: inline-block; /* 防止手機版換行時擠在一起 */
+        }
+
+        /* --- 5. Sections & Items --- */
+        section {
+            margin-bottom: 60px;
+            scroll-margin-top: 80px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            border-left: 5px solid var(--accent);
+            padding-left: 15px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .item {
+            margin-bottom: 30px;
+        }
+
+        /* Education Logo */
+        .edu-item {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .edu-logo {
+            flex-shrink: 0;
+            width: 60px;
+            height: 60px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 5px;
+            background: var(--edu-logo-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .edu-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .edu-content {
+            flex-grow: 1;
+        }
+
+        /* Item Headers */
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 5px;
+        }
+
+        .item-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--text-main); /* 深色模式需變色 */
+        }
+
+        .item-subtitle {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .item-date {
+            font-style: italic;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .item-desc {
+            color: var(--text-main);
+            opacity: 0.9;
+            line-height: 1.7;
+        }
+
+        .item-desc ul {
+            padding-left: 20px;
+            margin-top: 5px;
+        }
+        
+        .item-desc li {
+            margin-bottom: 5px;
+        }
+
+        /* --- 6. RWD 手機版調整 (關鍵修改) --- */
+        @media (max-width: 768px) {
+            /* 導航列變為漢堡選單模式 */
+            .hamburger {
+                display: flex; /* 顯示漢堡按鈕 */
+            }
+
+            .nav-links {
+                position: absolute;
+                top: 60px; /* 接在導航列下方 */
+                left: 0;
+                width: 100%;
+                background-color: var(--nav-bg);
+                flex-direction: column;
+                align-items: center;
+                padding: 20px 0;
+                box-shadow: 0 10px 10px rgba(0,0,0,0.1);
+                
+                /* 隱藏選單的動畫設定 */
+                transform: translateY(-150%); /* 預設移出畫面 */
+                opacity: 0;
+                pointer-events: none; /* 隱藏時不可點擊 */
+                transition: all 0.3s ease;
+                z-index: 999;
+            }
+
+            /* 當加上 .active class 時顯示選單 */
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+                pointer-events: all;
+            }
+
+            .nav-links li {
+                width: 100%;
+                text-align: center;
+                margin: 10px 0;
+            }
+            
+            .nav-links a {
+                display: block;
+                width: 100%;
+                padding: 10px 0;
+            }
+
+            /* 主要內容調整 */
+            main {
+                margin: 0;
+                padding: 30px 20px;
+                border-radius: 0;
+                box-shadow: none;
+            }
+            
+            .edu-logo {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .item-header {
+                flex-direction: column;
+            }
+            
+            .item-date {
+                margin-bottom: 5px;
+            }
+            
+            /* 調整按鈕位置 */
+            .theme-toggle-btn {
+                margin-left: auto; /* 推到右邊，但在漢堡左邊 */
+                margin-right: 15px;
+            }
         }
     </style>
 </head>
-
-
-
 <body>
 
-    <nav class="fixed-menu">
-        <ul>
-            <!--<li><a href="#Biography">Biography</a></li>-->
-            <li><a href="#education">Education</a></li>
-            <li><a href="#experiences">Experiences</a></li>
-            <li><a href="#research">Research</a></li>
-            <li><a href="#Publications">Publications</a></li>
-            <li><a href="#Projects">Projects</a></li>
-            <li><a href="#honors">Honors</a></li>
-            <li><a href="#certificates">Certificates</a></li>
-            <li><a href="#developments">Developments</a></li>
+    <nav>
+        <div class="nav-container">
+            <button class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
 
-        </ul>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#edu">Education</a></li>
+                <li><a href="#exp">Experiences</a></li>
+                <li><a href="#pub">Publications</a></li>
+                <li><a href="#proj">Projects</a></li>
+                <li><a href="#honors">Honors</a></li>
+                <li><a href="#certs">Certificates</a></li>
+                <li><a href="#sys">Systems</a></li>
+            </ul>
+
+            <button class="theme-toggle-btn" id="theme-toggle" title="Toggle Dark Mode">
+                🌙
+            </button>
+        </div>
     </nav>
 
-
-
-    <!-- ******HEADER****** -->
-    <header class="header">
-
-
-
-        <div class="container">
-            <img class="profile-image img-responsive pull-left" src="assets/images/self.jpg" width="150" style="
-                border-radius: 80%;" />
-            <div class="profile-content pull-left">
-                <h1 class="name">
-                    陳杰龍 (Jie-Long Chen)
-                </h1>
-                <h2 class="desc">Technology & Information & Research</h2>
-                <table>
-                    <tr>
-                        <td>
-                            <ul class="social list-inline">
-
-                                <!-- Gmail -->
-                                <li><a href="mailto:zaq5891097@gmail.com"><i class="fa fa-envelope"></i></a></li>
-                                <!-- Discord -->
-                                <li><a href="https://www.linkedin.com/in/jie-long-chen-3005aa298"><i
-                                            class="fa fa-linkedin"></i></a>
-                                </li>
-                                <!-- Resume / CV -->
-                                <li><a href="assets/JieLong Chen CV(ch).pdf" target="_blank"><i
-                                            class="fa fa-file-text"></i></a>
-                                </li>
-
-
-                            </ul>
-                        </td>
-
-                    </tr>
-                </table>
-
-
-            </div><!--//profile-->
-
-        </div><!--//container-->
-
-
-    </header><!--//header-->
-
-
-
-    <div class="container sections-wrapper">
-        <div class="row">
-            <div class="primary col-md-12 col-sm-12 col-xs-12">
-                <!--
-                <section id="Biography" class="about section">
-                    <div class="section-inner">
-                        <h2 class="heading">Biography</h2>
-                        <div class="content">
-                            <p>Jie-long Chen is currently a master's student in the Department of Information Management
-                                at National Yunlin University of Science and Technology. He received his B.S. degree in
-                                Information Management from National Pingtung University in Jan 2024. His
-                                research interests include algorithms, software system development, AI applications, and
-                                digital learning in technology.
-                            </p>-->
-
-
-
-                        </div><!--//content-->
-                    </div><!--//section-inner-->
-                </section><!--//section-->
-
-
-                <section id="education" class="experience section">
-                    <div class="section-inner">
-                        <h2 class="heading">Education</h2>
-                        <div class="content">
-                            <ul>
-                                <li>博士,&ensp;國立陽明交通大學,&ensp;資訊管理研究所,&ensp; 預2026/09</li>
-                                <li>碩士,&ensp;國立雲林科技大學,&ensp;資訊管理系,&ensp;2024/09 – 迄今</li>
-                                <li>學士,&ensp;國立屏東大學,&ensp;資訊管理學系,&ensp;2020/09 – 2024/01</li>
-                            </ul>
-
-                        </div><!--//content-->
-                    </div><!--//section-inner-->
-                </section><!--//section-->
-
-
-                <section id="experiences" class="experience section">
-                    <div class="section-inner">
-                        <h2 class="heading">Experiences</h2>
-                        <div class="content">
-                            <ul>
-
-                                <li>資訊技術家教與顧問,&ensp;<a target="_blank"
-                                        href="tutor.html">CodeCrafters交流站</a>,&ensp;2023/07 – 迄今</li>
-                                <li>教學助理(TA),&ensp;TAICA 臺灣大專院校人工智慧學程聯盟,&ensp;基礎程式設計 C++,&ensp;2025/09 – 迄今</li>
-
-                                <li>教學助理(TA),&ensp;國立雲林科技大學,&ensp;Java物件導向程式語言,&ensp;2025/02 – 2025/06</li>
-
-                                <li>教學助理(TA),&ensp;國立雲林科技大學,&ensp;Python程式設計概念與方法,&ensp;2024/09 – 2025/01</li>
-                                <li>軟體開發工程師(實習),&ensp;中國信託商業銀行,&ensp;台中開發中心科,&ensp;2024/02 – 2024/06</li>
-                            </ul>
-
-                        </div><!--//content-->
-                    </div><!--//section-inner-->
-                </section><!--//section-->
-
-
-                <section id="research" class="experience section">
-                    <div class="section-inner">
-                        <h2 class="heading">Research</h2>
-                        <div class="content">
-                            <ul>
-                                <li>演算法</li>
-                                <li>軟體系統開發</li>
-                                <li>人工智慧應用</li>
-                                <li>科技數位學習</li>
-                            </ul>
-
-                        </div><!--//content-->
-                    </div><!--//section-inner-->
-                </section><!--//section-->
-
-                <section id="Publications" class="experience section">
-                    <div class="section-inner">
-                        <h2 class="heading">Publications</h2>
-                        <div class="content">
-
-                            <ul>
-                                <li>Writing：
-
-                                    <ul>
-                                        <li style="line-height: 1.5; margin-bottom: 4px;">
-                                            A Posture Detection System Based on Image Recognition and Machine Learning
-
-                                        </li>
-                                        <li style="line-height: 1.5; margin-bottom: 4px;">
-                                            Polarity Mark for Xie-hou-u in Taiwanese Min Nan language.
-                                        </li>
-                                        <li style="line-height: 1.5; margin-bottom: 4px;">
-                                            <u>陳杰龍</u>, 鄭琬瑩, 蕭文峰*, 2025, 應用於特殊教育中文學習之遊戲化學習平台的先導與可行性研究. 
-                                        </li>
-                                            <li style="line-height: 1.5; margin-bottom: 4px;">
-                                            Wen-Feng Hsiao, Min-Chun Tsai, <u>Jie-Long Chen</u>*, 2025, Real-Time Facial
-                                            Expression Detection for Gamified Applications. 
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>Journal：
-
-                                    <ul>
-
-
-                                    </ul>
-                                </li>
-
-                                <li>Conference：</li>
-                                <ul>
-
-                                    <li style="line-height: 1.5; margin-bottom: 4px;">
-                                        <u>Jie-Long Chen</u>, Tung-Chieh Kuo, Arthur Chang*,
-                                        Effects of Client Number and Non-IID Data Distributions on
-                                        Federated Learning for Cervical Cancer Binary Classification
-                                        ,
-                                        International Forum on Medical Imaging,
-                                        2026/01/12-14, NYUST, Kaohsiung.
-                                    </li>
-                                    <li style="line-height: 1.5; margin-bottom: 4px;">
-                                        <u>陳杰龍</u>, 張榮昇,
-                                        跨資料集聯邦學習於子宮頸癌抹片影像分類之研究,
-                                        台灣網際網路研討會暨全國計算機會議,
-                                        2025/10/22-24, 國立宜蘭大學, 宜蘭縣.
-                                    </li>
-                                    <li style="line-height: 1.5; margin-bottom: 4px;">
-                                        <u>Jie-Long Chen</u>*, Ching-Chung Chen, Arthur Chang,
-                                        A Comparative Analysis of Machine Learning Algorithms for Wheat Disease
-                                        Classification in Taiwan Using the Orange Data Mining Tool
-                                        ,
-                                        IEEE Conference on Computational Intelligence in Bioinformatics and
-                                        Computational Biology,
-                                        2025/08/20-22, NCKU, Tainan.
-                                    </li>
-                                    <li style="line-height: 1.5; margin-bottom: 4px;">
-                                        <u>陳杰龍</u>, 郭東婕, 張榮昇,
-                                        少樣本學習下資料擴增與遷移學習對蕈類影像分類,
-                                        第15屆網路智能與應用研討會,
-                                        2025/07/11-12, 國立雲林科技大學, 雲林縣.
-                                    </li>
-                                    <li style="line-height: 1.5; margin-bottom: 4px;">
-                                        <u>陳杰龍</u>*, 鄭琬瑩, 蕭文峰,
-                                        資訊科技輔助教學對特教生國語學習成效之研究, 第36屆國際資訊管理學術研討會, 2025/05/16, 中華民國資訊管理學會, 台北市.
-                                    </li>
-
-                                </ul>
-                            </ul>
-
-                        </div><!--//content-->
-                    </div><!--//section-inner-->
-                </section><!--//section-->
-
-                <section id="Projects" class="experience section">
-                    <div class="section-inner">
-                        <h2 class="heading">Projects </h2>
-                        <div class="content">
-
-                            <ul>
-
-                                <li>相輔相程─特教生國文與對話能力之資訊輔導,&ensp;國科會(NSTC),&ensp;2023/07/01~2024/02/29</li>
-
-
-                            </ul>
-
-                        </div><!--//content-->
-                    </div><!--//section-inner-->
-                </section><!--//section-->
-
-                <section id="honors" class="experience section">
-                    <div class="section-inner">
-                        <h2 class="heading">Honors</h2>
-                        <div class="content">
-                            <ul>
-                                <li>第三十六屆國際資訊管理學術研討會(ICIM)績優論文簡報獎,&ensp;2025</li>
-                                <li>Reviewer of IEEE Conference on Computational Intelligence in Bioinformatics and
-                                    Computational Biology(CIBCB),&ensp;2025</li>
-                                <li>國立雲林科技大學王秋雄榮譽博士研究所優秀入學獎學金 $600,000 NTD,&ensp;2024</li>
-                                <li>國立雲林科技大學資管系甄試錄取研究生獎學金 $30,000 NTD,&ensp;2024</li>
-                                <li>臺灣銀行113年新進人員甄試 - 程式設計人員(二)錄取,&ensp;2024</li>
-                                <li>國家科學及技術委員會 - 大專學生研究創作獎,&ensp;2024</li>
-                                <li>國立屏東大學五育獎 - 智育第二名,&ensp;2024</li>
-                                <li>國立屏東大學資管系5次書卷獎,&ensp;2024</li>
-                                <li>國立屏東大學資訊管理學系修業三年半提早畢業,&ensp;2024</li>
-                                <li>超過二十位程式設計授課經驗,&ensp;2024</li>
-                                <li>國立屏東大學112年資訊學院實務專題成果競賽 - C組第三名,&ensp;2023</li>
-                                <li>錄取多所資訊管理研究所碩士班 (國立中央大學、國立中山大學、國立中興大學、國立彰化師範大學、國立雲林科技大學、國立屏東大學),&ensp;2023</li>
-                                <li>第28屆大專院校資訊應用服務創新競賽 - 教育開放組第一名,&ensp;2023</li>
-                                <li>創辦 CodeCrafters 交流站,&ensp;2023</li>
-                                <li>國家科學及技術委員會 - 大專學生研究計畫通過,&ensp;2023</li>
-                                <li>新光人壽獎助學金,&ensp;2023</li>
-                                <li>擔任大學專題組長，並與國立成功大學資工系教授蘇文鈺、愛自造者學習協會 (PTWA) 合作,&ensp;2022</li>
-                                <li>巨匠電腦金匠獎 - 程式設計競賽 Python 組決賽,&ensp;2022</li>
-                                <li>四技二專統一入學測驗 - 計算機概論與商業概論滿級分,&ensp;2020</li>
-                            </ul>
-
-                        </div><!--//content-->
-                    </div><!--//section-inner-->
-                </section><!--//section-->
-
-                <section id="certificates" class="experience section">
-                    <div class="section-inner">
-                        <h2 class="heading">Certificates </h2>
-                        <div class="content">
-                            <ul>
-                                <li>經濟部 AI 應用規劃師初級(全國首批),&ensp;2025</li>
-                                <li>TOEIC® Listening and Reading Test 550(L295/R255),&ensp;2024</li>
-                                <li>電腦硬體裝修技術士丙級,&ensp;2023</li>
-                                <li>TQC+ 軟體設計領域物件導向程式語言 Java,&ensp;2021</li>
-                                <li>TQC+ 程式語言 Python 3,&ensp;2020</li>
-                                <li>電腦軟體應用技術士乙級,&ensp;2020</li>
-                                <li>BAP商務專業應用能力國際認證 Excel,&ensp;2019</li>
-                                <li>TQC+ App Inventor程式設計,&ensp;2019</li>
-                                <li>TQC 英文輸入,&ensp;2018</li>
-                                <li>TQC 中文輸入,&ensp;2018</li>
-                                <li>電腦軟體應用技術士丙級,&ensp;2018</li>
-                            </ul>
-
-                        </div><!--//content-->
-                    </div><!--//section-inner-->
-                </section><!--//section-->
-
-                <section id="developments" class="experience section">
-                    <div class="section-inner">
-                        <h2 class="heading">System Developments & Managements</h2>
-                        <div class="content">
-                            <ul>
-                                <li>房屋租賃平台,&ensp;中國信託商業銀行,&ensp;2024<br>
-                                    Java、Spring Boot、 Spring MVC、 Swagger API、 Web Services API、H2 Database、 Angular、
-                                    TypeScript、Boostrap、Unit Testing
-                                </li>
-
-                                <li>特教生國語與對話能力之資訊輔導,&ensp;國立屏東大學,&ensp;2023<br>
-                                    Python、Django、MySQL、Boostrap、 Face Expression Recognition、Html、CSS、JavaScript
-                                </li>
-                                <li>LINE 聊天機器人,&ensp;個人,&ensp;2023<br>
-                                    LINE BOT、Open AI、GPT-3、ngrok、pyngrok、Flask、Web API
-                                </li>
-                                <li>陳杰龍的筆記網站,&ensp;個人,&ensp;2022<br>
-                                    Html、CSS、JavaScript、Boostrap
-                                </li>
-                                <li>圖書館系統,&ensp;國立屏東大學,&ensp;2022<br>
-                                    C#、Windows Form、Microsoft SQL Server
-                                </li>
-                                <li>計程車費用共享 APP,&ensp;國立屏東大學,&ensp;2021<br>
-                                    Android APP、Java、FireBase
-                                </li>
-                                <li>乳癌預測,&ensp;個人,&ensp;2021<br>
-                                    Python、TensorFlow、Keras
-                                </li>
-                                <li>COVID-19 快篩試劑診所配發查詢, 個人,&ensp;2021<br>
-                                    Python、OpenData
-                                </li>
-                                <li>英文單字練習,&ensp;個人,&ensp;2020<br>
-                                    Python、Google Sheets API
-                                </li>
-                                <li>Travel Cat 旅行 APP,&ensp;國立斗六家事商業職業學校,&ensp;2019<br>
-
-                                    MIT App Inventor
-                                </li>
-                            </ul>
-
-                        </div><!--//content-->
-                    </div><!--//section-inner-->
-                </section><!--//section-->
-
-
-
-
-            </div><!--//primary-->
-
-        </div><!--//row-->
-    </div><!--//masonry-->
-
-    <!-- ******FOOTER****** -->
-    <footer class="footer">
-        <div class="container text-center">
-            <small class="copyright">© Owner of this page: Jie-Long Chen, Last Modified on 2025/11/20</small>
-        </div><!--//container-->
-    </footer><!--//footer-->
-
-    <!-- Javascript -->
-    <script type="text/javascript" src="assets/plugins/jquery-1.11.1.min.js"></script>
-    <script type="text/javascript" src="assets/plugins/jquery-migrate-1.2.1.min.js"></script>
-    <script type="text/javascript" src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="assets/plugins/jquery-rss/dist/jquery.rss.min.js"></script>
-    <!-- github activity plugin -->
-    <script type="text/javascript"
-        src="http://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.7.2/mustache.min.js"></script>
-    <script type="text/javascript"
-        src="http://caseyscarborough.github.io/github-activity/github-activity-0.1.0.min.js"></script>
-    <!-- custom js -->
-    <script type="text/javascript" src="assets/js/main.js"></script>
-
+    <main>
+        <header>
+            <div class="profile-img-container">
+                <img src="assets/self.jpg" alt="Profile Picture">
+            </div>
+
+            <h1>Jie-Long Chen (陳杰龍)</h1>
+            <p>AI Researcher | Software Engineer</p>
+            
+            <div class="contact-info">
+                <span>📧 zaq5891097@gmail.com</span> |
+                <span>📍 Taiwan</span>
+            </div>
+        </header>
+
+        <section id="edu">
+            <h2>Education</h2> 
+            
+            <div class="item edu-item">
+                <div class="edu-logo">
+                    <img src="assets/NYCU.png" alt="NYCU Logo">
+                </div>
+                <div class="edu-content">
+                    <div class="item-header">
+                        <span class="item-title">National Yang Ming Chiao Tung University</span>
+                        <span class="item-date">Sep 2026 (Expected)</span>
+                    </div>
+                    <div class="item-subtitle">Ph.D. in Information Management</div>
+                    <div class="item-desc">
+                        <ul><li>Institute of Information Management</li></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="item edu-item">
+                <div class="edu-logo">
+                    <img src="assets/yuntech.jpg" alt="YunTech Logo">
+                </div>
+                <div class="edu-content">
+                    <div class="item-header">
+                        <span class="item-title">National Yunlin University of Science and Technology</span>
+                        <span class="item-date">Sep 2024 – Present</span>
+                    </div>
+                    <div class="item-subtitle">M.B.A. in Information Management</div>
+                </div>
+            </div>
+
+            <div class="item edu-item">
+                <div class="edu-logo">
+                    <img src="assets/NPTU.png" alt="NPTU Logo">
+                </div>
+                <div class="edu-content">
+                    <div class="item-header">
+                        <span class="item-title">National Pingtung University</span>
+                        <span class="item-date">Sep 2020 – Jan 2024</span>
+                    </div>
+                    <div class="item-subtitle">B.B.A. in Information Management</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="exp">
+            <h2>Experiences</h2>
+
+            <div class="item">
+                <div class="item-header">
+                    <span class="item-title">CodeCrafters Hub</span>
+                    <span class="item-date">Jul 2023 – Present</span>
+                </div>
+                <div class="item-subtitle">IT Tutor & Consultant</div>
+            </div>
+
+            <div class="item">
+                <div class="item-header">
+                    <span class="item-title">Teaching Assistant</span>
+                    <span class="item-date">Sep 2024 – Present</span>
+                </div>
+                <div class="item-desc">
+                    <ul style="margin-top: 10px;">
+                        <li>
+                            <b>Fundamentals of Programming (C++)</b> @ Taiwan AI College Alliance (TAICA)<br>
+                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Sep 2025 – Present</span>
+                        </li>
+                        <li style="margin-top: 8px;">
+                            <b>Object-Oriented Programming (Java)</b> @ YunTech<br>
+                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Feb 2025 – Jun 2025</span>
+                        </li>
+                        <li style="margin-top: 8px;">
+                            <b>Python Programming Concepts</b> @ YunTech<br>
+                            <span style="font-size: 0.9rem; color: var(--text-secondary);">Sep 2024 – Jan 2025</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="item-header">
+                    <span class="item-title">CTBC Bank (Taichung Development Center)</span>
+                    <span class="item-date">Feb 2024 – Jun 2024</span>
+                </div>
+                <div class="item-subtitle">Software Engineer Intern</div>
+            </div>
+        </section>
+
+        <section id="pub">
+            <h2>Publications</h2>
+            <div class="item">
+                <div class="item-header">
+                    <span class="item-title" style="font-size: 1.2rem;">Conference Papers</span>
+                </div>
+                <div class="item-desc">
+                    <ul style="list-style-type: none; padding-left: 0;">
+                        <li style="margin-bottom: 15px;">
+                            1. <b>Jie-Long Chen</b>, Tung-Chieh Kuo, Arthur Chang*. "Effects of Client Number and Non-IID Data Distributions on Federated Learning for Cervical Cancer Binary Classification." 
+                            <i>International Forum on Medical Imaging in Asia (IFMIA)</i>, Kaohsiung, Jan 2026.
+                        </li>
+                        <li style="margin-bottom: 15px;">
+                            2. <b>陳杰龍</b>, 張榮昇. "跨資料集聯邦學習於子宮頸癌抹片影像分類之研究." 
+                            <i>台灣網際網路研討會暨全國計算機會議</i>, 宜蘭縣, Oct 2025.
+                        </li>
+                        <li style="margin-bottom: 15px;">
+                            3. <b>Jie-Long Chen*</b>, Ching-Chung Chen, Arthur Chang. "A Comparative Analysis of Machine Learning Algorithms for Wheat Disease Classification in Taiwan Using the Orange Data Mining Tool." 
+                            <i>IEEE Conference on Computational Intelligence in Bioinformatics and Computational Biology (CIBCB)</i>, Tainan, Aug 2025.
+                        </li>
+                        <li style="margin-bottom: 15px;">
+                            4. <b>陳杰龍</b>, 郭東婕, 張榮昇. "少樣本學習下資料擴增與遷移學習對蕈類影像分類." 
+                            <i>第15屆網路智能與應用研討會</i>, 雲林縣, July 2025.
+                        </li>
+                        <li style="margin-bottom: 15px;">
+                            5. <b>陳杰龍*</b>, 鄭琬瑩, 蕭文峰. "資訊科技輔助教學對特教生國語學習成效之研究." 
+                            <i>第36屆國際資訊管理學術研討會</i>, 台北市, May 2025.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="item">
+                <div class="item-header">
+                    <span class="item-title" style="font-size: 1.2rem;">Works in Preparation / Submitted</span>
+                </div>
+                <div class="item-desc">
+                    <ul style="list-style-type: circle; padding-left: 20px;">
+                        <li style="margin-bottom: 10px;">"A Posture Detection System Based on Image Recognition and Machine Learning."</li>
+                        <li style="margin-bottom: 10px;">Wen-Feng Hsiao, Min-Chun Tsai, <b>Jie-Long Chen*</b>. "Real-Time Facial Expression Detection for Gamified Applications."</li>
+                        <li style="margin-bottom: 10px;"><b>陳杰龍</b>, 鄭琬瑩, 蕭文峰*. "應用於特殊教育中文學習之遊戲化學習平台的先導與可行性研究."</li>
+                        <li style="margin-bottom: 10px;">"Polarity Mark for Xie-hou-u in Taiwanese Min Nan language."</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="proj">
+            <h2>Projects</h2>
+            <div class="item">
+                <div class="item-header">
+                    <span class="item-title">IT-Assisted Instruction for Special Education</span>
+                    <span class="item-date">Jul 2023 – Feb 2024</span>
+                </div>
+                <div class="item-subtitle">Undergraduate Research Project, National Science and Technology Council</div>
+            </div>
+        </section>
+
+        <section id="honors">
+            <h2>Honors & Awards</h2>
+            <div class="item">
+                <div class="item-header">
+                    <span class="item-title">Professional Achievements & Service</span>
+                </div>
+                <div class="item-desc">
+                    <ul style="margin-top: 5px;">
+                        <li style="margin-bottom: 5px;">
+                            <b>Reviewer</b>, IEEE Conference on Computational Intelligence in Bioinformatics and Computational Biology (CIBCB), 2025.
+                        </li>
+                        <li style="margin-bottom: 5px;">
+                            <b>NSTC Research Creativity Award (國科會大專學生研究創作獎)</b>, National Science and Technology Council, 2024.
+                        </li>
+                        <li style="margin-bottom: 5px;">
+                            <b>Qualified Programmer (Ranked Tier 2)</b>, Bank of Taiwan Recruitment Exam (臺灣銀行新進人員甄試), 2024.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="item">
+                <div class="item-header">
+                    <span class="item-title">Competition Awards</span>
+                </div>
+                <div class="item-desc">
+                    <ul style="margin-top: 5px;">
+                        <li style="margin-bottom: 5px;"><b>Best Presentation Award</b>, ICIM 2025.</li>
+                        <li style="margin-bottom: 5px;"><b>1st Place</b>, 28th InnoServe Awards, 2023.</li>
+                        <li style="margin-bottom: 5px;"><b>3rd Place</b>, NPTU College of Computer Science Project Competition, 2023.</li>
+                        <li style="margin-bottom: 5px;"><b>Finalist</b>, Gjun Inc. Python Programming Competition, 2022.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="item">
+                <div class="item-header">
+                    <span class="item-title">Academic Honors & Scholarships</span>
+                </div>
+                <div class="item-desc">
+                    <ul style="margin-top: 5px;">
+                        <li style="margin-bottom: 5px;"><b>Wang Chiu-Hsiung Honorary Scholarship</b> (NT$600,000), YunTech, 2024.</li>
+                        <li style="margin-bottom: 5px;"><b>Academic Excellence Award - 2nd Place</b>, NPTU, 2024.</li>
+                        <li style="margin-bottom: 5px;"><b>Presidential Award (書卷獎) x 5</b>, NPTU, 2020-2024.</li>
+                        <li style="margin-bottom: 5px;"><b>Early Graduation</b>, NPTU, 2024.</li>
+                        <li style="margin-bottom: 5px;"><b>Graduate Entrance Scholarship</b>, YunTech, 2024.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="certs">
+            <h2>Certificates</h2>
+            <div class="item">
+                <div class="item-header">
+                    <span class="item-title">Professional & Technical Certifications</span>
+                </div>
+                <div class="item-desc">
+                    <ul style="margin-top: 5px;">
+                        <li style="margin-bottom: 8px;"><b>AI Application Planner (Level 1)</b>, MOEA, 2025.</li>
+                        <li style="margin-bottom: 8px;"><b>TQC+ Object-Oriented Programming (Java)</b>, 2021.</li>
+                        <li style="margin-bottom: 8px;"><b>TQC+ Programming Language (Python 3)</b>, 2020.</li>
+                        <li style="margin-bottom: 8px;"><b>Level B Technician for Computer Software Application</b>, 2020.</li>
+                        <li style="margin-bottom: 8px;"><b>Level C Technician for Computer Hardware Repair</b>, 2023.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="item">
+                <div class="item-header">
+                    <span class="item-title">Language Proficiency</span>
+                </div>
+                <div class="item-desc">
+                    <ul><li><b>TOEIC: 550</b> (Continuously improving...)</li></ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="sys">
+            <h2>System Developments</h2>
+            <div class="item">
+                <div class="item-header">
+                    <span class="item-title">House Rental Management Platform</span>
+                    <span class="item-date">2024</span>
+                </div>
+                <div class="item-subtitle">CTBC Bank (Internship Project)</div>
+                <div class="item-desc">
+                    A comprehensive leasing management system.
+                    <br><b>Technologies:</b> Java, Spring Boot, Angular, TypeScript, H2 DB.
+                </div>
+            </div>
+            <div class="item">
+                <div class="item-header">
+                    <span class="item-title">Gamified Learning Platform for Special Education</span>
+                    <span class="item-date">2023</span>
+                </div>
+                <div class="item-subtitle">National Pingtung University</div>
+                <div class="item-desc">
+                    <b>Technologies:</b> Python, Django, MySQL, Face Expression Recognition (AI).
+                </div>
+            </div>
+            <div class="item">
+                <div class="item-header">
+                    <span class="item-title">AI Chatbot Integration (LINE Bot)</span>
+                    <span class="item-date">2023</span>
+                </div>
+                <div class="item-subtitle">Personal Project</div>
+                <div class="item-desc"><b>Technologies:</b> OpenAI GPT-3 API, Flask, ngrok.</div>
+            </div>
+            <div class="item">
+                <div class="item-header">
+                    <span class="item-title">Library Management System</span>
+                    <span class="item-date">2022</span>
+                </div>
+                <div class="item-subtitle">National Pingtung University</div>
+                <div class="item-desc"><b>Technologies:</b> C#, Windows Forms, MS SQL Server.</div>
+            </div>
+            <div class="item">
+                <div class="item-header">
+                    <span class="item-title">Taxi Fare Sharing App</span>
+                    <span class="item-date">2021</span>
+                </div>
+                <div class="item-subtitle">National Pingtung University</div>
+                <div class="item-desc"><b>Technologies:</b> Android (Java), Firebase.</div>
+            </div>
+            <div class="item">
+                <div class="item-header">
+                    <span class="item-title">Breast Cancer Prediction Model</span>
+                    <span class="item-date">2021</span>
+                </div>
+                <div class="item-subtitle">Personal Project</div>
+                <div class="item-desc"><b>Technologies:</b> Python, TensorFlow, Keras.</div>
+            </div>
+            <div class="item">
+                <div class="item-header">
+                    <span class="item-title">Travel Cat Mobile App</span>
+                    <span class="item-date">2019</span>
+                </div>
+                <div class="item-subtitle">National Douliou Voc. High School</div>
+                <div class="item-desc"><b>Technologies:</b> MIT App Inventor.</div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- JavaScript 功能 ---
+
+        // 1. 深色模式切換 (Dark Mode Toggle)
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const body = document.body;
+        
+        // 檢查是否有儲存的設定，若無則看系統偏好
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+            body.setAttribute('data-theme', 'dark');
+            themeToggleBtn.textContent = '☀️';
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeToggleBtn.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeToggleBtn.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // 2. 手機版漢堡選單 (Hamburger Menu)
+        const hamburger = document.getElementById('hamburger');
+        const navLinksContainer = document.getElementById('nav-links');
+        const navLinks = document.querySelectorAll('.nav-links a');
+
+        hamburger.addEventListener('click', () => {
+            navLinksContainer.classList.toggle('active');
+        });
+
+        // 點擊任何一個連結後，自動收起選單
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if(window.innerWidth <= 768) {
+                    navLinksContainer.classList.remove('active');
+                }
+            });
+        });
+
+        // 3. 導航列主動高亮 (Active State)
+        const sections = document.querySelectorAll('section');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // 4. 平滑滾動 (Smooth Scroll)
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                if (targetSection) {
+                    window.scrollTo({
+                        top: targetSection.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
 </body>
-
 </html>
