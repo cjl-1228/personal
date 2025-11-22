@@ -31,7 +31,7 @@
             scroll-behavior: smooth;
             overflow-x: hidden;
             /* 初始狀態禁止滾動，等待解鎖 */
-            overflow: hidden; 
+            overflow: hidden;
         }
 
         /* =========================================
@@ -44,7 +44,8 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-            z-index: 9999; /* 最上層，蓋住所有內容 */
+            z-index: 9999;
+            /* 最上層，蓋住所有內容 */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -94,7 +95,8 @@
             outline: none;
             box-sizing: border-box;
             transition: all 0.3s;
-            letter-spacing: 5px; /* 讓密碼星號分開一點 */
+            letter-spacing: 5px;
+            /* 讓密碼星號分開一點 */
             color: var(--primary-dark);
         }
 
@@ -119,7 +121,7 @@
         .lock-btn:hover {
             background: var(--primary-dark);
         }
-        
+
         .lock-btn:active {
             transform: scale(0.98);
         }
@@ -130,10 +132,27 @@
         }
 
         @keyframes shake {
-            10%, 90% { transform: translate3d(-1px, 0, 0); }
-            20%, 80% { transform: translate3d(2px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-            40%, 60% { transform: translate3d(4px, 0, 0); }
+
+            10%,
+            90% {
+                transform: translate3d(-1px, 0, 0);
+            }
+
+            20%,
+            80% {
+                transform: translate3d(2px, 0, 0);
+            }
+
+            30%,
+            50%,
+            70% {
+                transform: translate3d(-4px, 0, 0);
+            }
+
+            40%,
+            60% {
+                transform: translate3d(4px, 0, 0);
+            }
         }
 
 
@@ -174,7 +193,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin-top: -40px; /* 負邊距 */
+            margin-top: -40px;
+            /* 負邊距 */
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
             transition: all 0.3s ease;
@@ -221,7 +241,9 @@
             -ms-overflow-style: none;
         }
 
-        .tag-scroll-view::-webkit-scrollbar { display: none; }
+        .tag-scroll-view::-webkit-scrollbar {
+            display: none;
+        }
 
         .filter-btn {
             white-space: nowrap;
@@ -238,8 +260,17 @@
             user-select: none;
         }
 
-        .filter-btn:hover { background: #fff; transform: translateY(-1px); color: var(--primary-color); }
-        .filter-btn.active { background: var(--primary-color); color: white; box-shadow: 0 4px 10px rgba(91, 140, 133, 0.4); }
+        .filter-btn:hover {
+            background: #fff;
+            transform: translateY(-1px);
+            color: var(--primary-color);
+        }
+
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 10px rgba(91, 140, 133, 0.4);
+        }
 
         /* --- 年份導覽列 --- */
         .year-nav {
@@ -260,7 +291,10 @@
             border-radius: 12px;
             transition: all 0.2s;
         }
-        .year-btn:hover { background: rgba(91, 140, 133, 0.1); }
+
+        .year-btn:hover {
+            background: rgba(91, 140, 133, 0.1);
+        }
 
         /* --- 時間軸結構 --- */
         .timeline-container {
@@ -284,57 +318,301 @@
         }
 
         /* --- 卡片樣式 --- */
-        .year-header { position: relative; text-align: center; margin: 40px 0 30px 0; z-index: 2; clear: both; }
-        .year-header span { background: var(--primary-color); color: white; padding: 6px 24px; border-radius: 50px; font-size: 1.3rem; font-weight: bold; box-shadow: 0 4px 10px rgba(91, 140, 133, 0.3); display: inline-block; position: relative; z-index: 2; }
-        .year-header::after { content: ''; position: absolute; top: 50%; left: 40px; right: 0; height: 2px; background: #e0e0e0; z-index: 1; opacity: 0.5; }
+        .year-header {
+            position: relative;
+            text-align: center;
+            margin: 40px 0 30px 0;
+            z-index: 2;
+            clear: both;
+        }
 
-        .log-entry { position: relative; margin-bottom: 40px; padding-left: 40px; opacity: 0; animation: fadeIn 0.6s forwards; }
-        @keyframes fadeIn { to { opacity: 1; } }
-        .log-entry::before { content: ''; position: absolute; left: 7px; top: 20px; width: 16px; height: 16px; background: var(--primary-color); border: 4px solid #fff; border-radius: 50%; box-shadow: 0 0 0 2px var(--line-color); z-index: 1; transition: transform 0.3s ease; }
-        .log-entry:hover::before { transform: scale(1.2); background: #f8b500; }
+        .year-header span {
+            background: var(--primary-color);
+            color: white;
+            padding: 6px 24px;
+            border-radius: 50px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(91, 140, 133, 0.3);
+            display: inline-block;
+            position: relative;
+            z-index: 2;
+        }
 
-        .card { background: var(--card-bg); border-radius: 16px; padding: 24px; box-shadow: var(--shadow-card); transition: transform 0.3s ease, box-shadow 0.3s ease; border: 1px solid rgba(0, 0, 0, 0.02); }
-        .card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+        .year-header::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 40px;
+            right: 0;
+            height: 2px;
+            background: #e0e0e0;
+            z-index: 1;
+            opacity: 0.5;
+        }
 
-        .card-date { font-size: 0.9rem; color: var(--primary-color); font-weight: 700; margin-bottom: 8px; display: block; letter-spacing: 0.5px; }
-        .card-title { margin: 0 0 10px 0; font-size: 1.4rem; color: #333; font-weight: 700; }
-        .card-text { margin-bottom: 15px; color: #555; white-space: pre-line; font-size: 1rem; }
+        .log-entry {
+            position: relative;
+            margin-bottom: 40px;
+            padding-left: 40px;
+            opacity: 0;
+            animation: fadeIn 0.6s forwards;
+        }
 
-        .media-gallery { display: grid; gap: 8px; margin-top: 15px; border-radius: 12px; overflow: hidden; }
-        .media-gallery.single { grid-template-columns: 1fr; }
-        .media-gallery.multi { grid-template-columns: repeat(2, 1fr); }
-        .media-item { position: relative; padding-top: 75%; background: #eee; cursor: pointer; overflow: hidden; }
-        .media-gallery.single .media-item { padding-top: 0; background: transparent; }
-        .media-item img, .media-item video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.5s ease; }
-        .media-item:hover img { transform: scale(1.05); }
-        .media-gallery.single .media-item img, .media-gallery.single .media-item video { position: relative; height: auto; object-fit: contain; border-radius: 8px; }
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
 
-        .tags { margin-top: 15px; }
-        .tag { display: inline-block; background: #edf2f7; padding: 5px 12px; border-radius: 15px; font-size: 0.8rem; margin-right: 6px; color: #555; transition: all 0.2s; }
-        .tag:hover { background: #e2e8f0; color: var(--primary-color); }
+        .log-entry::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 20px;
+            width: 16px;
+            height: 16px;
+            background: var(--primary-color);
+            border: 4px solid #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 0 2px var(--line-color);
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
 
-        .no-result { text-align: center; padding: 50px; color: #888; }
+        .log-entry:hover::before {
+            transform: scale(1.2);
+            background: #f8b500;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--shadow-card);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card-date {
+            font-size: 0.9rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+            letter-spacing: 0.5px;
+        }
+
+        .card-title {
+            margin: 0 0 10px 0;
+            font-size: 1.4rem;
+            color: #333;
+            font-weight: 700;
+        }
+
+        .card-text {
+            margin-bottom: 15px;
+            color: #555;
+            white-space: pre-line;
+            font-size: 1rem;
+        }
+
+        .media-gallery {
+            display: grid;
+            gap: 8px;
+            margin-top: 15px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+/* --- 修改開始 --- */
+        
+        /* 單張媒體的容器設定 */
+        .media-gallery.single {
+            grid-template-columns: 1fr;
+        }
+
+        .media-gallery.single .media-item {
+            padding-top: 0; /* 取消原本的比例佔位 */
+            height: 500px;  /* 設定一個固定的高度區域 */
+            background: #000; /* 背景改為黑色，更有看影片的感覺 */
+            display: flex;    /* 讓內容置中 */
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+        }
+
+        /* 單張圖片或影片的設定 */
+        .media-gallery.single .media-item img,
+        .media-gallery.single .media-item video {
+            position: relative; /* 恢復相對定位 */
+            width: auto;        /* 寬度自動，不強制撐滿 */
+            height: auto;       /* 高度自動 */
+            max-width: 100%;    /* 最大寬度不超過容器 */
+            max-height: 100%;   /* 最大高度不超過容器 (500px) */
+            object-fit: contain; /* 保持比例完整顯示 */
+        }
+        
+        /* 手機版稍微把高度改小一點，不然 500px 在手機上還是很大 */
+        @media (max-width: 600px) {
+            .media-gallery.single .media-item {
+                height: 350px;
+            }
+        }
+        /* --- 修改結束 --- */
+
+        .media-gallery.multi {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .media-item {
+            position: relative;
+            padding-top: 75%;
+            background: #eee;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .media-gallery.single .media-item {
+            padding-top: 0;
+            background: transparent;
+        }
+
+        .media-item img,
+        .media-item video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .media-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .media-gallery.single .media-item img,
+        .media-gallery.single .media-item video {
+            position: relative;
+            height: auto;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .tags {
+            margin-top: 15px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #edf2f7;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-right: 6px;
+            color: #555;
+            transition: all 0.2s;
+        }
+
+        .tag:hover {
+            background: #e2e8f0;
+            color: var(--primary-color);
+        }
+
+        .no-result {
+            text-align: center;
+            padding: 50px;
+            color: #888;
+        }
 
         /* Lightbox */
-        .lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 2000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
-        .lightbox.active { opacity: 1; pointer-events: auto; }
-        .lightbox img { max-width: 90%; max-height: 90%; border-radius: 5px; box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); }
-        .lightbox-close { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; }
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .lightbox.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 5px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+        }
 
         @media (max-width: 600px) {
-            header { padding: 30px 15px 70px 15px; }
-            header h1 { font-size: 2rem; }
-            .tag-menu-container { margin-top: -45px; }
-            .timeline-container::before { left: 18px; }
-            .log-entry { padding-left: 32px; }
-            .log-entry::before { left: -6px; }
-            .year-header::after { left: 20px; }
-            .media-gallery.multi { grid-template-columns: 1fr; }
+            header {
+                padding: 30px 15px 70px 15px;
+            }
+
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .tag-menu-container {
+                margin-top: -45px;
+            }
+
+            .timeline-container::before {
+                left: 18px;
+            }
+
+            .log-entry {
+                padding-left: 32px;
+            }
+
+            .log-entry::before {
+                left: -6px;
+            }
+
+            .year-header::after {
+                left: 20px;
+            }
+
+            .media-gallery.multi {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (min-width: 600px) and (max-width: 900px) {
-            .timeline-container::before { left: 28px; }
-            .log-entry { padding-left: 36px; }
+            .timeline-container::before {
+                left: 28px;
+            }
+
+            .log-entry {
+                padding-left: 36px;
+            }
         }
     </style>
 </head>
@@ -378,7 +656,7 @@
          * ==========================================
          */
         const PASSWORD = "1025"; // ✨ 請在這裡修改您的密碼 ✨
-        
+
         const lockScreen = document.getElementById('lock-screen');
         const lockInput = document.getElementById('lock-input');
         const lockCard = document.querySelector('.lock-card');
@@ -389,16 +667,16 @@
             if (inputVal === PASSWORD) {
                 // 密碼正確：淡出鎖定畫面
                 lockScreen.classList.add('hidden');
-                
+
                 // --- 修正點在這裡 ---
                 // 原本是 '' (清除)，改為 'auto' (允許滾動) 以覆蓋 CSS 的設定
-                document.body.style.overflow = 'auto'; 
-                
+                document.body.style.overflow = 'auto';
+
             } else {
                 // 密碼錯誤：清空輸入框並搖晃卡片
                 lockInput.value = '';
                 lockCard.classList.add('shake');
-                
+
                 // 0.4秒後移除搖晃class，以便下次觸發
                 setTimeout(() => {
                     lockCard.classList.remove('shake');
@@ -414,7 +692,7 @@
         });
 
         // 頁面載入時，確保焦點在密碼框
-        window.onload = function() {
+        window.onload = function () {
             lockInput.focus();
         };
 
@@ -451,7 +729,32 @@
                     { type: 'image', src: 'assets/lifelog/2025_10_21.jpg' },
                 ],
                 tags: ["美食", "碩士"]
+            },
+            {
+                date: "2025-10-23",
+                title: "研討會",
+                content: "TANET的coffee break這麼爽喔",
+                media: [
+                    { type: 'image', src: 'assets/lifelog/2025_10_23_1.jpg' },
+                    { type: 'image', src: 'assets/lifelog/2025_10_23_2.jpg' },
+                    { type: 'image', src: 'assets/lifelog/2025_10_23_3.jpg' },
+                    { type: 'image', src: 'assets/lifelog/2025_10_23_4.jpg' },
+                    { type: 'image', src: 'assets/lifelog/2025_10_23_5.jpg' },
+                    { type: 'image', src: 'assets/lifelog/2025_10_23_6.jpg' },
+                ],
+                tags: ["美食", "碩士"]
             }, 
+            {
+                date: "2025-11-17",
+                title: "沄家的狗",
+                content: "黑皮一直想舔我",
+                media: [
+                    { type: 'video', src: 'assets/lifelog/2025_11_17.mp4' },
+
+                ],
+                tags: ["沄"]
+            }, 
+            
         ];
 
         /* * ==========================================
@@ -608,6 +911,7 @@
         }
 
         /* * 功能：燈箱 (Lightbox) */
+/* * 功能：燈箱 (Lightbox) */
         window.openLightbox = function (src) {
             lightboxImg.src = src;
             lightbox.classList.add('active');
@@ -616,7 +920,8 @@
 
         window.closeLightbox = function () {
             lightbox.classList.remove('active');
-            document.body.style.overflow = '';
+            // document.body.style.overflow = '';  <-- 這一行是問題原因，刪掉或註解掉
+            document.body.style.overflow = 'auto'; // <-- 改成這樣，明確告訴瀏覽器「恢復滾動」
         }
 
         /* * 滑鼠滾輪支援 */
