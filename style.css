@@ -1,16 +1,12 @@
 /* --- 1. 基礎設定與 CSS 變數 --- */
 :root {
     /* 淺色模式 */
-    --primary: #1e293b;
-    /* 深灰藍 */
-    --accent: #0d9488;
-    /* 藍綠色 */
-    --bg-body: #f8fafc;
-    /* 極淺灰藍背景 */
+    --primary: #1e293b;       /* 深灰藍 (文字/標題/選中時的顏色) */
+    --accent: #0d9488;        /* 藍綠色 (只保留給區塊標題左側直線) */
+    --bg-body: #f8fafc;       /* 極淺灰藍背景 */
     --bg-content: #ffffff;
     --text-main: #334155;
-    --text-secondary: #64748b;
-    /* 通用灰色 */
+    --text-secondary: #64748b; /* 通用灰色 */
     --border-color: #e2e8f0;
     --nav-bg: rgba(255, 255, 255, 0.95);
     --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
@@ -145,7 +141,7 @@ main {
     max-width: 900px;
     margin: 20px auto 40px;
     background: var(--bg-content);
-    padding: 30px;
+    padding: 30px; /* 緊湊內距 */
     box-shadow: var(--card-shadow);
     border-radius: 12px;
     border: 1px solid var(--border-color);
@@ -154,7 +150,7 @@ main {
 /* --- 4. Header --- */
 header {
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: 25px; /* 緊湊間距 */
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 20px;
 }
@@ -202,7 +198,7 @@ header p {
 
 /* --- 5. Sections & Items --- */
 section {
-    margin-bottom: 25px;
+    margin-bottom: 25px; /* 緊湊間距 */
     scroll-margin-top: 80px;
 }
 
@@ -251,13 +247,31 @@ h2 {
     flex-grow: 1;
 }
 
-/* Item Headers */
+/* --- Item Headers & Icons --- */
 .item-header {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
     flex-wrap: wrap;
     margin-bottom: 2px;
+    gap: 10px;
+}
+
+/* 圖片與標題的群組容器 */
+.item-title-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-grow: 1;
+}
+
+/* 強制縮小自訂圖標 */
+.item-title-group img {
+    width: 32px !important;
+    height: 32px !important;
+    object-fit: contain;
+    border-radius: 4px;
+    display: block;
 }
 
 .item-title {
@@ -268,14 +282,14 @@ h2 {
 
 .item-subtitle {
     font-weight: 600;
-    color: var(--text-secondary);
-    /* 灰色 */
+    color: var(--text-secondary); /* 灰色 */
     margin-bottom: 3px;
     font-size: 0.95rem;
 }
 
+/* 【修改】移除斜體設定 */
 .item-date {
-    font-style: italic;
+    font-style: normal; /* 改回正常字體 */
     color: var(--text-secondary);
     font-size: 0.85rem;
     white-space: nowrap;
@@ -300,11 +314,9 @@ h2 {
 footer {
     text-align: center;
     padding: 0 20px 40px 20px;
-    /* 上0，左右20，下40 */
     color: var(--text-secondary);
     font-size: 0.85rem;
     margin-top: -10px;
-    /* 稍微往上拉近一點 */
 }
 
 footer p {
@@ -343,7 +355,7 @@ footer p {
         align-items: center;
         padding: 20px 0;
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-
+        
         transform: translateY(-100%);
         opacity: 0;
         pointer-events: none;
@@ -375,12 +387,12 @@ footer p {
         margin-bottom: 25px;
         padding-bottom: 15px;
     }
-
+    
     .profile-img-container {
         width: 120px;
         height: 120px;
     }
-
+    
     header h1 {
         font-size: 1.6rem;
     }
@@ -391,41 +403,19 @@ footer p {
     }
 
     .item-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        /* 讓左邊圖片文字與右邊日期垂直置中 */
-        flex-wrap: wrap;
-        margin-bottom: 2px;
-        gap: 10px;
-        /* 避免手機版擠在一起 */
+        flex-direction: column;
+        gap: 2px;
+        align-items: flex-start;
     }
-
-    .item-title {
-        font-weight: 700;
-        font-size: 1.1rem;
-        color: var(--text-main);
-    }
-
-    /* 【新增】自訂小圖標樣式 */
-    .item-icon-img {
-        width: 28px;
-        /* 圖片寬度 (想要大一點可以改 32px) */
-        height: 28px;
-        /* 圖片高度 */
-        object-fit: contain;
-        /* 保持圖片比例，不會變形 */
-        border-radius: 4px;
-        /* 微微的圓角，看起來比較柔和 */
-
-        /* 如果圖片是透明背景但在深色模式看不清楚，可以打開下面這行加個白底 */
-        /* background-color: rgba(255,255,255,0.1); */
+    
+    .item-title-group img {
+        flex-shrink: 0;
     }
 
     .item-date {
         margin-bottom: 2px;
     }
-
+    
     footer {
         padding-bottom: 30px;
     }
