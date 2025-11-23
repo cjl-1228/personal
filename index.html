@@ -5,382 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jie-Long Chen</title>
-    <style>
-        /* --- 1. 基礎設定與 CSS 變數 (Theming) --- */
-        /* --- 1. 基礎設定與 CSS 變數 (Theming) - 現代科技青 --- */
-        :root {
-            /* 淺色模式 */
-            --primary: #1e293b;
-            /* 深灰藍 (文字/標題) */
-            --accent: #0d9488;
-            /* 藍綠色 (強調色) */
-            --bg-body: #f1f5f9;
-            /* 極淺灰藍背景 */
-            --bg-content: #ffffff;
-            --text-main: #334155;
-            --text-secondary: #64748b;
-            --border-color: #e2e8f0;
-            --nav-bg: #ffffff;
-            --card-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
-            --edu-logo-bg: #ffffff;
-        }
-
-        /* 深色模式設定 */
-        [data-theme="dark"] {
-            --primary: #f1f5f9;
-            /* 淺灰白 */
-            --accent: #2dd4bf;
-            /* 亮青色 (螢光感) */
-            --bg-body: #0f172a;
-            /* 深夜藍黑 */
-            --bg-content: #1e293b;
-            /* 深藍灰卡片 */
-            --text-main: #e2e8f0;
-            --text-secondary: #94a3b8;
-            --border-color: #334155;
-            --nav-bg: #1e293b;
-            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-            --edu-logo-bg: #334155;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            /* 平滑過渡顏色 */
-        }
-
-        body {
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            line-height: 1.6;
-            padding-top: 70px;
-            /* 稍微增加高度避免擋住 */
-        }
-
-        /* --- 2. 導航列 (Navigation) --- */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: var(--nav-bg);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            height: 60px;
-        }
-
-        .nav-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 100%;
-            position: relative;
-        }
-
-        /* 手機版漢堡按鈕 (預設隱藏) */
-        .hamburger {
-            display: none;
-            cursor: pointer;
-            background: none;
-            border: none;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .hamburger span {
-            display: block;
-            width: 25px;
-            height: 3px;
-            background-color: var(--text-main);
-            border-radius: 2px;
-            transition: all 0.3s;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 20px;
-            list-style: none;
-            align-items: center;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-weight: 600;
-            padding: 5px 0;
-            border-bottom: 2px solid transparent;
-            transition: all 0.3s;
-        }
-
-        .nav-links a:hover,
-        .nav-links a.active {
-            color: var(--primary);
-            border-bottom-color: var(--accent);
-        }
-
-        /* 深色模式切換按鈕 */
-        .theme-toggle-btn {
-            background: none;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 5px 10px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            margin-left: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .theme-toggle-btn:hover {
-            background-color: var(--border-color);
-        }
-
-        /* --- 3. 主要容器 --- */
-        main {
-            max-width: 900px;
-            margin: 40px auto;
-            background: var(--bg-content);
-            padding: 60px;
-            box-shadow: var(--card-shadow);
-            border-radius: 8px;
-        }
-
-        /* --- 4. Header --- */
-        header {
-            text-align: center;
-            margin-bottom: 60px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 40px;
-        }
-
-        .profile-img-container {
-            width: 150px;
-            height: 150px;
-            margin: 0 auto 20px auto;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 4px solid var(--bg-content);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            background-color: #eee;
-        }
-
-        .profile-img-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        header h1 {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-
-        header p {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            font-weight: 500;
-        }
-
-        .contact-info {
-            margin-top: 20px;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        .contact-info span {
-            margin: 0 10px;
-            display: inline-block;
-            /* 防止手機版換行時擠在一起 */
-        }
-
-        /* --- 5. Sections & Items --- */
-        section {
-            margin-bottom: 60px;
-            scroll-margin-top: 80px;
-        }
-
-        h2 {
-            font-size: 1.5rem;
-            color: var(--primary);
-            border-left: 5px solid var(--accent);
-            padding-left: 15px;
-            margin-bottom: 30px;
-            font-weight: bold;
-        }
-
-        .item {
-            margin-bottom: 30px;
-        }
-
-        /* Education Logo */
-        .edu-item {
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
-        }
-
-        .edu-logo {
-            flex-shrink: 0;
-            width: 60px;
-            height: 60px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 5px;
-            background: var(--edu-logo-bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .edu-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .edu-content {
-            flex-grow: 1;
-        }
-
-        /* Item Headers */
-        .item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            flex-wrap: wrap;
-            margin-bottom: 5px;
-        }
-
-        .item-title {
-            font-weight: bold;
-            font-size: 1.1rem;
-            color: var(--text-main);
-            /* 深色模式需變色 */
-        }
-
-        .item-subtitle {
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 5px;
-        }
-
-        .item-date {
-            font-style: italic;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .item-desc {
-            color: var(--text-main);
-            opacity: 0.9;
-            line-height: 1.7;
-        }
-
-        .item-desc ul {
-            padding-left: 20px;
-            margin-top: 5px;
-        }
-
-        .item-desc li {
-            margin-bottom: 5px;
-        }
-
-        /* --- 6. RWD 手機版調整 (關鍵修改) --- */
-        @media (max-width: 768px) {
-
-            /* 導航列變為漢堡選單模式 */
-            .hamburger {
-                display: flex;
-                /* 顯示漢堡按鈕 */
-            }
-
-            .nav-links {
-                position: absolute;
-                top: 60px;
-                /* 接在導航列下方 */
-                left: 0;
-                width: 100%;
-                background-color: var(--nav-bg);
-                flex-direction: column;
-                align-items: center;
-                padding: 20px 0;
-                box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
-
-                /* 隱藏選單的動畫設定 */
-                transform: translateY(-150%);
-                /* 預設移出畫面 */
-                opacity: 0;
-                pointer-events: none;
-                /* 隱藏時不可點擊 */
-                transition: all 0.3s ease;
-                z-index: 999;
-            }
-
-            /* 當加上 .active class 時顯示選單 */
-            .nav-links.active {
-                transform: translateY(0);
-                opacity: 1;
-                pointer-events: all;
-            }
-
-            .nav-links li {
-                width: 100%;
-                text-align: center;
-                margin: 10px 0;
-            }
-
-            .nav-links a {
-                display: block;
-                width: 100%;
-                padding: 10px 0;
-            }
-
-            /* 主要內容調整 */
-            main {
-                margin: 0;
-                padding: 30px 20px;
-                border-radius: 0;
-                box-shadow: none;
-            }
-
-            .edu-logo {
-                width: 50px;
-                height: 50px;
-            }
-
-            .item-header {
-                flex-direction: column;
-            }
-
-            .item-date {
-                margin-bottom: 5px;
-            }
-
-            /* 調整按鈕位置 */
-            .theme-toggle-btn {
-                margin-left: auto;
-                /* 推到右邊，但在漢堡左邊 */
-                margin-right: 15px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
     <nav>
         <div class="nav-container">
-            <button class="hamburger" id="hamburger">
+            <button class="hamburger" id="hamburger" aria-label="Menu">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -394,7 +26,6 @@
                 <li><a href="#honors">Honors</a></li>
                 <li><a href="#certs">Certificates</a></li>
                 <li><a href="#sys">Systems</a></li>
-                <li><a target="_blank" href="lifelog.html">Life Log</a></li>
             </ul>
 
             <button class="theme-toggle-btn" id="theme-toggle" title="Toggle Dark Mode">
@@ -404,13 +35,13 @@
     </nav>
 
     <main>
-        <header>
+        <header class="fade-in">
             <div class="profile-img-container">
                 <img src="assets/self.jpg" alt="Profile Picture">
             </div>
 
             <h1>Jie-Long Chen (陳杰龍)</h1>
-            <p>AI Researcher | Software Engineer</p>
+            <p>You are capable of amazing things.</p>
 
             <div class="contact-info">
                 <span>📧 zaq5891097@gmail.com</span> |
@@ -418,7 +49,7 @@
             </div>
         </header>
 
-        <section id="edu">
+        <section id="edu" class="fade-in">
             <h2>Education</h2>
 
             <div class="item edu-item">
@@ -431,7 +62,6 @@
                         <span class="item-date">Sep 2026 (Expected)</span>
                     </div>
                     <div class="item-subtitle">Ph.D. in Information Management</div>
-
                 </div>
             </div>
 
@@ -462,7 +92,7 @@
             </div>
         </section>
 
-        <section id="exp">
+        <section id="exp" class="fade-in">
             <h2>Experiences</h2>
 
             <div class="item">
@@ -505,7 +135,7 @@
             </div>
         </section>
 
-        <section id="pub">
+        <section id="pub" class="fade-in">
             <h2>Publications</h2>
             <div class="item">
                 <div class="item-header">
@@ -535,7 +165,7 @@
                         </li>
                         <li style="margin-bottom: 15px;">
                             5. <b>陳杰龍*</b>, 鄭琬瑩, 蕭文峰. "資訊科技輔助教學對特教生國語學習成效之研究."
-                            <i>第36屆國際資訊管理學術研討會</i>, 台北市, May 2025.
+                            <i>第36屆國際資訊管理學術研討會</i>, 台北市, May 2025. <b>Best Paper Presentation</b>
                         </li>
                     </ul>
                 </div>
@@ -547,19 +177,19 @@
                 </div>
                 <div class="item-desc">
                     <ul style="list-style-type: circle; padding-left: 20px;">
-                        <li style="margin-bottom: 10px;">"A Posture Detection System Based on Image Recognition and
-                            Machine Learning."</li>
+                        <li style="margin-bottom: 10px;">A Posture Detection System Based on Image Recognition and
+                            Machine Learning.</li>
                         <li style="margin-bottom: 10px;">Wen-Feng Hsiao, Min-Chun Tsai, <b>Jie-Long Chen*</b>.
-                            "Real-Time Facial Expression Detection for Gamified Applications."</li>
-                        <li style="margin-bottom: 10px;"><b>陳杰龍</b>, 鄭琬瑩, 蕭文峰*. "應用於特殊教育中文學習之遊戲化學習平台的先導與可行性研究."</li>
-                        <li style="margin-bottom: 10px;">"Polarity Mark for Xie-hou-u in Taiwanese Min Nan language."
+                            Real-Time Facial Expression Detection for Gamified Applications.</li>
+                        <li style="margin-bottom: 10px;"><b>陳杰龍</b>, 鄭琬瑩, 蕭文峰*. 應用於特殊教育中文學習之遊戲化學習平台的先導與可行性研究.</li>
+                        <li style="margin-bottom: 10px;">Polarity Mark for Xie-hou-u in Taiwanese Min Nan language.
                         </li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <section id="proj">
+        <section id="proj" class="fade-in">
             <h2>Projects</h2>
             <div class="item">
                 <div class="item-header">
@@ -570,7 +200,7 @@
             </div>
         </section>
 
-        <section id="honors">
+        <section id="honors" class="fade-in">
             <h2>Honors & Awards</h2>
             <div class="item">
                 <div class="item-header">
@@ -599,7 +229,6 @@
                 </div>
                 <div class="item-desc">
                     <ul style="margin-top: 5px;">
-                        <li style="margin-bottom: 5px;"><b>Best Presentation Award</b>, ICIM 2025.</li>
                         <li style="margin-bottom: 5px;"><b>1st Place</b>, 28th InnoServe Awards, 2023.</li>
                         <li style="margin-bottom: 5px;"><b>3rd Place</b>, NPTU College of Computer Science Project
                             Competition, 2023.</li>
@@ -621,13 +250,12 @@
                         <li style="margin-bottom: 5px;"><b>Academic Excellence Award - 2nd Place</b>, NPTU, 2024.</li>
                         <li style="margin-bottom: 5px;"><b>Early Graduation</b>, NPTU, 2024.</li>
                         <li style="margin-bottom: 5px;"><b>Presidential Award (書卷獎) x 5</b>, NPTU, 2020-2024.</li>
-
                     </ul>
                 </div>
             </div>
         </section>
 
-        <section id="certs">
+        <section id="certs" class="fade-in">
             <h2>Certificates</h2>
             <div class="item">
                 <div class="item-header">
@@ -657,7 +285,7 @@
             </div>
         </section>
 
-        <section id="sys">
+        <section id="sys" class="fade-in">
             <h2>System Developments</h2>
             <div class="item">
                 <div class="item-header">
@@ -724,87 +352,13 @@
 
     </main>
 
-    <script>
-        // --- JavaScript 功能 ---
+    <footer>
+        <p>&copy; Copyright 2025 Jie-Long Chen, All rights reserved.</p>
+        <p>Latest Updated on 2025/11/23.</p>
+        
+    </footer>
 
-        // 1. 深色模式切換 (Dark Mode Toggle)
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const body = document.body;
-
-        // 檢查是否有儲存的設定，若無則看系統偏好
-        const savedTheme = localStorage.getItem('theme');
-        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
-            body.setAttribute('data-theme', 'dark');
-            themeToggleBtn.textContent = '☀️';
-        }
-
-        themeToggleBtn.addEventListener('click', () => {
-            if (body.getAttribute('data-theme') === 'dark') {
-                body.removeAttribute('data-theme');
-                themeToggleBtn.textContent = '🌙';
-                localStorage.setItem('theme', 'light');
-            } else {
-                body.setAttribute('data-theme', 'dark');
-                themeToggleBtn.textContent = '☀️';
-                localStorage.setItem('theme', 'dark');
-            }
-        });
-
-        // 2. 手機版漢堡選單 (Hamburger Menu)
-        const hamburger = document.getElementById('hamburger');
-        const navLinksContainer = document.getElementById('nav-links');
-        const navLinks = document.querySelectorAll('.nav-links a');
-
-        hamburger.addEventListener('click', () => {
-            navLinksContainer.classList.toggle('active');
-        });
-
-        // 點擊任何一個連結後，自動收起選單
-        navLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                if (window.innerWidth <= 768) {
-                    navLinksContainer.classList.remove('active');
-                }
-            });
-        });
-
-        // 3. 導航列主動高亮 (Active State)
-        const sections = document.querySelectorAll('section');
-
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                if (pageYOffset >= (sectionTop - 150)) {
-                    current = section.getAttribute('id');
-                }
-            });
-
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href').includes(current)) {
-                    link.classList.add('active');
-                }
-            });
-        });
-
-        // 4. 平滑滾動 (Smooth Scroll)
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                const targetSection = document.querySelector(targetId);
-                if (targetSection) {
-                    window.scrollTo({
-                        top: targetSection.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 
 </html>
