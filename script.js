@@ -34,12 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     hamburger.addEventListener('click', () => {
         navLinksContainer.classList.toggle('active');
-        
-        // 簡單的漢堡按鈕動畫切換 (可選)
-        const spans = hamburger.querySelectorAll('span');
-        if (navLinksContainer.classList.contains('active')) {
-            // 這裡可以加 CSS class 來做漢堡變叉叉的動畫，目前維持原樣
-        }
     });
 
     // 點擊連結後自動收起選單
@@ -78,7 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', activeLinkHandler);
 
     // --- 4. 平滑滾動 (Smooth Scroll with Offset) ---
-    // 雖然 CSS 有 scroll-behavior，但 JS 可以更精準控制 header 遮擋的高度
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -99,7 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- 5. 簡單的載入動畫觸發 (Intersection Observer) ---
-    // 讓區塊進入視窗時才浮現 (Optional enhancement)
     const observerOptions = {
         threshold: 0.1
     };
@@ -112,7 +104,4 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }, observerOptions);
-
-    // 這裡將原本 CSS 的 fade-in 稍微改由 JS 控制，如果不想用 JS 控制可忽略此段
-    // 目前 CSS 已經寫死 animation，這段是為了確保未來擴充性
 });
