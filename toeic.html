@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEIC 職場英語互動測驗 (Business English Quiz)</title>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Custom Scrollbar for better review experience */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #999;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+
+        // --- Data Source ---
+        const topic01_Job = [
+            { id: 1, term: "occupation", def: "職業 / 職位" },
+            { id: 2, term: "vacancy / opening", def: "空缺 / 職缺" },
+            { id: 3, term: "pay", def: "工資；待遇" },
+            { id: 4, term: "salary / wage", def: "薪資 (月薪) / (時薪)" },
+            { id: 5, term: "minimum wage", def: "最低薪資" },
+            { id: 6, term: "leave", def: "(n.) 休假" },
+            { id: 7, term: "take a leave", def: "請假" },
+            { id: 8, term: "head office", def: "總公司" },
+            { id: 9, term: "branch office", def: "分公司" },
+            { id: 10, term: "sales department", def: "業務部" },
+            { id: 11, term: "accounting department", def: "會計部" },
+            { id: 12, term: "promotion", def: "升遷" },
+            { id: 13, term: "demotion", def: "降級" },
+            { id: 14, term: "sign up", def: "簽署(合約/報名)" },
+            { id: 15, term: "dismissal", def: "解雇" },
+            { id: 16, term: "a letter of recommendation", def: "推薦信" },
+            { id: 17, term: "bonus", def: "紅利；獎金" },
+            { id: 18, term: "Applications must arrive no later than", def: "申請函必須在...前送達" },
+            { id: 19, term: "Applications should be postmarked no later than", def: "申請函郵戳日期不得晚於..." },
+            { id: 20, term: "is considered", def: "是被考慮的" },
+            { id: 21, term: "is preferred", def: "是被偏好的 (有...更好)" },
+            { id: 22, term: "is required", def: "是必須的" },
+            { id: 23, term: "is negotiable", def: "是可商談的" },
+            { id: 24, term: "labor management", def: "勞工管理" },
+            { id: 25, term: "labor market", def: "勞工市場" },
+            { id: 26, term: "Master of Business Administration (MBA)", def: "工商管理碩士" },
+            { id: 27, term: "names of reference", def: "推薦人" },
+            { id: 28, term: "reference / endorsement letter", def: "推薦信 / 背書信" },
+            { id: 29, term: "part-time position", def: "兼職工作" },
+            { id: 30, term: "short-listed applicants", def: "初審合格者 (名單縮短了)" },
+            { id: 31, term: "prior experience", def: "過去的經驗" },
+            { id: 32, term: "competitive salary", def: "優渥的 (有競爭力的) 薪水" },
+            { id: 33, term: "competitive", def: "有競爭力的" },
+            { id: 34, term: "the position is non-renewable", def: "此職位不可續約" },
+            { id: 35, term: "be short-listed", def: "被列入決選/初審名單" },
+            { id: 36, term: "short-listed", def: "入圍的" },
+            { id: 37, term: "interview", def: "面試 / 採訪" },
+            { id: 38, term: "evaluation", def: "評價 / 考績" },
+            { id: 39, term: "expertise", def: "專門技術 / 專業知識" }
+        ];
+
+        const topic02_Email = [
+            { id: 201, term: "account", def: "帳戶；帳目" },
+            { id: 202, term: "close a deal", def: "成交" },
+            { id: 203, term: "make a contract", def: "簽約" },
+            { id: 204, term: "break / breach a contract", def: "毀約" },
+            { id: 205, term: "presentation", def: "報告；發佈會" },
+            { id: 206, term: "car shipment", def: "汽車運送" },
+            { id: 207, term: "cargo / goods", def: "貨物" },
+            { id: 208, term: "merchandise / product", def: "商品" },
+            { id: 209, term: "dumping", def: "傾銷" },
+            { id: 210, term: "embargo", def: "禁止通商" },
+            { id: 211, term: "gain compliance", def: "使人遵守" },
+            { id: 212, term: "grant / provide", def: "無償幫助/給予" },
+            { id: 213, term: "make concession", def: "讓步" },
+            { id: 214, term: "margin", def: "盈餘 (收入-成本後)" },
+            { id: 215, term: "loss", def: "損失" },
+            { id: 216, term: "quotations", def: "報價 (n.)" },
+            { id: 217, term: "for your reference", def: "供你做參考" },
+            { id: 218, term: "appendix", def: "附錄" },
+            { id: 219, term: "attach", def: "貼上；附上；附加" },
+            { id: 220, term: "confidential", def: "秘密的；機密的" },
+            { id: 221, term: "correspondence", def: "通信；信件" },
+            { id: 222, term: "dictate", def: "口述；支配；命令" },
+            { id: 223, term: "elaborate", def: "詳盡說明；詳盡的；精心製作的" },
+            { id: 224, term: "forward", def: "轉寄；發送" },
+            { id: 225, term: "inquire", def: "調查；詢問" },
+            { id: 226, term: "jot down", def: "略記下；匆匆記下" },
+            { id: 227, term: "notify", def: "通知；告知" },
+            { id: 228, term: "response", def: "回應" },
+            { id: 229, term: "revise", def: "修訂；修改；校訂" },
+            { id: 230, term: "urgent", def: "緊急的；急迫的" },
+            { id: 231, term: "affirm", def: "堅稱；聲明；斷言；確認" },
+            { id: 232, term: "ASAP (as soon as possible)", def: "越快越好" },
+            { id: 233, term: "composition", def: "寫作；作品；作文；作曲" },
+            { id: 234, term: "convene", def: "集合；聚集；開會" },
+            { id: 235, term: "courier", def: "遞送急件的信差；郵遞公司" },
+            { id: 236, term: "draft", def: "草稿；匯票" },
+            { id: 237, term: "enclose", def: "裝入；放入封套" },
+            { id: 238, term: "inform", def: "通知；告知" },
+            { id: 239, term: "issue", def: "發行；發佈" },
+            { id: 240, term: "layout", def: "規劃；設計；編排" },
+            { id: 241, term: "legible", def: "（字跡）可以辨認的；易讀的" },
+            { id: 242, term: "postage", def: "郵資" },
+            { id: 243, term: "proofread", def: "校正；校對" },
+            { id: 244, term: "regarding", def: "關於；有關" },
+            { id: 245, term: "restate", def: "再聲明；重新敘述" },
+            { id: 246, term: "signature", def: "簽字；簽名" },
+            { id: 247, term: "stationery", def: "文具" },
+            { id: 248, term: "write-up", def: "報告書 / 詳細寫" },
+            { id: 249, term: "pending", def: "未決定的；將匯入/扣除的款" },
+            { id: 250, term: "invoice", def: "發票；發貨清單" },
+            { id: 251, term: "payment", def: "支付；付款" },
+            { id: 252, term: "quote", def: "報價" },
+            { id: 253, term: "inventory", def: "詳細目錄；清單；存貨" },
+            { id: 254, term: "letter of credit", def: "信用狀" },
+            { id: 255, term: "special supplement", def: "特別附錄；補充" }
+        ];
+
+        const topic03_Contract = [
+            { id: 301, term: "affiliation", def: "附屬；從屬關係" },
+            { id: 302, term: "annual wage increase", def: "年薪調升" },
+            { id: 303, term: "call for", def: "要求 (一般主詞是人)" },
+            { id: 304, term: "require", def: "要求 (一般主詞是「規定」要求…)" },
+            { id: 305, term: "collective bargaining", def: "集體交涉" },
+            { id: 306, term: "contract", def: "合約" },
+            { id: 307, term: "cooperation", def: "合作" },
+            { id: 308, term: "coordination", def: "協調" },
+            { id: 309, term: "employee", def: "雇員" },
+            { id: 310, term: "employer", def: "雇主" },
+            { id: 311, term: "labor", def: "勞工" },
+            { id: 312, term: "labor accident", def: "勞工災害" },
+            { id: 313, term: "labor contract", def: "勞工合約" },
+            { id: 314, term: "management", def: "經營者/層" },
+            { id: 315, term: "labor-management struggle", def: "勞資糾葛" },
+            { id: 316, term: "penal regulation", def: "刑罰規則 / 條例" },
+            { id: 317, term: "penalty", def: "懲罰；罰金" },
+            { id: 318, term: "proposal", def: "提議" },
+            { id: 319, term: "protest", def: "抗議；反對" },
+            { id: 320, term: "reach an agreement", def: "達成協議" },
+            { id: 321, term: "draw a conclusion", def: "做出結論" },
+            { id: 322, term: "stage a strike / be on strike", def: "發起罷工" },
+            { id: 323, term: "terms of contract", def: "合約條款" },
+            { id: 324, term: "the right to strike", def: "罷工權" },
+            { id: 325, term: "the right to work", def: "工作權" },
+            { id: 326, term: "wage dispute", def: "薪金爭議" },
+            { id: 327, term: "working hours", def: "工作時間" },
+            { id: 328, term: "terminate", def: "(v.) 停止；結束；終止" },
+            { id: 329, term: "terms and conditions", def: "條款" },
+            { id: 330, term: "signature", def: "(n.) 簽名；署名" },
+            { id: 331, term: "seal", def: "(n.) 封鉛；封條；印；圖章" }
+        ];
+
+        const topic04_Contract2 = [
+            { id: 401, term: "reveal", def: "(v.) 揭露；透露" },
+            { id: 402, term: "take effect", def: "生效" },
+            { id: 403, term: "expire", def: "(v.) 期滿；終止" },
+            { id: 404, term: "waive", def: "(v.) 放棄權利" },
+            { id: 405, term: "offend", def: "(v.) 犯罪；冒犯；得罪" },
+            { id: 406, term: "breach", def: "(n.) 違背；破壞；破裂" },
+            { id: 407, term: "secure", def: "(adj.) 安全的；可靠的" },
+            { id: 408, term: "agreement", def: "(n.) 同意；協定；協議" },
+            { id: 409, term: "statutory", def: "(adj.) 法令的；法定的" },
+            { id: 410, term: "statutory obligations", def: "法定義務" },
+            { id: 411, term: "comply with", def: "(vi.) 順從；答應；遵守" },
+            { id: 412, term: "apply", def: "適用" },
+            { id: 413, term: "fulfill", def: "履行；完成" },
+            { id: 414, term: "execute", def: "(vt.) 執行；實行；完成；處死" },
+            { id: 415, term: "obligation", def: "(n.) 義務；職責；債務" },
+            { id: 416, term: "restrict", def: "(vt.) 限制；約束；限定" },
+            { id: 417, term: "disclose", def: "(vt.) 揭露；透露" },
+            { id: 418, term: "grant", def: "(vt.) 准予；承認(某事為真)～" },
+            { id: 419, term: "exclusive", def: "(adj.) 排外的；獨佔的" },
+            { id: 420, term: "in accordance with / pursuant to", def: "與…一致" },
+            { id: 421, term: "stipulate", def: "(v.) 規定；保證" },
+            { id: 422, term: "provide for", def: "為…準備；提供給…" },
+            { id: 423, term: "refer to", def: "提到" },
+            { id: 424, term: "interested party", def: "感興趣方" },
+            { id: 425, term: "said", def: "上述的" },
+            { id: 426, term: "shall / may", def: "將 / 會" },
+            { id: 427, term: "licensor", def: "(n.) 認可證頒發者/授予權力者" },
+            { id: 428, term: "settlement", def: "(n.) 解決；結算；協議" },
+            { id: 429, term: "subcontract", def: "(n.) 轉包合約" },
+            { id: 430, term: "liable", def: "(adj.) 有責任的；有義務的" },
+            { id: 431, term: "alter", def: "改變；修改" },
+            { id: 432, term: "legitimate", def: "合法的；正當的；婚生的" },
+            { id: 433, term: "warrant", def: "(n.) 委任狀/憑證/許可權" }
+        ];
+
+        const topic05_Speech = [
+            { id: 501, term: "write someone over", def: "(寫信) 請人來" },
+            { id: 502, term: "thank-you note", def: "致謝函" },
+            { id: 503, term: "get-together", def: "親朋好友的聚會" },
+            { id: 504, term: "cocktail party", def: "以喝酒為主的聚會" },
+            { id: 505, term: "dress-up party", def: "須盛裝赴會的宴會" },
+            { id: 506, term: "after-dinner speech", def: "餐後演說" },
+            { id: 507, term: "award ceremony", def: "頒獎儀式" },
+            { id: 508, term: "dedication", def: "獻辭；奉獻" },
+            { id: 509, term: "deliver an address / a speech", def: "發表演說" },
+            { id: 510, term: "express one's condolence over", def: "悼念" },
+            { id: 511, term: "farewell address", def: "告別演說" },
+            { id: 512, term: "inaugural ceremony", def: "就職演說" },
+            { id: 513, term: "inauguration", def: "(n.) 就職" },
+            { id: 514, term: "nomination speech", def: "提名演說" },
+            { id: 515, term: "opening ceremony", def: "開幕儀式" },
+            { id: 516, term: "party convention", def: "政黨大會" },
+            { id: 517, term: "pay a tribute to", def: "向……致讚美之詞" },
+            { id: 518, term: "piano recital", def: "鋼琴演奏會" },
+            { id: 519, term: "publication party", def: "出版招待會" },
+            { id: 520, term: "wedding banquet", def: "婚宴" },
+            { id: 521, term: "welcome party", def: "歡迎會" },
+            { id: 522, term: "you're cordially invited to", def: "竭誠歡迎您的光臨" },
+            { id: 523, term: "cordial", def: "誠摯的" },
+            { id: 524, term: "arrival of a guest", def: "貴賓來訪" },
+            { id: 525, term: "campaign", def: "活動" },
+            { id: 526, term: "launch a campaign", def: "辦活動" },
+            { id: 527, term: "admission fee", def: "入場費" },
+            { id: 528, term: "be admitted to + 活動", def: "(被給予入場資格)" },
+            { id: 529, term: "reception", def: "接受；接待處" }
+        ];
+
+        const topic06_News = [
+            { id: 601, term: "action plan", def: "行動計畫" },
+            { id: 602, term: "approve protocol", def: "批准協議書" },
+            { id: 603, term: "protocol", def: "(國際性)條約" },
+            { id: 604, term: "assume office", def: "就任" },
+            { id: 605, term: "coalition government", def: "聯合政府" },
+            { id: 606, term: "economic summit", def: "經濟峰會" },
+            { id: 607, term: "in favor of", def: "支持" },
+            { id: 608, term: "oppose", def: "反對" },
+            { id: 609, term: "incumbent president", def: "現任總統" },
+            { id: 610, term: "interpellation", def: "質詢" },
+            { id: 611, term: "legal ground", def: "法律依據" },
+            { id: 612, term: "mainstream faction", def: "主流派" },
+            { id: 613, term: "military buildup", def: "增強軍備" },
+            { id: 614, term: "multi-lateral relations", def: "多邊關係" },
+            { id: 615, term: "news agency", def: "新聞通訊社" },
+            { id: 616, term: "opposition party", def: "反對黨" },
+            { id: 617, term: "public pledge", def: "公開宣言" },
+            { id: 618, term: "resume talks", def: "重開會談" },
+            { id: 619, term: "ruling party", def: "執政黨" },
+            { id: 620, term: "run in election", def: "參選" },
+            { id: 621, term: "sectionalism", def: "派系主義" },
+            { id: 622, term: "trade friction", def: "貿易摩擦" },
+            { id: 623, term: "a friction between…", def: "在…之中的摩擦" },
+            { id: 624, term: "troubleshooter", def: "調解糾紛的人" },
+            { id: 625, term: "embezzle", def: "盜用；挪用；侵佔（公款等）" },
+            { id: 626, term: "trespass in national airspace", def: "侵犯領空" },
+            { id: 627, term: "scandal", def: "醜聞；引人憤慨之事" },
+            { id: 628, term: "out-of-court settlement", def: "庭外和解" },
+            { id: 629, term: "accused", def: "被告；被控訴之人" },
+            { id: 630, term: "defendant", def: "被告" },
+            { id: 631, term: "lawyer", def: "律師" },
+            { id: 632, term: "plaintiff", def: "原告；起訴者" },
+            { id: 633, term: "prosecution", def: "起訴" },
+            { id: 634, term: "assembly", def: "議會(美國)；集會" },
+            { id: 635, term: "evidence / evident", def: "(n.) 證據 / (adj.) 明顯地" },
+            { id: 636, term: "under control", def: "在控制中" },
+            { id: 637, term: "in search of", def: "搜索" },
+            { id: 638, term: "juvenile delinquency", def: "青少年犯罪" },
+            { id: 639, term: "juvenile delinquents", def: "青少年罪犯" },
+            { id: 640, term: "witness", def: "目擊者 / 目擊" },
+            { id: 641, term: "probe", def: "嚴密的調查" },
+            { id: 642, term: "prior to", def: "優先於" },
+            { id: 643, term: "allegedly", def: "據稱" },
+            { id: 644, term: "casualty", def: "死傷者" },
+            { id: 645, term: "collide with", def: "與……衝撞" },
+            { id: 646, term: "devastating / destructive", def: "破壞性的" },
+            { id: 647, term: "emergency landing", def: "緊急迫降" },
+            { id: 648, term: "inherit", def: "繼承" },
+            { id: 649, term: "jolt", def: "晃動" },
+            { id: 650, term: "official communique", def: "正式公報" },
+            { id: 651, term: "break out / take place in + Place", def: "在某地發生" },
+            { id: 652, term: "benefit / benefit from", def: "有益於... / 受益於..." }
+        ];
+
+        const topic07_Sports = [
+            { id: 701, term: "baseball", def: "棒球" },
+            { id: 702, term: "football", def: "美式足球" },
+            { id: 703, term: "soccer", def: "英式足球" },
+            { id: 704, term: "tennis", def: "網球" },
+            { id: 705, term: "volleyball", def: "排球" },
+            { id: 706, term: "table tennis", def: "乒乓球" },
+            { id: 707, term: "billiards", def: "撞球" },
+            { id: 708, term: "scuba diving", def: "潛水" },
+            { id: 709, term: "fishing", def: "釣魚" },
+            { id: 710, term: "surfing", def: "衝浪" },
+            { id: 711, term: "sailing", def: "帆船運動" },
+            { id: 712, term: "rowing", def: "划船" },
+            { id: 713, term: "sledding", def: "滑雪橇" },
+            { id: 714, term: "skating", def: "溜冰" },
+            { id: 715, term: "horseback riding", def: "騎馬" },
+            { id: 716, term: "hiking", def: "徒步旅行；登山" },
+            { id: 717, term: "rival", def: "敵人" },
+            { id: 718, term: "contestant", def: "選手" },
+            { id: 719, term: "contest / competition", def: "比賽" },
+            { id: 720, term: "clear the qualifying round", def: "通過預賽" },
+            { id: 721, term: "doping check", def: "藥物檢查" },
+            { id: 722, term: "elimination", def: "淘汰" },
+            { id: 723, term: "the final round", def: "決賽" },
+            { id: 724, term: "hold a tournament", def: "舉辦錦標賽/大會" },
+            { id: 725, term: "home-town / local", def: "當地的" },
+            { id: 726, term: "make a reservation", def: "預約" },
+            { id: 727, term: "the opening game", def: "開場賽" },
+            { id: 728, term: "play-off", def: "加賽" },
+            { id: 729, term: "preliminary", def: "預賽" },
+            { id: 730, term: "quarter finals", def: "半決賽前的比賽" },
+            { id: 731, term: "record-breaking", def: "破紀錄的" },
+            { id: 732, term: "seed", def: "種子選手" },
+            { id: 733, term: "season-ticket", def: "賽季聯賽票" },
+            { id: 734, term: "secure the second place", def: "得第二名" },
+            { id: 735, term: "semifinals", def: "半決賽" },
+            { id: 736, term: "sports lottery", def: "體育彩票" },
+            { id: 737, term: "visitor", def: "客人；客隊" },
+            { id: 738, term: "ticket agency", def: "售票處" },
+            { id: 739, term: "underdog", def: "敗方" },
+            { id: 740, term: "win the contest", def: "獲勝" }
+        ];
+
+        const topics = [
+            { 
+                id: 'topic01', 
+                title: '01_求職、工作相關', 
+                desc: '包含職位、薪資、面試等常用字彙',
+                data: topic01_Job,
+                color: 'blue'
+            },
+            { 
+                id: 'topic02', 
+                title: '02_商業書信用語', 
+                desc: 'Email、信件往來常用單字',
+                data: topic02_Email,
+                color: 'emerald'
+            },
+            {
+                id: 'topic03',
+                title: '03_合約相關單字 (1)',
+                desc: '勞資雙方、合約條款與爭議處理',
+                data: topic03_Contract,
+                color: 'indigo',
+                disabled: false
+            },
+            {
+                id: 'topic04',
+                title: '04_合約相關單字 (2)',
+                desc: '進階法律效力、違約與義務',
+                data: topic04_Contract2,
+                color: 'purple',
+                disabled: false
+            },
+            {
+                id: 'topic05',
+                title: '05_邀請、演說相關單字',
+                desc: '各類聚會、演說及邀請函常用語',
+                data: topic05_Speech,
+                color: 'orange',
+                disabled: false
+            },
+            {
+                id: 'topic06',
+                title: '06_新聞相關單字',
+                desc: '政治、法律與社會新聞常見用語',
+                data: topic06_News,
+                color: 'rose',
+                disabled: false
+            },
+            {
+                id: 'topic07',
+                title: '07_運動及休閒活動 (1)',
+                desc: '各類運動項目、比賽規則與相關術語',
+                data: topic07_Sports,
+                color: 'cyan',
+                disabled: false
+            },
+             // Future topics can be added here
+            {
+                id: 'topic08',
+                title: '08_即將推出',
+                desc: '敬請期待更多單字',
+                data: [],
+                color: 'gray',
+                disabled: true
+            }
+        ];
+
+        // --- Utility Functions ---
+        const shuffleArray = (array) => {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        };
+
+        // --- Icon Components ---
+        const IconGraduationCap = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        );
+        const IconArrowRight = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        );
+        const IconTrophy = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10c0 5-1.5 10-6 12-4.5-2-6-7-6-12z"/><path d="M2 9h5"/><path d="M17 9h5"/></svg>
+        );
+        const IconThumbsUp = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+        );
+        const IconBookOpen = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        );
+        const IconCheckCircle = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        );
+        const IconCheck = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 6 9 17 4 12"/></svg>
+        );
+        const IconX = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        );
+        const IconAlertCircle = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        );
+        const IconGrid = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        );
+        const IconArrowLeft = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        );
+
+        // --- Components ---
+
+        // 1. Topic Selection Screen
+        const TopicSelectionScreen = ({ onSelectTopic }) => {
+            return (
+                <div className="flex flex-col items-center justify-center min-h-screen p-4 fade-in">
+                    <div className="max-w-6xl w-full">
+                        <div className="text-center mb-10">
+                            <h1 className="text-4xl font-extrabold text-gray-800 mb-2 flex items-center justify-center gap-3">
+                                <IconGraduationCap className="w-10 h-10 text-blue-600" />
+                                TOEIC 職場英語特訓班
+                            </h1>
+                            <p className="text-gray-500 text-lg">請選擇您今天要挑戰的單字主題</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            {topics.map((topic) => {
+                                const isLocked = topic.disabled;
+                                const baseClasses = "relative p-6 rounded-xl border-2 transition-all duration-300 flex flex-col items-start gap-3";
+                                const activeClasses = "bg-white border-white hover:border-blue-500 shadow-md hover:shadow-xl cursor-pointer hover:-translate-y-1";
+                                const lockedClasses = "bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed";
+
+                                const colorClasses = {
+                                    blue: "text-blue-600 bg-blue-50",
+                                    emerald: "text-emerald-600 bg-emerald-50",
+                                    indigo: "text-indigo-600 bg-indigo-50",
+                                    purple: "text-purple-600 bg-purple-50",
+                                    orange: "text-orange-600 bg-orange-50",
+                                    rose: "text-rose-600 bg-rose-50",
+                                    cyan: "text-cyan-600 bg-cyan-50",
+                                    gray: "text-gray-400 bg-gray-100"
+                                };
+
+                                return (
+                                    <button 
+                                        key={topic.id}
+                                        onClick={() => !isLocked && onSelectTopic(topic)}
+                                        disabled={isLocked}
+                                        className={`${baseClasses} ${isLocked ? lockedClasses : activeClasses}`}
+                                    >
+                                        <div className={`p-3 rounded-lg ${colorClasses[topic.color]}`}>
+                                            <IconBookOpen className="w-6 h-6" />
+                                        </div>
+                                        <div className="text-left">
+                                            <h3 className="text-lg font-bold mb-1">{topic.title}</h3>
+                                            <p className="text-sm opacity-80">{topic.desc}</p>
+                                        </div>
+                                        {!isLocked && (
+                                            <div className="mt-2 text-xs font-bold px-2 py-1 bg-gray-100 rounded text-gray-600">
+                                                {topic.data.length} 個單字
+                                            </div>
+                                        )}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // 2. Start Screen (Contextualized)
+        const StartScreen = ({ topic, onStart, onBack }) => (
+            <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center fade-in">
+                <div className="bg-white p-10 rounded-2xl shadow-xl max-w-lg w-full border-t-4 border-blue-600 relative">
+                    <button 
+                        onClick={onBack}
+                        className="absolute top-4 left-4 text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-1 text-sm font-medium"
+                    >
+                        <IconArrowLeft className="w-4 h-4" /> 返回選單
+                    </button>
+
+                    <div className="mb-6 text-blue-600 flex justify-center mt-4">
+                        <IconGraduationCap className="w-16 h-16" />
+                    </div>
+                    <h1 className="text-2xl font-bold text-gray-800 mb-1">{topic.title}</h1>
+                    <p className="text-gray-500 mb-8 text-sm">單字測驗挑戰</p>
+                    
+                    <div className="bg-blue-50 p-4 rounded-lg mb-8 text-left text-sm text-gray-700">
+                        <p className="font-semibold mb-2">測驗說明：</p>
+                        <ul className="list-disc list-inside space-y-1">
+                            <li>本主題共 {topic.data.length} 個精選單字</li>
+                            <li>每次隨機出題，四選一</li>
+                            <li>即時回饋與錯誤訂正</li>
+                        </ul>
+                    </div>
+
+                    <button 
+                        onClick={onStart}
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-md flex items-center justify-center gap-2"
+                    >
+                        <span>開始測驗</span>
+                        <IconArrowRight className="w-5 h-5" />
+                    </button>
+                </div>
+            </div>
+        );
+
+        // 3. Result Screen
+        const ResultScreen = ({ score, totalQuestions, onRestart, wrongAnswers, onBackToMenu }) => {
+            const percentage = Math.round((score / totalQuestions) * 100) || 0;
+            const [showReview, setShowReview] = useState(false);
+            
+            let message = "";
+            let IconComponent = IconBookOpen;
+            let color = "";
+
+            if (percentage >= 90) {
+                message = "太厲害了！專家級表現！";
+                IconComponent = IconTrophy;
+                color = "text-yellow-500";
+            } else if (percentage >= 70) {
+                message = "做得很好！繼續保持！";
+                IconComponent = IconThumbsUp;
+                color = "text-green-500";
+            } else {
+                message = "再接再厲，熟能生巧！";
+                IconComponent = IconBookOpen;
+                color = "text-blue-500";
+            }
+
+            return (
+                <div className="flex flex-col items-center min-h-screen p-4 text-center fade-in bg-gray-100 py-8">
+                    <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full my-4">
+                        <h2 className="text-2xl font-bold text-gray-800 mb-6">測驗成績單</h2>
+                        
+                        <div className={`mb-6 flex justify-center ${color}`}>
+                            <IconComponent className="w-20 h-20" />
+                        </div>
+
+                        <div className="text-6xl font-black text-gray-800 mb-2">
+                            {score} <span className="text-2xl text-gray-400 font-normal">/ {totalQuestions}</span>
+                        </div>
+                        <p className="text-gray-500 mb-6">答對率 {percentage}%</p>
+                        
+                        <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                            <p className="text-lg font-medium text-gray-800">{message}</p>
+                        </div>
+
+                        {/* 錯誤單字複習區 - 可折疊式設計 */}
+                        {wrongAnswers && wrongAnswers.length > 0 && (
+                            <div className="mb-8 text-left w-full">
+                                <button 
+                                    onClick={() => setShowReview(!showReview)}
+                                    className="w-full flex items-center justify-between p-4 bg-red-50 hover:bg-red-100 rounded-xl text-red-700 font-bold transition-all duration-200 border border-red-100"
+                                >
+                                    <span className="flex items-center gap-2">
+                                        <IconAlertCircle className="w-5 h-5" />
+                                        需複習的單字 ({wrongAnswers.length})
+                                    </span>
+                                    <svg 
+                                        xmlns="http://www.w3.org/2000/svg" 
+                                        width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                                        className={`transform transition-transform duration-200 ${showReview ? 'rotate-180' : ''}`}
+                                    >
+                                        <polyline points="6 9 12 15 18 9"></polyline>
+                                    </svg>
+                                </button>
+
+                                {showReview && (
+                                    <div className="mt-2 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden fade-in">
+                                        <div className="max-h-64 overflow-y-auto custom-scrollbar">
+                                            <ul className="divide-y divide-gray-100">
+                                                {wrongAnswers.map((item, idx) => (
+                                                    <li key={idx} className="p-3 hover:bg-gray-50 transition-colors">
+                                                        <div className="flex justify-between items-start gap-2">
+                                                            <div className="font-bold text-gray-800 text-left">{item.term}</div>
+                                                        </div>
+                                                        <div className="text-sm text-gray-500 text-left mt-1">{item.def}</div>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        <div className="space-y-3">
+                            <button 
+                                onClick={onRestart}
+                                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors shadow-md"
+                            >
+                                重新挑戰此主題
+                            </button>
+                            <button 
+                                onClick={onBackToMenu}
+                                className="w-full bg-white border-2 border-gray-200 hover:bg-gray-50 text-gray-600 font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
+                            >
+                                <IconGrid className="w-5 h-5" />
+                                選擇其他主題
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // 4. Quiz Logic Component
+        const QuizApp = ({ topicData, onBackToMenu }) => {
+            const [gameState, setGameState] = useState('start'); // start, playing, end
+            const [questions, setQuestions] = useState([]);
+            const [currentQIndex, setCurrentQIndex] = useState(0);
+            const [score, setScore] = useState(0);
+            const [feedback, setFeedback] = useState(null);
+            const [selectedOption, setSelectedOption] = useState(null);
+            const [wrongAnswers, setWrongAnswers] = useState([]);
+
+            const vocabList = topicData.data;
+            
+            // Generate options
+            const currentQuestion = useMemo(() => {
+                if (questions.length === 0 || currentQIndex >= questions.length) return null;
+                return questions[currentQIndex];
+            }, [questions, currentQIndex]);
+
+            const currentOptions = useMemo(() => {
+                if (!currentQuestion) return [];
+                
+                // Get 3 distractors from the SAME topic
+                const distractors = vocabList
+                    .filter(item => item.id !== currentQuestion.id)
+                    .sort(() => 0.5 - Math.random()) 
+                    .slice(0, 3);
+                
+                return shuffleArray([currentQuestion, ...distractors]);
+            }, [currentQuestion, vocabList]);
+
+            const startQuiz = () => {
+                const shuffled = shuffleArray(vocabList);
+                setQuestions(shuffled);
+                setCurrentQIndex(0);
+                setScore(0);
+                setFeedback(null);
+                setWrongAnswers([]); 
+                setGameState('playing');
+            };
+
+            const handleOptionClick = (option) => {
+                if (feedback !== null) return; 
+
+                setSelectedOption(option);
+                const isCorrect = option.id === currentQuestion.id;
+
+                if (isCorrect) {
+                    setScore(prev => prev + 1);
+                    setFeedback('correct');
+                    setTimeout(() => {
+                        nextQuestion();
+                    }, 1000);
+                } else {
+                    setFeedback('incorrect');
+                    setWrongAnswers(prev => [...prev, currentQuestion]);
+                }
+            };
+
+            const nextQuestion = () => {
+                setFeedback(null);
+                setSelectedOption(null);
+                
+                if (currentQIndex + 1 < questions.length) {
+                    setCurrentQIndex(prev => prev + 1);
+                } else {
+                    setGameState('end');
+                }
+            };
+
+            const endEarly = () => {
+                setGameState('end');
+            };
+
+            // Render Views
+            if (gameState === 'start') {
+                return <StartScreen topic={topicData} onStart={startQuiz} onBack={onBackToMenu} />;
+            }
+
+            if (gameState === 'end') {
+                const totalAttempted = score + wrongAnswers.length;
+                return <ResultScreen 
+                    score={score} 
+                    totalQuestions={totalAttempted > 0 ? totalAttempted : 0} 
+                    onRestart={startQuiz} 
+                    wrongAnswers={wrongAnswers}
+                    onBackToMenu={onBackToMenu}
+                />;
+            }
+
+            // Playing View
+            return (
+                <div className="min-h-screen flex flex-col items-center p-4 max-w-2xl mx-auto fade-in">
+                    
+                    {/* Header */}
+                    <div className="w-full flex justify-between items-center mb-6 bg-white p-4 rounded-xl shadow-sm">
+                        <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-4">
+                            <button onClick={onBackToMenu} className="text-gray-400 hover:text-gray-600 flex items-center gap-1 text-sm">
+                                <IconArrowLeft className="w-4 h-4" /> 選單
+                            </button>
+                            <div className="flex items-center gap-2 text-gray-600">
+                                <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-bold">
+                                    Q {currentQIndex + 1}
+                                </span>
+                                <span className="text-sm">剩餘 {questions.length - currentQIndex - 1} 題</span>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <div className="text-green-600 font-bold flex items-center gap-1">
+                                <IconCheckCircle className="w-4 h-4" />
+                                {score} 分
+                            </div>
+                            <button 
+                                onClick={endEarly}
+                                className="ml-4 text-xs text-red-500 hover:text-red-700 underline"
+                            >
+                                結算成績
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Question Card */}
+                    <div className="w-full bg-white rounded-2xl shadow-lg overflow-hidden mb-6 relative">
+                        <div className="bg-slate-800 p-8 text-center text-white">
+                            <h2 className="text-3xl font-bold tracking-wide">{currentQuestion?.term}</h2>
+                            <p className="text-xs text-slate-400 mt-2 font-mono">Topic: {topicData.title}</p>
+                        </div>
+                        
+                        {/* Progress Bar */}
+                        <div className="w-full bg-gray-200 h-1.5">
+                            <div 
+                                className="bg-blue-600 h-1.5 transition-all duration-300" 
+                                style={{ width: `${((currentQIndex) / questions.length) * 100}%` }}
+                            ></div>
+                        </div>
+                    </div>
+
+                    {/* Options Grid */}
+                    <div className="w-full grid grid-cols-1 gap-3">
+                        {currentOptions.map((option, index) => {
+                            const labels = ['A', 'B', 'C', 'D'];
+                            let btnClass = "bg-white hover:bg-blue-50 border-2 border-gray-100 text-gray-700";
+                            let icon = null;
+
+                            if (feedback) {
+                                if (option.id === currentQuestion.id) {
+                                    btnClass = "bg-green-100 border-green-500 text-green-800";
+                                    icon = <IconCheck className="w-5 h-5 text-green-600" />;
+                                } else if (selectedOption && option.id === selectedOption.id && feedback === 'incorrect') {
+                                    btnClass = "bg-red-100 border-red-500 text-red-800";
+                                    icon = <IconX className="w-5 h-5 text-red-600" />;
+                                } else {
+                                    btnClass = "bg-gray-50 border-gray-100 text-gray-400 opacity-60";
+                                }
+                            }
+
+                            return (
+                                <button
+                                    key={option.id}
+                                    onClick={() => handleOptionClick(option)}
+                                    disabled={feedback !== null}
+                                    className={`
+                                        relative p-4 rounded-xl text-left transition-all duration-200 shadow-sm flex items-center
+                                        ${btnClass}
+                                        ${feedback === null ? 'hover:scale-[1.01] hover:shadow-md' : ''}
+                                    `}
+                                >
+                                    <span className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-4 text-sm font-bold text-gray-600 shrink-0">
+                                        {labels[index]}
+                                    </span>
+                                    <span className="text-lg font-medium flex-grow">{option.def}</span>
+                                    {icon}
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    {/* Feedback */}
+                    <div className="h-24 w-full mt-6 flex items-center justify-center">
+                        {feedback === 'correct' && (
+                            <div className="flex flex-col items-center text-green-600 animate-bounce">
+                                <span className="text-xl font-bold">Good Job! 答對了！</span>
+                                <span className="text-sm">正在進入下一題...</span>
+                            </div>
+                        )}
+                        {feedback === 'incorrect' && (
+                            <div className="w-full bg-red-50 border border-red-200 rounded-xl p-4 flex justify-between items-center fade-in">
+                                <div>
+                                    <p className="text-red-700 font-bold mb-1">Oops! 答錯囉。</p>
+                                    <p className="text-sm text-gray-600">正確意思是：<span className="font-bold text-gray-900">{currentQuestion.def}</span></p>
+                                    <p className="text-xs text-gray-500 mt-1">請默念一次再繼續。</p>
+                                </div>
+                                <button onClick={nextQuestion} className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-bold shadow-md transition-transform active:scale-95">
+                                    下一題
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        // 5. Main App Controller
+        const MainApp = () => {
+            const [selectedTopic, setSelectedTopic] = useState(null);
+
+            if (!selectedTopic) {
+                return <TopicSelectionScreen onSelectTopic={setSelectedTopic} />;
+            }
+
+            return (
+                <QuizApp 
+                    key={selectedTopic.id} // Reset state when topic changes
+                    topicData={selectedTopic} 
+                    onBackToMenu={() => setSelectedTopic(null)} 
+                />
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<MainApp />);
+    </script>
+</body>
+</html>
