@@ -41,6 +41,20 @@
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #999;
         }
+        
+        /* Flip Card Effect */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
     </style>
 </head>
 <body>
@@ -350,6 +364,118 @@
             { id: 740, term: "win the contest", def: "獲勝" }
         ];
 
+        const topic08_Sports2 = [
+            { id: 801, term: "goalkeeper", def: "守門員" },
+            { id: 802, term: "defense", def: "後衛 (v.) 保護；防衛" },
+            { id: 803, term: "jersey", def: "運動衫" },
+            { id: 804, term: "aerobics", def: "有氧運動" },
+            { id: 805, term: "coach", def: "教練" },
+            { id: 806, term: "compete", def: "競爭；比賽" },
+            { id: 807, term: "defeat", def: "(n.) 失敗 (v.) 擊敗" },
+            { id: 808, term: "fitness", def: "適合；恰當；身體健康" },
+            { id: 809, term: "gym", def: "健身房；體育館" },
+            { id: 810, term: "league", def: "聯盟；同盟" },
+            { id: 811, term: "marathon", def: "馬拉松；耐力比賽" },
+            { id: 812, term: "mountaineering", def: "登山運動" },
+            { id: 813, term: "participate", def: "參與；參加" },
+            { id: 814, term: "recreation", def: "娛樂；消遣活動" },
+            { id: 815, term: "relaxation", def: "放鬆；緩和；休息" },
+            { id: 816, term: "rigor", def: "嚴謹；嚴苛；艱苦" },
+            { id: 817, term: "stadium", def: "體育場" },
+            { id: 818, term: "stroll", def: "散步；閒逛" },
+            { id: 819, term: "surrender", def: "（向敵人）投降；放棄" },
+            { id: 820, term: "time-out", def: "暫停" },
+            { id: 821, term: "trophy", def: "獎品；獎盃；戰利品" },
+            { id: 822, term: "usher", def: "(n.) 引座員；招待員 (v.) 引領" },
+            { id: 823, term: "combative", def: "好戰的；好鬥的" },
+            { id: 824, term: "default", def: "默認結果；棄權" },
+            { id: 825, term: "forfeit", def: "罰款；(因違規而)喪失" },
+            { id: 826, term: "intensity", def: "強度；強烈" },
+            { id: 827, term: "leisure", def: "空閒；閒暇時間" },
+            { id: 828, term: "massage", def: "按摩；揉捏" },
+            { id: 829, term: "muscle", def: "肌肉；力量" },
+            { id: 830, term: "pastime", def: "娛樂；消遣" },
+            { id: 831, term: "runner-up", def: "第二名；亞軍" },
+            { id: 832, term: "spectator", def: "觀眾；旁觀者" },
+            { id: 833, term: "stretch", def: "伸張；伸開；伸展" },
+            { id: 834, term: "surfing", def: "衝浪" },
+            { id: 835, term: "tactic", def: "戰略；策略（常用複數）" },
+            { id: 836, term: "strategy", def: "長期策略" },
+            { id: 837, term: "tournament", def: "比賽；錦標賽" },
+            { id: 838, term: "judge / referee / umpire", def: "裁判；仲裁者" },
+            { id: 839, term: "record", def: "(n.) (v.) 記錄" }
+        ];
+
+        const topic09_Housing = [
+            { id: 901, term: "bank account balance", def: "銀行存款" },
+            { id: 902, term: "real estate transaction", def: "房地產交易" },
+            { id: 903, term: "credit card", def: "信用卡" },
+            { id: 904, term: "utilities", def: "水電費" },
+            { id: 905, term: "as long as", def: "只要" },
+            { id: 906, term: "as many as", def: "多達" },
+            { id: 907, term: "as much as", def: "和……一樣多 (不可數)" },
+            { id: 908, term: "affluent", def: "豐富的；富裕的" },
+            { id: 909, term: "be on the increase", def: "增加中" },
+            { id: 910, term: "lack", def: "缺乏……" },
+            { id: 911, term: "hamper", def: "阻礙；抑制" },
+            { id: 912, term: "long-standing", def: "經年累月的" },
+            { id: 913, term: "long-term", def: "長期的" },
+            { id: 914, term: "short-term", def: "短期的" },
+            { id: 915, term: "out of control", def: "失去控制" },
+            { id: 916, term: "out of one's reach", def: "力所不能及之處" },
+            { id: 917, term: "prestigious", def: "有名聲的" },
+            { id: 918, term: "prospect", def: "預估；展望" },
+            { id: 919, term: "recession", def: "衰退；不景氣" },
+            { id: 920, term: "surpass", def: "超越" },
+            { id: 921, term: "exceed", def: "超過；超越" },
+            { id: 922, term: "vicinity", def: "臨近" },
+            { id: 923, term: "appliance", def: "設備；器具；工具" },
+            { id: 924, term: "room charge", def: "住房費" },
+            { id: 925, term: "burglar", def: "竊賊；夜間入屋行竊的小偷" },
+            { id: 926, term: "community", def: "社區" },
+            { id: 927, term: "electronics", def: "電子學" },
+            { id: 928, term: "electronic", def: "電子的 (device 裝置)" },
+            { id: 929, term: "fire extinguisher", def: "滅火器" },
+            { id: 930, term: "furniture", def: "傢俱" },
+            { id: 931, term: "garbage disposal", def: "垃圾處理機" }
+        ];
+
+        const topic10_Housing2 = [
+            { id: 1001, term: "landlord", def: "地主；房東" },
+            { id: 1002, term: "laundry", def: "洗衣店；要洗或已洗好的衣物" },
+            { id: 1003, term: "lease", def: "租約；房租；租用" },
+            { id: 1004, term: "mattress", def: "床墊" },
+            { id: 1005, term: "mortgage", def: "房屋貸款；抵押" },
+            { id: 1006, term: "ornament", def: "裝飾品" },
+            { id: 1007, term: "plumbing", def: "水管設施" },
+            { id: 1008, term: "possession", def: "所有；個人財產" },
+            { id: 1009, term: "real estate", def: "不動產" },
+            { id: 1010, term: "renovate", def: "更新；修復；恢復" },
+            { id: 1011, term: "rural", def: "鄉下的、田園的" },
+            { id: 1012, term: "suburb", def: "（常用複數）郊區；近郊" },
+            { id: 1013, term: "urban", def: "都市的；都市式的" },
+            { id: 1014, term: "down payment", def: "頭期款；預付金；定金" },
+            { id: 1015, term: "fire alarm", def: "火災警報器" },
+            { id: 1016, term: "furnishings", def: "傢俱；室內陳設" },
+            { id: 1017, term: "garage", def: "車庫；修車廠" },
+            { id: 1018, term: "kitchenware", def: "廚房用具" },
+            { id: 1019, term: "launderette", def: "自助洗衣店" },
+            { id: 1020, term: "lawn", def: "草坪；草地" },
+            { id: 1021, term: "loan shark", def: "放高利貸者" },
+            { id: 1022, term: "messy", def: "雜亂的；骯髒的" },
+            { id: 1023, term: "neighborhood", def: "街坊；住宅區；臨近地區" },
+            { id: 1024, term: "playground", def: "運動場；遊戲場；遊樂場" },
+            { id: 1025, term: "porch", def: "門廊；遊廊" },
+            { id: 1026, term: "property", def: "財產；地產" },
+            { id: 1027, term: "relocate", def: "重新安置；遷徙" },
+            { id: 1028, term: "residence", def: "住所；公館；居住" },
+            { id: 1029, term: "storage", def: "儲藏；藏室" },
+            { id: 1030, term: "tenant", def: "房客；承租人" },
+            { id: 1031, term: "utility", def: "公共事業；公用設施" },
+            { id: 1032, term: "balcony", def: "陽臺；包廂" },
+            { id: 1033, term: "chore", def: "家務事；困難繁瑣無趣的工作" }
+        ];
+
         const topics = [
             { 
                 id: 'topic01', 
@@ -405,16 +531,46 @@
                 color: 'cyan',
                 disabled: false
             },
-             // Future topics can be added here
             {
                 id: 'topic08',
-                title: '08_即將推出',
+                title: '08_運動及休閒活動 (2)',
+                desc: '進階運動術語、健身與賽事規則',
+                data: topic08_Sports2,
+                color: 'teal',
+                disabled: false
+            },
+            {
+                id: 'topic09',
+                title: '09_租房/住房相關單字 (1)',
+                desc: '租屋、房地產交易及居家設備',
+                data: topic09_Housing,
+                color: 'pink',
+                disabled: false
+            },
+            {
+                id: 'topic10',
+                title: '10_租房/住房相關單字 (2)',
+                desc: '租賃關係、房屋貸款及居住環境',
+                data: topic10_Housing2,
+                color: 'violet',
+                disabled: false
+            },
+             // Future topics can be added here
+            {
+                id: 'topic11',
+                title: '11_即將推出',
                 desc: '敬請期待更多單字',
                 data: [],
                 color: 'gray',
                 disabled: true
             }
         ];
+
+        // --- All Vocabulary for Mixed Distractors ---
+        // Combine all active topic data for global distractors
+        const allVocab = topics
+            .filter(t => !t.disabled)
+            .flatMap(t => t.data);
 
         // --- Utility Functions ---
         const shuffleArray = (array) => {
@@ -460,6 +616,12 @@
         const IconArrowLeft = ({ className }) => (
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
         );
+        const IconEye = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        );
+        const IconRotate = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+        );
 
         // --- Components ---
 
@@ -491,6 +653,9 @@
                                     orange: "text-orange-600 bg-orange-50",
                                     rose: "text-rose-600 bg-rose-50",
                                     cyan: "text-cyan-600 bg-cyan-50",
+                                    teal: "text-teal-600 bg-teal-50",
+                                    pink: "text-pink-600 bg-pink-50",
+                                    violet: "text-violet-600 bg-violet-50",
                                     gray: "text-gray-400 bg-gray-100"
                                 };
 
@@ -522,8 +687,96 @@
             );
         };
 
-        // 2. Start Screen (Contextualized)
-        const StartScreen = ({ topic, onStart, onBack }) => (
+        // 2. Study Mode Component (Flashcards)
+        const StudyApp = ({ topicData, onBackToMenu, onStartQuiz }) => {
+            const [currentIndex, setCurrentIndex] = useState(0);
+            const [isFlipped, setIsFlipped] = useState(false);
+            const words = topicData.data;
+            const currentWord = words[currentIndex];
+
+            const nextWord = () => {
+                setIsFlipped(false);
+                setTimeout(() => {
+                    setCurrentIndex((prev) => (prev + 1) % words.length);
+                }, 200);
+            };
+
+            const prevWord = () => {
+                setIsFlipped(false);
+                setTimeout(() => {
+                    setCurrentIndex((prev) => (prev - 1 + words.length) % words.length);
+                }, 200);
+            };
+
+            return (
+                <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center fade-in bg-gray-100">
+                    <div className="w-full max-w-lg mb-6 flex justify-between items-center">
+                        <button onClick={onBackToMenu} className="text-gray-500 hover:text-gray-700 flex items-center gap-1">
+                            <IconArrowLeft className="w-5 h-5" /> 返回選單
+                        </button>
+                        <h2 className="text-xl font-bold text-gray-800">{topicData.title} <span className="text-sm font-normal text-gray-500">(預習模式)</span></h2>
+                    </div>
+
+                    {/* Progress */}
+                    <div className="w-full max-w-lg mb-4 flex justify-between text-sm text-gray-500">
+                        <span>單字 {currentIndex + 1} / {words.length}</span>
+                        <span>點擊卡片查看解釋</span>
+                    </div>
+
+                    {/* Flashcard Container */}
+                    <div 
+                        className="relative w-full max-w-lg h-80 cursor-pointer perspective-1000 group"
+                        onClick={() => setIsFlipped(!isFlipped)}
+                    >
+                        <div className={`relative w-full h-full duration-500 transform-style-3d transition-transform ${isFlipped ? 'rotate-y-180' : ''}`}>
+                            
+                            {/* Front (English) */}
+                            <div className="absolute w-full h-full bg-white rounded-2xl shadow-xl border-b-4 border-blue-500 flex flex-col items-center justify-center p-8 backface-hidden">
+                                <span className="text-blue-600 mb-4 opacity-50"><IconBookOpen className="w-8 h-8" /></span>
+                                <h3 className="text-4xl font-bold text-gray-800 break-words w-full">{currentWord.term}</h3>
+                                <p className="mt-6 text-gray-400 text-sm font-medium animate-pulse">點擊翻面</p>
+                            </div>
+
+                            {/* Back (Chinese) */}
+                            <div className="absolute w-full h-full bg-blue-600 rounded-2xl shadow-xl text-white flex flex-col items-center justify-center p-8 rotate-y-180 backface-hidden">
+                                <h3 className="text-3xl font-bold mb-4">{currentWord.term}</h3>
+                                <div className="w-16 h-1 bg-white/30 rounded-full mb-6"></div>
+                                <p className="text-2xl font-medium">{currentWord.def}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Controls */}
+                    <div className="w-full max-w-lg mt-8 flex justify-between items-center gap-4">
+                        <button 
+                            onClick={(e) => { e.stopPropagation(); prevWord(); }}
+                            className="flex-1 bg-white border border-gray-300 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-50 transition-colors shadow-sm"
+                        >
+                            上一個
+                        </button>
+                        <button 
+                            onClick={(e) => { e.stopPropagation(); nextWord(); }}
+                            className="flex-1 bg-white border border-gray-300 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-50 transition-colors shadow-sm"
+                        >
+                            下一個
+                        </button>
+                    </div>
+
+                    <div className="mt-8 w-full max-w-lg">
+                        <button 
+                            onClick={onStartQuiz}
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-md flex items-center justify-center gap-2 transition-transform active:scale-95"
+                        >
+                            <IconGraduationCap className="w-6 h-6" />
+                            準備好了？開始測驗！
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        // 3. Start Screen (Contextualized with Mode Selection)
+        const StartScreen = ({ topic, onStartQuiz, onStartStudy, onBack }) => (
             <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center fade-in">
                 <div className="bg-white p-10 rounded-2xl shadow-xl max-w-lg w-full border-t-4 border-blue-600 relative">
                     <button 
@@ -537,29 +790,46 @@
                         <IconGraduationCap className="w-16 h-16" />
                     </div>
                     <h1 className="text-2xl font-bold text-gray-800 mb-1">{topic.title}</h1>
-                    <p className="text-gray-500 mb-8 text-sm">單字測驗挑戰</p>
+                    <p className="text-gray-500 mb-8 text-sm">請選擇學習模式</p>
                     
-                    <div className="bg-blue-50 p-4 rounded-lg mb-8 text-left text-sm text-gray-700">
-                        <p className="font-semibold mb-2">測驗說明：</p>
-                        <ul className="list-disc list-inside space-y-1">
-                            <li>本主題共 {topic.data.length} 個精選單字</li>
-                            <li>每次隨機出題，四選一</li>
-                            <li>即時回饋與錯誤訂正</li>
-                        </ul>
-                    </div>
+                    <div className="space-y-4">
+                        <button 
+                            onClick={onStartStudy}
+                            className="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold py-4 px-6 rounded-xl transition-all flex items-center justify-between group"
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className="bg-white p-2 rounded-full shadow-sm"><IconBookOpen className="w-5 h-5" /></div>
+                                <div className="text-left">
+                                    <div className="text-lg">單字預習卡</div>
+                                    <div className="text-xs font-normal opacity-80">Study Mode</div>
+                                </div>
+                            </div>
+                            <IconArrowRight className="w-5 h-5 opacity-50 group-hover:translate-x-1 transition-transform" />
+                        </button>
 
-                    <button 
-                        onClick={onStart}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-all transform hover:scale-105 shadow-md flex items-center justify-center gap-2"
-                    >
-                        <span>開始測驗</span>
-                        <IconArrowRight className="w-5 h-5" />
-                    </button>
+                        <button 
+                            onClick={onStartQuiz}
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md flex items-center justify-between group"
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className="bg-white/20 p-2 rounded-full"><IconCheckCircle className="w-5 h-5" /></div>
+                                <div className="text-left">
+                                    <div className="text-lg">開始測驗挑戰</div>
+                                    <div className="text-xs font-normal opacity-80">Quiz Mode (混雜其他主題干擾項)</div>
+                                </div>
+                            </div>
+                            <IconArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        </button>
+                    </div>
+                    
+                    <div className="mt-6 text-xs text-gray-400">
+                        * 測驗模式中，錯誤選項將包含其他主題單字以增加難度
+                    </div>
                 </div>
             </div>
         );
 
-        // 3. Result Screen
+        // 4. Result Screen
         const ResultScreen = ({ score, totalQuestions, onRestart, wrongAnswers, onBackToMenu }) => {
             const percentage = Math.round((score / totalQuestions) * 100) || 0;
             const [showReview, setShowReview] = useState(false);
@@ -659,9 +929,9 @@
             );
         };
 
-        // 4. Quiz Logic Component
-        const QuizApp = ({ topicData, onBackToMenu }) => {
-            const [gameState, setGameState] = useState('start'); // start, playing, end
+        // 5. Quiz Logic Component
+        const QuizApp = ({ topicData, onBackToMenu, allVocab }) => {
+            const [gameState, setGameState] = useState('playing'); // playing, end
             const [questions, setQuestions] = useState([]);
             const [currentQIndex, setCurrentQIndex] = useState(0);
             const [score, setScore] = useState(0);
@@ -671,7 +941,12 @@
 
             const vocabList = topicData.data;
             
-            // Generate options
+            // Initial Shuffle
+            useEffect(() => {
+                setQuestions(shuffleArray(vocabList));
+            }, [vocabList]);
+
+            // Generate options (Correct answer + 3 Global Distractors)
             const currentQuestion = useMemo(() => {
                 if (questions.length === 0 || currentQIndex >= questions.length) return null;
                 return questions[currentQIndex];
@@ -680,24 +955,15 @@
             const currentOptions = useMemo(() => {
                 if (!currentQuestion) return [];
                 
-                // Get 3 distractors from the SAME topic
-                const distractors = vocabList
-                    .filter(item => item.id !== currentQuestion.id)
+                // Get 3 distractors from ALL topics (Global Distractors)
+                // Filter out the current correct answer to avoid duplicates
+                const globalDistractors = allVocab
+                    .filter(item => item.id !== currentQuestion.id && item.def !== currentQuestion.def)
                     .sort(() => 0.5 - Math.random()) 
                     .slice(0, 3);
                 
-                return shuffleArray([currentQuestion, ...distractors]);
-            }, [currentQuestion, vocabList]);
-
-            const startQuiz = () => {
-                const shuffled = shuffleArray(vocabList);
-                setQuestions(shuffled);
-                setCurrentQIndex(0);
-                setScore(0);
-                setFeedback(null);
-                setWrongAnswers([]); 
-                setGameState('playing');
-            };
+                return shuffleArray([currentQuestion, ...globalDistractors]);
+            }, [currentQuestion, allVocab]);
 
             const handleOptionClick = (option) => {
                 if (feedback !== null) return; 
@@ -732,17 +998,20 @@
                 setGameState('end');
             };
 
-            // Render Views
-            if (gameState === 'start') {
-                return <StartScreen topic={topicData} onStart={startQuiz} onBack={onBackToMenu} />;
-            }
-
+            // Result Screen Logic
             if (gameState === 'end') {
                 const totalAttempted = score + wrongAnswers.length;
                 return <ResultScreen 
                     score={score} 
                     totalQuestions={totalAttempted > 0 ? totalAttempted : 0} 
-                    onRestart={startQuiz} 
+                    onRestart={() => {
+                        setQuestions(shuffleArray(vocabList));
+                        setCurrentQIndex(0);
+                        setScore(0);
+                        setFeedback(null);
+                        setWrongAnswers([]);
+                        setGameState('playing');
+                    }} 
                     wrongAnswers={wrongAnswers}
                     onBackToMenu={onBackToMenu}
                 />;
@@ -860,21 +1129,68 @@
             );
         };
 
-        // 5. Main App Controller
+        // 6. Main App Controller
         const MainApp = () => {
             const [selectedTopic, setSelectedTopic] = useState(null);
+            const [appMode, setAppMode] = useState('menu'); // menu, start, quiz, study
 
-            if (!selectedTopic) {
-                return <TopicSelectionScreen onSelectTopic={setSelectedTopic} />;
+            // State management for navigation
+            const handleSelectTopic = (topic) => {
+                setSelectedTopic(topic);
+                setAppMode('start');
+            };
+
+            const handleStartQuiz = () => {
+                setAppMode('quiz');
+            };
+
+            const handleStartStudy = () => {
+                setAppMode('study');
+            };
+
+            const handleBackToMenu = () => {
+                setSelectedTopic(null);
+                setAppMode('menu');
+            };
+
+            // Views Switcher
+            if (appMode === 'menu') {
+                return <TopicSelectionScreen onSelectTopic={handleSelectTopic} />;
             }
 
-            return (
-                <QuizApp 
-                    key={selectedTopic.id} // Reset state when topic changes
-                    topicData={selectedTopic} 
-                    onBackToMenu={() => setSelectedTopic(null)} 
-                />
-            );
+            if (appMode === 'start') {
+                return (
+                    <StartScreen 
+                        topic={selectedTopic} 
+                        onStartQuiz={handleStartQuiz} 
+                        onStartStudy={handleStartStudy}
+                        onBack={handleBackToMenu} 
+                    />
+                );
+            }
+
+            if (appMode === 'study') {
+                return (
+                    <StudyApp 
+                        topicData={selectedTopic}
+                        onBackToMenu={handleBackToMenu}
+                        onStartQuiz={handleStartQuiz}
+                    />
+                );
+            }
+
+            if (appMode === 'quiz') {
+                return (
+                    <QuizApp 
+                        key={selectedTopic.id} 
+                        topicData={selectedTopic} 
+                        allVocab={allVocab}
+                        onBackToMenu={handleBackToMenu} 
+                    />
+                );
+            }
+
+            return null;
         };
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
