@@ -16,45 +16,17 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        body {
-            background-color: #f3f4f6;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .fade-in {
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        /* Custom Scrollbar for better review experience */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #ccc;
-            border-radius: 3px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #999;
-        }
-        
-        /* Flip Card Effect */
-        .perspective-1000 {
-            perspective: 1000px;
-        }
-        .transform-style-3d {
-            transform-style: preserve-3d;
-        }
-        .backface-hidden {
-            backface-visibility: hidden;
-        }
-        .rotate-y-180 {
-            transform: rotateY(180deg);
-        }
+        body { background-color: #f3f4f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #999; }
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
     </style>
 </head>
 <body>
@@ -63,514 +35,341 @@
     <script type="text/babel">
         const { useState, useEffect, useMemo } = React;
 
+        // --- Data Source Helper ---
+        // Helper to reduce file size
+        const c = (id, term, def) => ({ id, term, def });
+
         // --- Data Source ---
-        const topic01_Job = [
-            { id: 1, term: "occupation", def: "職業 / 職位" },
-            { id: 2, term: "vacancy / opening", def: "空缺 / 職缺" },
-            { id: 3, term: "pay", def: "工資；待遇" },
-            { id: 4, term: "salary / wage", def: "薪資 (月薪) / (時薪)" },
-            { id: 5, term: "minimum wage", def: "最低薪資" },
-            { id: 6, term: "leave", def: "(n.) 休假" },
-            { id: 7, term: "take a leave", def: "請假" },
-            { id: 8, term: "head office", def: "總公司" },
-            { id: 9, term: "branch office", def: "分公司" },
-            { id: 10, term: "sales department", def: "業務部" },
-            { id: 11, term: "accounting department", def: "會計部" },
-            { id: 12, term: "promotion", def: "升遷" },
-            { id: 13, term: "demotion", def: "降級" },
-            { id: 14, term: "sign up", def: "簽署(合約/報名)" },
-            { id: 15, term: "dismissal", def: "解雇" },
-            { id: 16, term: "a letter of recommendation", def: "推薦信" },
-            { id: 17, term: "bonus", def: "紅利；獎金" },
-            { id: 18, term: "Applications must arrive no later than", def: "申請函必須在...前送達" },
-            { id: 19, term: "Applications should be postmarked no later than", def: "申請函郵戳日期不得晚於..." },
-            { id: 20, term: "is considered", def: "是被考慮的" },
-            { id: 21, term: "is preferred", def: "是被偏好的 (有...更好)" },
-            { id: 22, term: "is required", def: "是必須的" },
-            { id: 23, term: "is negotiable", def: "是可商談的" },
-            { id: 24, term: "labor management", def: "勞工管理" },
-            { id: 25, term: "labor market", def: "勞工市場" },
-            { id: 26, term: "Master of Business Administration (MBA)", def: "工商管理碩士" },
-            { id: 27, term: "names of reference", def: "推薦人" },
-            { id: 28, term: "reference / endorsement letter", def: "推薦信 / 背書信" },
-            { id: 29, term: "part-time position", def: "兼職工作" },
-            { id: 30, term: "short-listed applicants", def: "初審合格者 (名單縮短了)" },
-            { id: 31, term: "prior experience", def: "過去的經驗" },
-            { id: 32, term: "competitive salary", def: "優渥的 (有競爭力的) 薪水" },
-            { id: 33, term: "competitive", def: "有競爭力的" },
-            { id: 34, term: "the position is non-renewable", def: "此職位不可續約" },
-            { id: 35, term: "be short-listed", def: "被列入決選/初審名單" },
-            { id: 36, term: "short-listed", def: "入圍的" },
-            { id: 37, term: "interview", def: "面試 / 採訪" },
-            { id: 38, term: "evaluation", def: "評價 / 考績" },
-            { id: 39, term: "expertise", def: "專門技術 / 專業知識" }
+        // 01-10 (Existing)
+        const topic01 = [
+            c(1, "occupation", "職業 / 職位"), c(2, "vacancy / opening", "空缺 / 職缺"), c(3, "pay", "工資；待遇"), c(4, "salary / wage", "薪資 (月薪) / (時薪)"), c(5, "minimum wage", "最低薪資"), c(6, "leave", "(n.) 休假"), c(7, "take a leave", "請假"), c(8, "head office", "總公司"), c(9, "branch office", "分公司"), c(10, "sales department", "業務部"),
+            c(11, "accounting department", "會計部"), c(12, "promotion", "升遷"), c(13, "demotion", "降級"), c(14, "sign up", "簽署(合約/報名)"), c(15, "dismissal", "解雇"), c(16, "a letter of recommendation", "推薦信"), c(17, "bonus", "紅利；獎金"), c(18, "Applications must arrive no later than", "申請函必須在...前送達"), c(19, "Applications should be postmarked", "申請函郵戳日期不得晚於..."), c(20, "is considered", "是被考慮的"),
+            c(21, "is preferred", "是被偏好的"), c(22, "is required", "是必須的"), c(23, "is negotiable", "是可商談的"), c(24, "labor management", "勞工管理"), c(25, "labor market", "勞工市場"), c(26, "MBA", "工商管理碩士"), c(27, "names of reference", "推薦人"), c(28, "reference / endorsement letter", "推薦信 / 背書信"), c(29, "part-time position", "兼職工作"), c(30, "short-listed applicants", "初審合格者"),
+            c(31, "prior experience", "過去的經驗"), c(32, "competitive salary", "優渥的薪水"), c(33, "competitive", "有競爭力的"), c(34, "non-renewable", "不可續約"), c(35, "be short-listed", "被列入決選名單"), c(36, "short-listed", "入圍的"), c(37, "interview", "面試 / 採訪"), c(38, "evaluation", "評價 / 考績"), c(39, "expertise", "專門技術 / 專業知識")
+        ];
+        const topic02 = [
+            c(201, "account", "帳戶；帳目"), c(202, "close a deal", "成交"), c(203, "make a contract", "簽約"), c(204, "break / breach a contract", "毀約"), c(205, "presentation", "報告；發佈會"), c(206, "car shipment", "汽車運送"), c(207, "cargo / goods", "貨物"), c(208, "merchandise / product", "商品"), c(209, "dumping", "傾銷"), c(210, "embargo", "禁止通商"),
+            c(211, "gain compliance", "使人遵守"), c(212, "grant / provide", "無償幫助/給予"), c(213, "make concession", "讓步"), c(214, "margin", "盈餘 (收入-成本後)"), c(215, "loss", "損失"), c(216, "quotations", "報價 (n.)"), c(217, "for your reference", "供你做參考"), c(218, "appendix", "附錄"), c(219, "attach", "貼上；附上"), c(220, "confidential", "機密的"),
+            c(221, "correspondence", "通信；信件"), c(222, "dictate", "口述；命令"), c(223, "elaborate", "詳盡說明；精心製作的"), c(224, "forward", "轉寄"), c(225, "inquire", "調查；詢問"), c(226, "jot down", "略記下"), c(227, "notify", "通知"), c(228, "response", "回應"), c(229, "revise", "修訂"), c(230, "urgent", "緊急的"),
+            c(231, "affirm", "堅稱；確認"), c(232, "ASAP", "越快越好"), c(233, "composition", "寫作；作品"), c(234, "convene", "集合；開會"), c(235, "courier", "快遞；信差"), c(236, "draft", "草稿；匯票"), c(237, "enclose", "裝入；附入"), c(238, "inform", "通知"), c(239, "issue", "發行；發佈"), c(240, "layout", "規劃；版面設計"),
+            c(241, "legible", "字跡可辨的"), c(242, "postage", "郵資"), c(243, "proofread", "校對"), c(244, "regarding", "關於"), c(245, "restate", "重申"), c(246, "signature", "簽名"), c(247, "stationery", "文具"), c(248, "write-up", "報告書"), c(249, "pending", "未決定的；待處理"), c(250, "invoice", "發票"),
+            c(251, "payment", "付款"), c(252, "quote", "報價"), c(253, "inventory", "庫存；清單"), c(254, "letter of credit", "信用狀"), c(255, "special supplement", "特別附錄")
+        ];
+        const topic03 = [
+            c(301, "affiliation", "附屬關係"), c(302, "annual wage increase", "年薪調升"), c(303, "call for", "要求(人)"), c(304, "require", "要求(規定)"), c(305, "collective bargaining", "集體交涉"), c(306, "contract", "合約"), c(307, "cooperation", "合作"), c(308, "coordination", "協調"), c(309, "employee", "雇員"), c(310, "employer", "雇主"),
+            c(311, "labor", "勞工"), c(312, "labor accident", "勞工災害"), c(313, "labor contract", "勞工合約"), c(314, "management", "經營層"), c(315, "labor-management struggle", "勞資糾葛"), c(316, "penal regulation", "刑罰規則"), c(317, "penalty", "懲罰；罰金"), c(318, "proposal", "提議"), c(319, "protest", "抗議"), c(320, "reach an agreement", "達成協議"),
+            c(321, "draw a conclusion", "做出結論"), c(322, "stage a strike", "發起罷工"), c(323, "terms of contract", "合約條款"), c(324, "the right to strike", "罷工權"), c(325, "the right to work", "工作權"), c(326, "wage dispute", "薪資爭議"), c(327, "working hours", "工作時間"), c(328, "terminate", "終止"), c(329, "terms and conditions", "條款"), c(330, "signature", "簽名"), c(331, "seal", "印章")
+        ];
+        const topic04 = [
+            c(401, "reveal", "揭露"), c(402, "take effect", "生效"), c(403, "expire", "期滿"), c(404, "waive", "放棄權利"), c(405, "offend", "冒犯；違規"), c(406, "breach", "違約；破壞"), c(407, "secure", "安全的；可靠的"), c(408, "agreement", "協議"), c(409, "statutory", "法定的"), c(410, "statutory obligations", "法定義務"),
+            c(411, "comply with", "遵守"), c(412, "apply", "適用；申請"), c(413, "fulfill", "履行"), c(414, "execute", "執行"), c(415, "obligation", "義務"), c(416, "restrict", "限制"), c(417, "disclose", "揭露"), c(418, "grant", "准予"), c(419, "exclusive", "獨佔的"), c(420, "in accordance with", "與...一致"),
+            c(421, "stipulate", "規定"), c(422, "provide for", "規定；準備"), c(423, "refer to", "提到"), c(424, "interested party", "利害關係人"), c(425, "said", "上述的"), c(426, "shall / may", "應 / 得"), c(427, "licensor", "授權人"), c(428, "settlement", "和解；結算"), c(429, "subcontract", "轉包合約"), c(430, "liable", "有責任的"),
+            c(431, "alter", "修改"), c(432, "legitimate", "合法的"), c(433, "warrant", "授權令；保證")
+        ];
+        const topic05 = [
+            c(501, "write someone over", "寫信請人來"), c(502, "thank-you note", "致謝函"), c(503, "get-together", "聚會"), c(504, "cocktail party", "雞尾酒會"), c(505, "dress-up party", "盛裝宴會"), c(506, "after-dinner speech", "餐後演說"), c(507, "award ceremony", "頒獎儀式"), c(508, "dedication", "獻辭"), c(509, "deliver a speech", "發表演說"), c(510, "express condolence", "悼念"),
+            c(511, "farewell address", "告別演說"), c(512, "inaugural ceremony", "就職典禮"), c(513, "inauguration", "就職"), c(514, "nomination speech", "提名演說"), c(515, "opening ceremony", "開幕式"), c(516, "party convention", "政黨大會"), c(517, "pay a tribute to", "致敬"), c(518, "piano recital", "鋼琴獨奏會"), c(519, "publication party", "出版酒會"), c(520, "wedding banquet", "婚宴"),
+            c(521, "welcome party", "歡迎會"), c(522, "cordially invited", "誠摯邀請"), c(523, "cordial", "誠摯的"), c(524, "arrival of a guest", "貴賓蒞臨"), c(525, "campaign", "活動；競選"), c(526, "launch a campaign", "發起活動"), c(527, "admission fee", "入場費"), c(528, "be admitted to", "獲准進入"), c(529, "reception", "接待會")
+        ];
+        const topic06 = [
+            c(601, "action plan", "行動計畫"), c(602, "approve protocol", "批准協議"), c(603, "protocol", "議定書；禮儀"), c(604, "assume office", "就職"), c(605, "coalition government", "聯合政府"), c(606, "economic summit", "經濟高峰會"), c(607, "in favor of", "支持"), c(608, "oppose", "反對"), c(609, "incumbent", "現任的"), c(610, "interpellation", "質詢"),
+            c(611, "legal ground", "法律依據"), c(612, "mainstream faction", "主流派"), c(613, "military buildup", "軍備增強"), c(614, "multi-lateral", "多邊的"), c(615, "news agency", "通訊社"), c(616, "opposition party", "反對黨"), c(617, "public pledge", "公開承諾"), c(618, "resume talks", "恢復會談"), c(619, "ruling party", "執政黨"), c(620, "run in election", "參選"),
+            c(621, "sectionalism", "派系主義"), c(622, "trade friction", "貿易摩擦"), c(623, "friction", "摩擦"), c(624, "troubleshooter", "調停者"), c(625, "embezzle", "挪用公款"), c(626, "trespass", "侵入"), c(627, "scandal", "醜聞"), c(628, "out-of-court settlement", "庭外和解"), c(629, "accused", "被告"), c(630, "defendant", "被告"),
+            c(631, "lawyer", "律師"), c(632, "plaintiff", "原告"), c(633, "prosecution", "起訴"), c(634, "assembly", "議會"), c(635, "evidence", "證據"), c(636, "under control", "在控制中"), c(637, "in search of", "搜尋"), c(638, "juvenile delinquency", "少年犯罪"), c(639, "juvenile delinquent", "少年犯"), c(640, "witness", "證人"),
+            c(641, "probe", "調查"), c(642, "prior to", "在...之前"), c(643, "allegedly", "據稱"), c(644, "casualty", "傷亡"), c(645, "collide with", "相撞"), c(646, "devastating", "毀滅性的"), c(647, "emergency landing", "緊急降落"), c(648, "inherit", "繼承"), c(649, "jolt", "震動"), c(650, "official communique", "官方公報"),
+            c(651, "break out", "爆發"), c(652, "benefit from", "受益於")
+        ];
+        const topic07 = [
+            c(701, "baseball", "棒球"), c(702, "football", "美式足球"), c(703, "soccer", "英式足球"), c(704, "tennis", "網球"), c(705, "volleyball", "排球"), c(706, "table tennis", "桌球"), c(707, "billiards", "撞球"), c(708, "scuba diving", "潛水"), c(709, "fishing", "釣魚"), c(710, "surfing", "衝浪"),
+            c(711, "sailing", "帆船"), c(712, "rowing", "划船"), c(713, "sledding", "雪橇"), c(714, "skating", "溜冰"), c(715, "horseback riding", "騎馬"), c(716, "hiking", "健行"), c(717, "rival", "對手"), c(718, "contestant", "參賽者"), c(719, "competition", "比賽"), c(720, "qualifying round", "資格賽"),
+            c(721, "doping check", "藥檢"), c(722, "elimination", "淘汰"), c(723, "final round", "決賽"), c(724, "tournament", "錦標賽"), c(725, "home-town", "主場/當地"), c(726, "reservation", "預約"), c(727, "opening game", "開幕賽"), c(728, "play-off", "加賽"), c(729, "preliminary", "預賽"), c(730, "quarter finals", "八強賽"),
+            c(731, "record-breaking", "破紀錄的"), c(732, "seed", "種子選手"), c(733, "season-ticket", "季票"), c(734, "secure second place", "獲得亞軍"), c(735, "semifinals", "準決賽"), c(736, "sports lottery", "運彩"), c(737, "visitor", "客隊"), c(738, "ticket agency", "售票處"), c(739, "underdog", "居下風者"), c(740, "win the contest", "獲勝")
+        ];
+        const topic08 = [
+            c(801, "goalkeeper", "守門員"), c(802, "defense", "防守"), c(803, "jersey", "球衣"), c(804, "aerobics", "有氧運動"), c(805, "coach", "教練"), c(806, "compete", "競爭"), c(807, "defeat", "擊敗"), c(808, "fitness", "健身/健康"), c(809, "gym", "健身房"), c(810, "league", "聯盟"),
+            c(811, "marathon", "馬拉松"), c(812, "mountaineering", "登山"), c(813, "participate", "參加"), c(814, "recreation", "娛樂"), c(815, "relaxation", "放鬆"), c(816, "rigor", "嚴格"), c(817, "stadium", "體育場"), c(818, "stroll", "散步"), c(819, "surrender", "投降"), c(820, "time-out", "暫停"),
+            c(821, "trophy", "獎盃"), c(822, "usher", "招待員"), c(823, "combative", "好戰的"), c(824, "default", "棄權"), c(825, "forfeit", "喪失"), c(826, "intensity", "強度"), c(827, "leisure", "閒暇"), c(828, "massage", "按摩"), c(829, "muscle", "肌肉"), c(830, "pastime", "消遣"),
+            c(831, "runner-up", "亞軍"), c(832, "spectator", "觀眾"), c(833, "stretch", "伸展"), c(834, "surfing", "衝浪"), c(835, "tactic", "戰術"), c(836, "strategy", "策略"), c(837, "tournament", "錦標賽"), c(838, "referee", "裁判"), c(839, "record", "紀錄")
+        ];
+        const topic09 = [
+            c(901, "bank account balance", "銀行存款餘額"), c(902, "real estate transaction", "房地產交易"), c(903, "credit card", "信用卡"), c(904, "utilities", "水電費"), c(905, "as long as", "只要"), c(906, "as many as", "多達"), c(907, "as much as", "多達(不可數)"), c(908, "affluent", "富裕的"), c(909, "be on the increase", "增加中"), c(910, "lack", "缺乏"),
+            c(911, "hamper", "阻礙"), c(912, "long-standing", "長期的(存在已久)"), c(913, "long-term", "長期的"), c(914, "short-term", "短期的"), c(915, "out of control", "失控"), c(916, "out of reach", "遙不可及"), c(917, "prestigious", "有名望的"), c(918, "prospect", "前景"), c(919, "recession", "衰退"), c(920, "surpass", "超越"),
+            c(921, "exceed", "超過"), c(922, "vicinity", "附近"), c(923, "appliance", "家電"), c(924, "room charge", "房費"), c(925, "burglar", "竊賊"), c(926, "community", "社區"), c(927, "electronics", "電子產品"), c(928, "electronic", "電子的"), c(929, "fire extinguisher", "滅火器"), c(930, "furniture", "傢俱"),
+            c(931, "garbage disposal", "垃圾處理")
+        ];
+        const topic10 = [
+            c(1001, "landlord", "房東"), c(1002, "laundry", "洗衣"), c(1003, "lease", "租約"), c(1004, "mattress", "床墊"), c(1005, "mortgage", "房貸"), c(1006, "ornament", "裝飾品"), c(1007, "plumbing", "管線工程"), c(1008, "possession", "財產"), c(1009, "real estate", "房地產"), c(1010, "renovate", "翻修"),
+            c(1011, "rural", "鄉村的"), c(1012, "suburb", "郊區"), c(1013, "urban", "都市的"), c(1014, "down payment", "頭期款"), c(1015, "fire alarm", "火警警報"), c(1016, "furnishings", "室內陳設"), c(1017, "garage", "車庫"), c(1018, "kitchenware", "廚具"), c(1019, "launderette", "自助洗衣店"), c(1020, "lawn", "草坪"),
+            c(1021, "loan shark", "放高利貸者"), c(1022, "messy", "髒亂的"), c(1023, "neighborhood", "鄰近地區"), c(1024, "playground", "遊樂場"), c(1025, "porch", "門廊"), c(1026, "property", "財產/房產"), c(1027, "relocate", "搬遷"), c(1028, "residence", "住所"), c(1029, "storage", "儲藏室"), c(1030, "tenant", "房客"),
+            c(1031, "utility", "公用設施"), c(1032, "balcony", "陽台"), c(1033, "chore", "家務雜事")
         ];
 
-        const topic02_Email = [
-            { id: 201, term: "account", def: "帳戶；帳目" },
-            { id: 202, term: "close a deal", def: "成交" },
-            { id: 203, term: "make a contract", def: "簽約" },
-            { id: 204, term: "break / breach a contract", def: "毀約" },
-            { id: 205, term: "presentation", def: "報告；發佈會" },
-            { id: 206, term: "car shipment", def: "汽車運送" },
-            { id: 207, term: "cargo / goods", def: "貨物" },
-            { id: 208, term: "merchandise / product", def: "商品" },
-            { id: 209, term: "dumping", def: "傾銷" },
-            { id: 210, term: "embargo", def: "禁止通商" },
-            { id: 211, term: "gain compliance", def: "使人遵守" },
-            { id: 212, term: "grant / provide", def: "無償幫助/給予" },
-            { id: 213, term: "make concession", def: "讓步" },
-            { id: 214, term: "margin", def: "盈餘 (收入-成本後)" },
-            { id: 215, term: "loss", def: "損失" },
-            { id: 216, term: "quotations", def: "報價 (n.)" },
-            { id: 217, term: "for your reference", def: "供你做參考" },
-            { id: 218, term: "appendix", def: "附錄" },
-            { id: 219, term: "attach", def: "貼上；附上；附加" },
-            { id: 220, term: "confidential", def: "秘密的；機密的" },
-            { id: 221, term: "correspondence", def: "通信；信件" },
-            { id: 222, term: "dictate", def: "口述；支配；命令" },
-            { id: 223, term: "elaborate", def: "詳盡說明；詳盡的；精心製作的" },
-            { id: 224, term: "forward", def: "轉寄；發送" },
-            { id: 225, term: "inquire", def: "調查；詢問" },
-            { id: 226, term: "jot down", def: "略記下；匆匆記下" },
-            { id: 227, term: "notify", def: "通知；告知" },
-            { id: 228, term: "response", def: "回應" },
-            { id: 229, term: "revise", def: "修訂；修改；校訂" },
-            { id: 230, term: "urgent", def: "緊急的；急迫的" },
-            { id: 231, term: "affirm", def: "堅稱；聲明；斷言；確認" },
-            { id: 232, term: "ASAP (as soon as possible)", def: "越快越好" },
-            { id: 233, term: "composition", def: "寫作；作品；作文；作曲" },
-            { id: 234, term: "convene", def: "集合；聚集；開會" },
-            { id: 235, term: "courier", def: "遞送急件的信差；郵遞公司" },
-            { id: 236, term: "draft", def: "草稿；匯票" },
-            { id: 237, term: "enclose", def: "裝入；放入封套" },
-            { id: 238, term: "inform", def: "通知；告知" },
-            { id: 239, term: "issue", def: "發行；發佈" },
-            { id: 240, term: "layout", def: "規劃；設計；編排" },
-            { id: 241, term: "legible", def: "（字跡）可以辨認的；易讀的" },
-            { id: 242, term: "postage", def: "郵資" },
-            { id: 243, term: "proofread", def: "校正；校對" },
-            { id: 244, term: "regarding", def: "關於；有關" },
-            { id: 245, term: "restate", def: "再聲明；重新敘述" },
-            { id: 246, term: "signature", def: "簽字；簽名" },
-            { id: 247, term: "stationery", def: "文具" },
-            { id: 248, term: "write-up", def: "報告書 / 詳細寫" },
-            { id: 249, term: "pending", def: "未決定的；將匯入/扣除的款" },
-            { id: 250, term: "invoice", def: "發票；發貨清單" },
-            { id: 251, term: "payment", def: "支付；付款" },
-            { id: 252, term: "quote", def: "報價" },
-            { id: 253, term: "inventory", def: "詳細目錄；清單；存貨" },
-            { id: 254, term: "letter of credit", def: "信用狀" },
-            { id: 255, term: "special supplement", def: "特別附錄；補充" }
+        // 11-20 (New from PDF)
+        const topic11_Stats = [
+            c(1101, "bar graph", "柱狀圖"), c(1102, "line graph", "折線圖"), c(1103, "pie graph", "圓餅圖"), c(1104, "opinion survey", "民意調查"), c(1105, "demographics", "人口統計"), c(1106, "exchange rate", "匯率"), c(1107, "approval rate", "支持率"), c(1108, "findings", "調查結果"), c(1109, "advanced age", "高齡"), c(1110, "alternative", "替代方案"),
+            c(1111, "amount to", "總計達到"), c(1112, "at the age of", "在...歲時"), c(1113, "in contrast to", "與...相反"), c(1114, "problematic", "有問題的"), c(1115, "projections", "預測"), c(1116, "show a decline", "顯示下降"), c(1117, "replacement", "替換物"), c(1118, "table", "表格"), c(1119, "take a poll", "進行民調"), c(1120, "widespread", "廣泛的"),
+            c(1121, "turnout", "出席人數"), c(1122, "turn out", "結果是"), c(1123, "official statistics", "官方統計"), c(1124, "death toll", "死亡人數"), c(1125, "birth rate", "出生率"), c(1126, "fast-fading", "迅速消失的")
         ];
-
-        const topic03_Contract = [
-            { id: 301, term: "affiliation", def: "附屬；從屬關係" },
-            { id: 302, term: "annual wage increase", def: "年薪調升" },
-            { id: 303, term: "call for", def: "要求 (一般主詞是人)" },
-            { id: 304, term: "require", def: "要求 (一般主詞是「規定」要求…)" },
-            { id: 305, term: "collective bargaining", def: "集體交涉" },
-            { id: 306, term: "contract", def: "合約" },
-            { id: 307, term: "cooperation", def: "合作" },
-            { id: 308, term: "coordination", def: "協調" },
-            { id: 309, term: "employee", def: "雇員" },
-            { id: 310, term: "employer", def: "雇主" },
-            { id: 311, term: "labor", def: "勞工" },
-            { id: 312, term: "labor accident", def: "勞工災害" },
-            { id: 313, term: "labor contract", def: "勞工合約" },
-            { id: 314, term: "management", def: "經營者/層" },
-            { id: 315, term: "labor-management struggle", def: "勞資糾葛" },
-            { id: 316, term: "penal regulation", def: "刑罰規則 / 條例" },
-            { id: 317, term: "penalty", def: "懲罰；罰金" },
-            { id: 318, term: "proposal", def: "提議" },
-            { id: 319, term: "protest", def: "抗議；反對" },
-            { id: 320, term: "reach an agreement", def: "達成協議" },
-            { id: 321, term: "draw a conclusion", def: "做出結論" },
-            { id: 322, term: "stage a strike / be on strike", def: "發起罷工" },
-            { id: 323, term: "terms of contract", def: "合約條款" },
-            { id: 324, term: "the right to strike", def: "罷工權" },
-            { id: 325, term: "the right to work", def: "工作權" },
-            { id: 326, term: "wage dispute", def: "薪金爭議" },
-            { id: 327, term: "working hours", def: "工作時間" },
-            { id: 328, term: "terminate", def: "(v.) 停止；結束；終止" },
-            { id: 329, term: "terms and conditions", def: "條款" },
-            { id: 330, term: "signature", def: "(n.) 簽名；署名" },
-            { id: 331, term: "seal", def: "(n.) 封鉛；封條；印；圖章" }
+        const topic12_Travel1 = [
+            c(1201, "line", "鐵路線"), c(1202, "passenger car", "客車廂"), c(1203, "freight car", "貨車廂"), c(1204, "dining car", "餐車廂"), c(1205, "conductor", "列車長"), c(1206, "express train", "快車"), c(1207, "local train", "區間車/慢車"), c(1208, "junction", "轉運站"), c(1209, "on schedule", "準時"), c(1210, "one-way ticket", "單程票"),
+            c(1211, "round-trip ticket", "來回票"), c(1212, "lane", "車道"), c(1213, "turnpike", "收費公路"), c(1214, "shortcut", "捷徑"), c(1215, "cut corners", "抄捷徑/省事"), c(1216, "evacuate", "疏散"), c(1217, "go off on a trip", "去旅行"), c(1218, "punctured tire", "爆胎"), c(1219, "non-stop", "直達"), c(1220, "on board", "搭乘"),
+            c(1221, "opposite side", "對面"), c(1222, "out-of-service", "暫停服務"), c(1223, "overbooked", "超賣"), c(1224, "trek", "長途跋涉"), c(1225, "accommodation", "住宿"), c(1226, "boarding pass", "登機證"), c(1227, "brochure", "小冊子"), c(1228, "checkout", "退房"), c(1229, "confirmation", "確認"), c(1230, "customs", "海關"),
+            c(1231, "tariff", "關稅"), c(1232, "expedition", "探險"), c(1233, "flight", "航班"), c(1234, "itinerary", "行程表"), c(1235, "lodge", "小屋"), c(1236, "luxurious", "豪華的"), c(1237, "motel", "汽車旅館"), c(1238, "carousel", "行李轉盤"), c(1239, "lost and found", "失物招領"), c(1240, "duty-free", "免稅"),
+            c(1241, "fare", "票價"), c(1242, "souvenir", "紀念品"), c(1243, "embassy", "大使館"), c(1244, "consulate", "領事館"), c(1245, "expatriate", "外派人員"), c(1246, "island hopping", "跳島遊"), c(1247, "reception desk", "接待櫃台"), c(1248, "wake-up call", "晨喚服務"), c(1249, "tourist attraction", "景點")
         ];
-
-        const topic04_Contract2 = [
-            { id: 401, term: "reveal", def: "(v.) 揭露；透露" },
-            { id: 402, term: "take effect", def: "生效" },
-            { id: 403, term: "expire", def: "(v.) 期滿；終止" },
-            { id: 404, term: "waive", def: "(v.) 放棄權利" },
-            { id: 405, term: "offend", def: "(v.) 犯罪；冒犯；得罪" },
-            { id: 406, term: "breach", def: "(n.) 違背；破壞；破裂" },
-            { id: 407, term: "secure", def: "(adj.) 安全的；可靠的" },
-            { id: 408, term: "agreement", def: "(n.) 同意；協定；協議" },
-            { id: 409, term: "statutory", def: "(adj.) 法令的；法定的" },
-            { id: 410, term: "statutory obligations", def: "法定義務" },
-            { id: 411, term: "comply with", def: "(vi.) 順從；答應；遵守" },
-            { id: 412, term: "apply", def: "適用" },
-            { id: 413, term: "fulfill", def: "履行；完成" },
-            { id: 414, term: "execute", def: "(vt.) 執行；實行；完成；處死" },
-            { id: 415, term: "obligation", def: "(n.) 義務；職責；債務" },
-            { id: 416, term: "restrict", def: "(vt.) 限制；約束；限定" },
-            { id: 417, term: "disclose", def: "(vt.) 揭露；透露" },
-            { id: 418, term: "grant", def: "(vt.) 准予；承認(某事為真)～" },
-            { id: 419, term: "exclusive", def: "(adj.) 排外的；獨佔的" },
-            { id: 420, term: "in accordance with / pursuant to", def: "與…一致" },
-            { id: 421, term: "stipulate", def: "(v.) 規定；保證" },
-            { id: 422, term: "provide for", def: "為…準備；提供給…" },
-            { id: 423, term: "refer to", def: "提到" },
-            { id: 424, term: "interested party", def: "感興趣方" },
-            { id: 425, term: "said", def: "上述的" },
-            { id: 426, term: "shall / may", def: "將 / 會" },
-            { id: 427, term: "licensor", def: "(n.) 認可證頒發者/授予權力者" },
-            { id: 428, term: "settlement", def: "(n.) 解決；結算；協議" },
-            { id: 429, term: "subcontract", def: "(n.) 轉包合約" },
-            { id: 430, term: "liable", def: "(adj.) 有責任的；有義務的" },
-            { id: 431, term: "alter", def: "改變；修改" },
-            { id: 432, term: "legitimate", def: "合法的；正當的；婚生的" },
-            { id: 433, term: "warrant", def: "(n.) 委任狀/憑證/許可權" }
+        const topic13_Travel2 = [
+            c(1301, "packing", "打包"), c(1302, "peak season", "旺季"), c(1303, "reservation", "預約"), c(1304, "sightseeing", "觀光"), c(1305, "suite", "套房"), c(1306, "valid", "有效的"), c(1307, "baggage claim", "行李領取處"), c(1308, "breathtaking", "驚人的"), c(1309, "concierge", "禮賓人員"), c(1310, "cruise", "郵輪"),
+            c(1311, "deluxe", "豪華的"), c(1312, "destination", "目的地"), c(1313, "exotic", "異國風情的"), c(1314, "fasten", "繫緊"), c(1315, "flight attendant", "空服員"), c(1316, "jet lag", "時差"), c(1317, "luggage", "行李"), c(1318, "metal detector", "金屬探測器"), c(1319, "overseas", "海外的"), c(1320, "passenger", "乘客"),
+            c(1321, "porter", "搬運工"), c(1322, "stopover", "中途停留"), c(1323, "vacant", "空缺的"), c(1324, "voyage", "航行"), c(1325, "carry-on", "隨身行李"), c(1326, "stow", "裝載"), c(1327, "personal belongings", "個人物品"), c(1328, "refreshments", "茶點"), c(1329, "snack", "點心"), c(1330, "aisle seat", "走道位"),
+            c(1331, "window seat", "靠窗位"), c(1332, "turbulence", "亂流"), c(1333, "headset", "耳機"), c(1334, "crew", "機組員"), c(1335, "cabin crew", "客艙組員"), c(1336, "blanket", "毛毯"), c(1337, "toiletries", "盥洗用品"), c(1338, "stub", "票根"), c(1339, "altitude", "高度"), c(1340, "longitude", "經度"),
+            c(1341, "latitude", "緯度"), c(1342, "bound for", "前往"), c(1343, "runway", "跑道"), c(1344, "departure", "出發"), c(1345, "arrival", "抵達"), c(1346, "disembarkation", "下機/船"), c(1347, "immigration", "移民局"), c(1348, "immigrant", "移民"), c(1349, "quarantine", "檢疫"), c(1350, "exploration", "探險")
         ];
-
-        const topic05_Speech = [
-            { id: 501, term: "write someone over", def: "(寫信) 請人來" },
-            { id: 502, term: "thank-you note", def: "致謝函" },
-            { id: 503, term: "get-together", def: "親朋好友的聚會" },
-            { id: 504, term: "cocktail party", def: "以喝酒為主的聚會" },
-            { id: 505, term: "dress-up party", def: "須盛裝赴會的宴會" },
-            { id: 506, term: "after-dinner speech", def: "餐後演說" },
-            { id: 507, term: "award ceremony", def: "頒獎儀式" },
-            { id: 508, term: "dedication", def: "獻辭；奉獻" },
-            { id: 509, term: "deliver an address / a speech", def: "發表演說" },
-            { id: 510, term: "express one's condolence over", def: "悼念" },
-            { id: 511, term: "farewell address", def: "告別演說" },
-            { id: 512, term: "inaugural ceremony", def: "就職演說" },
-            { id: 513, term: "inauguration", def: "(n.) 就職" },
-            { id: 514, term: "nomination speech", def: "提名演說" },
-            { id: 515, term: "opening ceremony", def: "開幕儀式" },
-            { id: 516, term: "party convention", def: "政黨大會" },
-            { id: 517, term: "pay a tribute to", def: "向……致讚美之詞" },
-            { id: 518, term: "piano recital", def: "鋼琴演奏會" },
-            { id: 519, term: "publication party", def: "出版招待會" },
-            { id: 520, term: "wedding banquet", def: "婚宴" },
-            { id: 521, term: "welcome party", def: "歡迎會" },
-            { id: 522, term: "you're cordially invited to", def: "竭誠歡迎您的光臨" },
-            { id: 523, term: "cordial", def: "誠摯的" },
-            { id: 524, term: "arrival of a guest", def: "貴賓來訪" },
-            { id: 525, term: "campaign", def: "活動" },
-            { id: 526, term: "launch a campaign", def: "辦活動" },
-            { id: 527, term: "admission fee", def: "入場費" },
-            { id: 528, term: "be admitted to + 活動", def: "(被給予入場資格)" },
-            { id: 529, term: "reception", def: "接受；接待處" }
+        const topic14_Weather = [
+            c(1401, "storm", "暴風雨"), c(1402, "rainfall", "降雨量"), c(1403, "hail", "冰雹"), c(1404, "lightning rod", "避雷針"), c(1405, "fog", "霧"), c(1406, "heavy snowfall", "大雪"), c(1407, "blizzard", "暴風雪"), c(1408, "breeze", "微風"), c(1409, "tornado", "龍捲風"), c(1410, "wind velocity", "風速"),
+            c(1411, "temperature", "氣溫"), c(1412, "thermometer", "溫度計"), c(1413, "humidity", "濕度"), c(1414, "atmospheric pressure", "氣壓"), c(1415, "flood", "洪水"), c(1416, "avalanche", "雪崩"), c(1417, "Antarctic", "南極"), c(1418, "Arctic", "北極"), c(1419, "spawn", "釀成"), c(1420, "chill", "寒意"),
+            c(1421, "cold wave", "寒流"), c(1422, "crisp", "涼爽的"), c(1423, "heavy fog", "濃霧"), c(1424, "Meteorological Agency", "氣象局"), c(1425, "mild winter", "暖冬"), c(1426, "rain cloud", "雨雲"), c(1427, "scorching", "酷熱的"), c(1428, "snowstorm", "暴風雪"), c(1429, "taper off", "逐漸減弱"), c(1430, "tropical depression", "熱帶低壓"),
+            c(1431, "typhoon area", "颱風區"), c(1432, "visibility", "能見度"), c(1433, "warm current", "暖流"), c(1434, "weather station", "氣象站"), c(1435, "weatherperson", "氣象員"), c(1436, "wintry", "寒冷的"), c(1437, "shape up", "成形"), c(1438, "light wind", "輕風"), c(1439, "muggy", "悶熱的"), c(1440, "precipitation", "降水量")
         ];
-
-        const topic06_News = [
-            { id: 601, term: "action plan", def: "行動計畫" },
-            { id: 602, term: "approve protocol", def: "批准協議書" },
-            { id: 603, term: "protocol", def: "(國際性)條約" },
-            { id: 604, term: "assume office", def: "就任" },
-            { id: 605, term: "coalition government", def: "聯合政府" },
-            { id: 606, term: "economic summit", def: "經濟峰會" },
-            { id: 607, term: "in favor of", def: "支持" },
-            { id: 608, term: "oppose", def: "反對" },
-            { id: 609, term: "incumbent president", def: "現任總統" },
-            { id: 610, term: "interpellation", def: "質詢" },
-            { id: 611, term: "legal ground", def: "法律依據" },
-            { id: 612, term: "mainstream faction", def: "主流派" },
-            { id: 613, term: "military buildup", def: "增強軍備" },
-            { id: 614, term: "multi-lateral relations", def: "多邊關係" },
-            { id: 615, term: "news agency", def: "新聞通訊社" },
-            { id: 616, term: "opposition party", def: "反對黨" },
-            { id: 617, term: "public pledge", def: "公開宣言" },
-            { id: 618, term: "resume talks", def: "重開會談" },
-            { id: 619, term: "ruling party", def: "執政黨" },
-            { id: 620, term: "run in election", def: "參選" },
-            { id: 621, term: "sectionalism", def: "派系主義" },
-            { id: 622, term: "trade friction", def: "貿易摩擦" },
-            { id: 623, term: "a friction between…", def: "在…之中的摩擦" },
-            { id: 624, term: "troubleshooter", def: "調解糾紛的人" },
-            { id: 625, term: "embezzle", def: "盜用；挪用；侵佔（公款等）" },
-            { id: 626, term: "trespass in national airspace", def: "侵犯領空" },
-            { id: 627, term: "scandal", def: "醜聞；引人憤慨之事" },
-            { id: 628, term: "out-of-court settlement", def: "庭外和解" },
-            { id: 629, term: "accused", def: "被告；被控訴之人" },
-            { id: 630, term: "defendant", def: "被告" },
-            { id: 631, term: "lawyer", def: "律師" },
-            { id: 632, term: "plaintiff", def: "原告；起訴者" },
-            { id: 633, term: "prosecution", def: "起訴" },
-            { id: 634, term: "assembly", def: "議會(美國)；集會" },
-            { id: 635, term: "evidence / evident", def: "(n.) 證據 / (adj.) 明顯地" },
-            { id: 636, term: "under control", def: "在控制中" },
-            { id: 637, term: "in search of", def: "搜索" },
-            { id: 638, term: "juvenile delinquency", def: "青少年犯罪" },
-            { id: 639, term: "juvenile delinquents", def: "青少年罪犯" },
-            { id: 640, term: "witness", def: "目擊者 / 目擊" },
-            { id: 641, term: "probe", def: "嚴密的調查" },
-            { id: 642, term: "prior to", def: "優先於" },
-            { id: 643, term: "allegedly", def: "據稱" },
-            { id: 644, term: "casualty", def: "死傷者" },
-            { id: 645, term: "collide with", def: "與……衝撞" },
-            { id: 646, term: "devastating / destructive", def: "破壞性的" },
-            { id: 647, term: "emergency landing", def: "緊急迫降" },
-            { id: 648, term: "inherit", def: "繼承" },
-            { id: 649, term: "jolt", def: "晃動" },
-            { id: 650, term: "official communique", def: "正式公報" },
-            { id: 651, term: "break out / take place in + Place", def: "在某地發生" },
-            { id: 652, term: "benefit / benefit from", def: "有益於... / 受益於..." }
+        const topic15_Accounting = [
+            c(1501, "accountant", "會計師"), c(1502, "audit", "審計"), c(1503, "auditor", "稽核員"), c(1504, "financial statements", "財務報表"), c(1505, "income statement", "損益表"), c(1506, "balance sheet", "資產負債表"), c(1507, "cash flow", "現金流"), c(1508, "fiscal year", "會計年度"), c(1509, "close the book", "結帳"), c(1510, "cut-off date", "截止日"),
+            c(1511, "transaction", "交易"), c(1512, "profit/loss", "損益"), c(1513, "net profit", "淨利"), c(1514, "gross", "總的"), c(1515, "gross margin", "毛利率"), c(1516, "GDP", "國內生產毛額"), c(1517, "administrative expense", "管理費"), c(1518, "operating income", "營業利益"), c(1519, "earnings", "盈餘"), c(1520, "revenue", "營收"),
+            c(1521, "expense", "費用"), c(1522, "pre-tax", "稅前"), c(1523, "tax provision", "稅金準備"), c(1524, "bottom line", "淨利/底線"), c(1525, "inventory", "存貨"), c(1526, "credit", "貸方"), c(1527, "debt", "借方/債務"), c(1528, "accounts receivable", "應收帳款"), c(1529, "accounts payable", "應付帳款"), c(1530, "depreciation", "折舊"),
+            c(1531, "amortization", "攤銷"), c(1532, "write off", "註銷"), c(1533, "cash equivalents", "約當現金"), c(1534, "asset", "資產"), c(1535, "liability", "負債"), c(1536, "stockholder's equity", "股東權益"), c(1537, "current asset", "流動資產"), c(1538, "retained earnings", "保留盈餘"), c(1539, "off balance", "帳不平"), c(1540, "turnover", "週轉率"),
+            c(1541, "cash basis", "現金制"), c(1542, "tax-effect", "稅務效應"), c(1543, "quarter", "季度"), c(1544, "window dressing", "美化帳目")
         ];
-
-        const topic07_Sports = [
-            { id: 701, term: "baseball", def: "棒球" },
-            { id: 702, term: "football", def: "美式足球" },
-            { id: 703, term: "soccer", def: "英式足球" },
-            { id: 704, term: "tennis", def: "網球" },
-            { id: 705, term: "volleyball", def: "排球" },
-            { id: 706, term: "table tennis", def: "乒乓球" },
-            { id: 707, term: "billiards", def: "撞球" },
-            { id: 708, term: "scuba diving", def: "潛水" },
-            { id: 709, term: "fishing", def: "釣魚" },
-            { id: 710, term: "surfing", def: "衝浪" },
-            { id: 711, term: "sailing", def: "帆船運動" },
-            { id: 712, term: "rowing", def: "划船" },
-            { id: 713, term: "sledding", def: "滑雪橇" },
-            { id: 714, term: "skating", def: "溜冰" },
-            { id: 715, term: "horseback riding", def: "騎馬" },
-            { id: 716, term: "hiking", def: "徒步旅行；登山" },
-            { id: 717, term: "rival", def: "敵人" },
-            { id: 718, term: "contestant", def: "選手" },
-            { id: 719, term: "contest / competition", def: "比賽" },
-            { id: 720, term: "clear the qualifying round", def: "通過預賽" },
-            { id: 721, term: "doping check", def: "藥物檢查" },
-            { id: 722, term: "elimination", def: "淘汰" },
-            { id: 723, term: "the final round", def: "決賽" },
-            { id: 724, term: "hold a tournament", def: "舉辦錦標賽/大會" },
-            { id: 725, term: "home-town / local", def: "當地的" },
-            { id: 726, term: "make a reservation", def: "預約" },
-            { id: 727, term: "the opening game", def: "開場賽" },
-            { id: 728, term: "play-off", def: "加賽" },
-            { id: 729, term: "preliminary", def: "預賽" },
-            { id: 730, term: "quarter finals", def: "半決賽前的比賽" },
-            { id: 731, term: "record-breaking", def: "破紀錄的" },
-            { id: 732, term: "seed", def: "種子選手" },
-            { id: 733, term: "season-ticket", def: "賽季聯賽票" },
-            { id: 734, term: "secure the second place", def: "得第二名" },
-            { id: 735, term: "semifinals", def: "半決賽" },
-            { id: 736, term: "sports lottery", def: "體育彩票" },
-            { id: 737, term: "visitor", def: "客人；客隊" },
-            { id: 738, term: "ticket agency", def: "售票處" },
-            { id: 739, term: "underdog", def: "敗方" },
-            { id: 740, term: "win the contest", def: "獲勝" }
+        const topic16_Finance = [
+            c(1601, "term", "期限/條款"), c(1602, "financial", "金融的"), c(1603, "budget", "預算"), c(1604, "profit margin", "利潤率"), c(1605, "profitable", "獲利的"), c(1606, "mark up", "加價"), c(1607, "gain", "收益"), c(1608, "operating expense", "營業費用"), c(1609, "overhead", "經常開支"), c(1610, "purchasing expense", "採購費"),
+            c(1611, "expenditure", "支出"), c(1612, "rent of premises", "租金"), c(1613, "premise", "場所/前提"), c(1614, "billing", "開票"), c(1615, "retrench", "緊縮"), c(1616, "cost", "成本"), c(1617, "direct cost", "直接成本"), c(1618, "principal", "本金/負責人"), c(1619, "principal (adj)", "主要的"), c(1620, "principle", "原則"),
+            c(1621, "interest rate", "利率"), c(1622, "default", "違約"), c(1623, "dividend", "股利"), c(1624, "return", "報酬"), c(1625, "rate of return", "報酬率"), c(1626, "current savings", "活存"), c(1627, "time savings", "定存"), c(1628, "undervalue", "低估"), c(1629, "balance", "餘額"), c(1630, "bond", "債券"),
+            c(1631, "chamber of commerce", "商會"), c(1632, "deficit", "赤字"), c(1633, "depreciation", "貶值"), c(1634, "devaluation", "貶值"), c(1635, "exempt", "免除的"), c(1636, "fluctuation", "波動"), c(1637, "inflation", "通膨"), c(1638, "withdraw", "提款"), c(1639, "bankrupt", "破產"), c(1640, "capital", "資本"),
+            c(1641, "convert", "轉換"), c(1642, "currency", "貨幣"), c(1643, "deduction", "扣除"), c(1644, "deposit", "存款/押金"), c(1645, "depression", "蕭條"), c(1646, "discrepancy", "差異"), c(1647, "fiscal", "財政的"), c(1648, "fund", "基金"), c(1649, "holding", "持股"), c(1650, "ledger", "分類帳"),
+            c(1651, "overdue", "逾期的"), c(1652, "overdraft", "透支"), c(1653, "remuneration", "報酬"), c(1654, "currency exchange", "匯兌"), c(1655, "financier", "金融家"), c(1656, "make a claim", "索賠/請款")
         ];
-
-        const topic08_Sports2 = [
-            { id: 801, term: "goalkeeper", def: "守門員" },
-            { id: 802, term: "defense", def: "後衛 (v.) 保護；防衛" },
-            { id: 803, term: "jersey", def: "運動衫" },
-            { id: 804, term: "aerobics", def: "有氧運動" },
-            { id: 805, term: "coach", def: "教練" },
-            { id: 806, term: "compete", def: "競爭；比賽" },
-            { id: 807, term: "defeat", def: "(n.) 失敗 (v.) 擊敗" },
-            { id: 808, term: "fitness", def: "適合；恰當；身體健康" },
-            { id: 809, term: "gym", def: "健身房；體育館" },
-            { id: 810, term: "league", def: "聯盟；同盟" },
-            { id: 811, term: "marathon", def: "馬拉松；耐力比賽" },
-            { id: 812, term: "mountaineering", def: "登山運動" },
-            { id: 813, term: "participate", def: "參與；參加" },
-            { id: 814, term: "recreation", def: "娛樂；消遣活動" },
-            { id: 815, term: "relaxation", def: "放鬆；緩和；休息" },
-            { id: 816, term: "rigor", def: "嚴謹；嚴苛；艱苦" },
-            { id: 817, term: "stadium", def: "體育場" },
-            { id: 818, term: "stroll", def: "散步；閒逛" },
-            { id: 819, term: "surrender", def: "（向敵人）投降；放棄" },
-            { id: 820, term: "time-out", def: "暫停" },
-            { id: 821, term: "trophy", def: "獎品；獎盃；戰利品" },
-            { id: 822, term: "usher", def: "(n.) 引座員；招待員 (v.) 引領" },
-            { id: 823, term: "combative", def: "好戰的；好鬥的" },
-            { id: 824, term: "default", def: "默認結果；棄權" },
-            { id: 825, term: "forfeit", def: "罰款；(因違規而)喪失" },
-            { id: 826, term: "intensity", def: "強度；強烈" },
-            { id: 827, term: "leisure", def: "空閒；閒暇時間" },
-            { id: 828, term: "massage", def: "按摩；揉捏" },
-            { id: 829, term: "muscle", def: "肌肉；力量" },
-            { id: 830, term: "pastime", def: "娛樂；消遣" },
-            { id: 831, term: "runner-up", def: "第二名；亞軍" },
-            { id: 832, term: "spectator", def: "觀眾；旁觀者" },
-            { id: 833, term: "stretch", def: "伸張；伸開；伸展" },
-            { id: 834, term: "surfing", def: "衝浪" },
-            { id: 835, term: "tactic", def: "戰略；策略（常用複數）" },
-            { id: 836, term: "strategy", def: "長期策略" },
-            { id: 837, term: "tournament", def: "比賽；錦標賽" },
-            { id: 838, term: "judge / referee / umpire", def: "裁判；仲裁者" },
-            { id: 839, term: "record", def: "(n.) (v.) 記錄" }
+        const topic17_Business1 = [
+            c(1701, "public-held corporation", "公開上市公司"), c(1702, "listed company", "上市公司"), c(1703, "SME", "中小企業"), c(1704, "moms and pops", "雜貨店/家族小店"), c(1705, "family owned", "家族企業"), c(1706, "state owned", "國營企業"), c(1707, "start-up", "新創公司"), c(1708, "angel investor", "天使投資人"), c(1709, "incubator", "孵化器"), c(1710, "corporation", "公司"),
+            c(1711, "enterprise", "企業"), c(1712, "firm", "事務所/公司"), c(1713, "affiliate", "關係企業"), c(1714, "headquarters", "總部"), c(1715, "subsidiary", "子公司"), c(1716, "branch", "分公司"), c(1717, "arm", "分支機構"), c(1718, "parent company", "母公司"), c(1719, "holding company", "控股公司"), c(1720, "joint venture", "合資"),
+            c(1721, "franchiser", "授權商"), c(1722, "distributor", "經銷商"), c(1723, "consortium", "財團/聯盟"), c(1724, "department", "部門"), c(1725, "division", "事業部"), c(1726, "found", "創立"), c(1727, "establish", "建立"), c(1728, "incorporate", "成立公司"), c(1729, "articles of incorporation", "公司章程"), c(1730, "industry", "產業"),
+            c(1731, "sector", "部門/領域"), c(1732, "multinational", "跨國的"), c(1733, "local partner", "在地夥伴"), c(1734, "be located in", "位於"), c(1735, "expansion", "擴張"), c(1736, "leading", "領先的"), c(1737, "organization", "組織"), c(1738, "institution", "機構"), c(1739, "shut down", "停工"), c(1740, "alliance", "聯盟"),
+            c(1741, "M&A", "併購"), c(1742, "takeover", "接管"), c(1743, "amateur", "業餘者"), c(1744, "coordinate", "協調"), c(1745, "deadline", "截止日"), c(1746, "novice", "新手"), c(1747, "recommendation", "推薦"), c(1748, "resign", "辭職"), c(1749, "retire", "退休"), c(1750, "substitute", "代理人")
         ];
-
-        const topic09_Housing = [
-            { id: 901, term: "bank account balance", def: "銀行存款" },
-            { id: 902, term: "real estate transaction", def: "房地產交易" },
-            { id: 903, term: "credit card", def: "信用卡" },
-            { id: 904, term: "utilities", def: "水電費" },
-            { id: 905, term: "as long as", def: "只要" },
-            { id: 906, term: "as many as", def: "多達" },
-            { id: 907, term: "as much as", def: "和……一樣多 (不可數)" },
-            { id: 908, term: "affluent", def: "豐富的；富裕的" },
-            { id: 909, term: "be on the increase", def: "增加中" },
-            { id: 910, term: "lack", def: "缺乏……" },
-            { id: 911, term: "hamper", def: "阻礙；抑制" },
-            { id: 912, term: "long-standing", def: "經年累月的" },
-            { id: 913, term: "long-term", def: "長期的" },
-            { id: 914, term: "short-term", def: "短期的" },
-            { id: 915, term: "out of control", def: "失去控制" },
-            { id: 916, term: "out of one's reach", def: "力所不能及之處" },
-            { id: 917, term: "prestigious", def: "有名聲的" },
-            { id: 918, term: "prospect", def: "預估；展望" },
-            { id: 919, term: "recession", def: "衰退；不景氣" },
-            { id: 920, term: "surpass", def: "超越" },
-            { id: 921, term: "exceed", def: "超過；超越" },
-            { id: 922, term: "vicinity", def: "臨近" },
-            { id: 923, term: "appliance", def: "設備；器具；工具" },
-            { id: 924, term: "room charge", def: "住房費" },
-            { id: 925, term: "burglar", def: "竊賊；夜間入屋行竊的小偷" },
-            { id: 926, term: "community", def: "社區" },
-            { id: 927, term: "electronics", def: "電子學" },
-            { id: 928, term: "electronic", def: "電子的 (device 裝置)" },
-            { id: 929, term: "fire extinguisher", def: "滅火器" },
-            { id: 930, term: "furniture", def: "傢俱" },
-            { id: 931, term: "garbage disposal", def: "垃圾處理機" }
+        const topic18_Business2 = [
+            c(1801, "competitive edge", "競爭優勢"), c(1802, "key player", "主要參與者"), c(1803, "monopoly", "壟斷"), c(1804, "advantage", "優勢"), c(1805, "market share", "市佔率"), c(1806, "marketing", "行銷"), c(1807, "product portfolio", "產品組合"), c(1808, "range", "範圍/系列"), c(1809, "target market", "目標市場"), c(1810, "core business", "核心業務"),
+            c(1811, "core competence", "核心競爭力"), c(1812, "synergy", "綜效"), c(1813, "viable", "可行的"), c(1814, "break-even point", "損益平衡點"), c(1815, "lucrative", "獲利的"), c(1816, "turn around", "好轉"), c(1817, "streamline", "簡化/效率化"), c(1818, "realignment", "重組"), c(1819, "consolidation", "整併"), c(1820, "rationalize", "合理化"),
+            c(1821, "restructure", "重整"), c(1822, "diversify", "多樣化"), c(1823, "spin-off", "分拆"), c(1824, "disclosure", "揭露"), c(1825, "accountability", "當責"), c(1826, "solvent", "有償債能力的"), c(1827, "collapse", "瓦解"), c(1828, "go bust", "破產"), c(1829, "ailing", "營運不佳的"), c(1830, "liquidate", "清算"),
+            c(1831, "commerce", "商業"), c(1832, "feasibility study", "可行性研究"), c(1833, "performance", "績效"), c(1834, "due diligence", "盡職調查"), c(1835, "letter of intent", "意向書"), c(1836, "allocate", "分配"), c(1837, "applicant", "申請人"), c(1838, "authorize", "授權"), c(1839, "capability", "能力"), c(1840, "collaboration", "合作"),
+            c(1841, "consultation", "諮詢"), c(1842, "income", "收入"), c(1843, "lay off", "資遣"), c(1844, "part-time", "兼職"), c(1845, "permanent", "正職/永久"), c(1846, "promote", "晉升"), c(1847, "recruit", "招募"), c(1848, "resume", "履歷"), c(1849, "CV", "詳細履歷"), c(1850, "memo", "備忘錄"),
+            c(1851, "appoint", "任命"), c(1852, "candidate", "候選人"), c(1853, "competent", "勝任的"), c(1854, "personnel", "人事/員工")
         ];
-
-        const topic10_Housing2 = [
-            { id: 1001, term: "landlord", def: "地主；房東" },
-            { id: 1002, term: "laundry", def: "洗衣店；要洗或已洗好的衣物" },
-            { id: 1003, term: "lease", def: "租約；房租；租用" },
-            { id: 1004, term: "mattress", def: "床墊" },
-            { id: 1005, term: "mortgage", def: "房屋貸款；抵押" },
-            { id: 1006, term: "ornament", def: "裝飾品" },
-            { id: 1007, term: "plumbing", def: "水管設施" },
-            { id: 1008, term: "possession", def: "所有；個人財產" },
-            { id: 1009, term: "real estate", def: "不動產" },
-            { id: 1010, term: "renovate", def: "更新；修復；恢復" },
-            { id: 1011, term: "rural", def: "鄉下的、田園的" },
-            { id: 1012, term: "suburb", def: "（常用複數）郊區；近郊" },
-            { id: 1013, term: "urban", def: "都市的；都市式的" },
-            { id: 1014, term: "down payment", def: "頭期款；預付金；定金" },
-            { id: 1015, term: "fire alarm", def: "火災警報器" },
-            { id: 1016, term: "furnishings", def: "傢俱；室內陳設" },
-            { id: 1017, term: "garage", def: "車庫；修車廠" },
-            { id: 1018, term: "kitchenware", def: "廚房用具" },
-            { id: 1019, term: "launderette", def: "自助洗衣店" },
-            { id: 1020, term: "lawn", def: "草坪；草地" },
-            { id: 1021, term: "loan shark", def: "放高利貸者" },
-            { id: 1022, term: "messy", def: "雜亂的；骯髒的" },
-            { id: 1023, term: "neighborhood", def: "街坊；住宅區；臨近地區" },
-            { id: 1024, term: "playground", def: "運動場；遊戲場；遊樂場" },
-            { id: 1025, term: "porch", def: "門廊；遊廊" },
-            { id: 1026, term: "property", def: "財產；地產" },
-            { id: 1027, term: "relocate", def: "重新安置；遷徙" },
-            { id: 1028, term: "residence", def: "住所；公館；居住" },
-            { id: 1029, term: "storage", def: "儲藏；藏室" },
-            { id: 1030, term: "tenant", def: "房客；承租人" },
-            { id: 1031, term: "utility", def: "公共事業；公用設施" },
-            { id: 1032, term: "balcony", def: "陽臺；包廂" },
-            { id: 1033, term: "chore", def: "家務事；困難繁瑣無趣的工作" }
+        const topic19_Positions = [
+            c(1901, "CFO", "財務長"), c(1902, "CEO", "執行長"), c(1903, "chairperson", "主席"), c(1904, "president", "總裁/校長"), c(1905, "managing director", "常務董事"), c(1906, "vice president", "副總裁"), c(1907, "executive", "高階主管"), c(1908, "controller", "主計長"), c(1909, "senior manager", "資深經理"), c(1910, "general manager", "總經理"),
+            c(1911, "supervisor", "主管"), c(1912, "hierarchy", "階層"), c(1913, "flat", "扁平的"), c(1914, "corporate ladder", "升遷階梯"), c(1915, "bureaucracy", "官僚"), c(1916, "tenure", "任期"), c(1917, "deputy", "代理人"), c(1918, "deputy director", "副局長"), c(1919, "incumbent", "現任的"), c(1920, "entrepreneur", "創業家"),
+            c(1921, "tycoon", "大亨")
+        ];
+        const topic20_Investment = [
+            c(2001, "decision-making", "決策"), c(2002, "venture capital", "創投"), c(2003, "shareholder", "股東"), c(2004, "stockbroker", "股票經紀"), c(2005, "stock exchange", "證交所"), c(2006, "yield", "殖利率/產出"), c(2007, "IPO", "首次公開募股"), c(2008, "stock", "股票"), c(2009, "share", "股份"), c(2010, "securities", "證券"),
+            c(2011, "equities", "股票/權益"), c(2012, "ordinary share", "普通股"), c(2013, "voting rights", "投票權"), c(2014, "preference share", "特別股"), c(2015, "blue chips", "績優股"), c(2016, "futures", "期貨"), c(2017, "speculation", "投機"), c(2018, "insider trading", "內線交易"), c(2019, "fraud", "詐欺"), c(2020, "manipulation", "操縱"),
+            c(2021, "nosedive", "暴跌"), c(2022, "take a nosedive", "急跌"), c(2023, "surge", "激增"), c(2024, "rebound", "反彈"), c(2025, "recover", "恢復"), c(2026, "regain ground", "收復失土"), c(2027, "sell-off", "拋售"), c(2028, "fluctuate", "波動"), c(2029, "rally", "回升"), c(2030, "profit-taking", "獲利了結"),
+            c(2031, "erratic", "不穩定的"), c(2032, "volatile", "波動劇烈的"), c(2033, "bumpy", "顛簸的"), c(2034, "downturn", "低迷"), c(2035, "consecutive", "連續的"), c(2036, "hike", "大幅提高"), c(2037, "reduction", "減少"), c(2038, "current", "現行的"), c(2039, "deficit-ridden", "赤字累累")
+        ];
+        const topic21_Benefits = [
+            c(2101, "be entitled to", "有資格"), c(2102, "be eligible for", "有資格"), c(2103, "minimum wage", "基本工資"), c(2104, "paycheck", "薪資單"), c(2105, "payroll", "薪資名單"), c(2106, "remuneration", "報酬"), c(2107, "performance-related pay", "績效薪資"), c(2108, "hourly payroll", "時薪制"), c(2109, "hourly wage", "時薪"), c(2110, "retirement allowance", "退休金"),
+            c(2111, "raise", "加薪"), c(2112, "award", "獎勵"), c(2113, "health insurance", "健保"), c(2114, "perks", "津貼/福利"), c(2115, "welfare", "福利"), c(2116, "allowance", "津貼"), c(2117, "subsidized", "有補助的"), c(2118, "maternity leave", "產假"), c(2119, "paid holiday", "有薪假")
+        ];
+        const topic22_Production1 = [
+            c(2201, "R & D", "研發"), c(2202, "breakthrough", "突破"), c(2203, "innovation", "創新"), c(2204, "laboratory", "實驗室"), c(2205, "prototype", "原型"), c(2206, "specifications", "規格"), c(2207, "benchmark", "基準"), c(2208, "patent", "專利"), c(2209, "IP rights", "智慧財產權"), c(2210, "infringe", "侵犯"),
+            c(2211, "state of the art", "最先進的"), c(2212, "cutting-edge", "尖端的"), c(2213, "gadget", "小裝置"), c(2214, "product", "產品"), c(2215, "output", "產出"), c(2216, "plant", "工廠"), c(2217, "operation", "營運"), c(2218, "rotation", "輪班/旋轉"), c(2219, "capacity", "產能"), c(2220, "shortage", "短缺"),
+            c(2221, "assembly line", "組裝線"), c(2222, "defective", "有瑕疵的"), c(2223, "phase", "階段"), c(2224, "facility", "設施"), c(2225, "equipment", "設備"), c(2226, "inspection", "檢驗"), c(2227, "duplicate", "複製"), c(2228, "vendor", "供應商"), c(2229, "supplier", "供應商"), c(2230, "procure", "採購"),
+            c(2231, "in-house", "內部的"), c(2232, "raw materials", "原料"), c(2233, "module", "模組"), c(2234, "BTO", "接單生產")
+        ];
+        const topic23_Production2 = [
+            c(2301, "manufacturing", "製造"), c(2302, "manufactory", "製造廠"), c(2303, "semiconductor", "半導體"), c(2304, "material", "材料"), c(2305, "machinery", "機械"), c(2306, "automotive", "汽車的"), c(2307, "construction", "建築"), c(2308, "general contractor", "總承包商"), c(2309, "civil engineering", "土木工程"), c(2310, "chemical", "化學的"),
+            c(2311, "petroleum", "石油"), c(2312, "pharmaceutical", "製藥的"), c(2313, "distiller", "蒸餾廠"), c(2314, "logistics", "物流"), c(2315, "telecommunication", "電信"), c(2316, "fishery", "漁業"), c(2317, "forestry", "林業"), c(2318, "artificial", "人造的"), c(2319, "manipulate", "操作"), c(2320, "draft", "草圖"),
+            c(2321, "fragile", "易碎的")
+        ];
+        const topic24_Commute = [
+            c(2401, "commute", "通勤"), c(2402, "commuter", "通勤者"), c(2403, "tram", "輕軌"), c(2404, "transfer", "轉乘"), c(2405, "freeway", "高速公路"), c(2406, "expressway", "快速道路"), c(2407, "toll booth", "收費站"), c(2408, "overpass", "天橋"), c(2409, "intersection", "路口"), c(2410, "median", "分隔島"),
+            c(2411, "dead end", "死路"), c(2412, "detour", "改道"), c(2413, "short cut", "捷徑"), c(2414, "crosswalk", "斑馬線"), c(2415, "gas station", "加油站"), c(2416, "unleaded", "無鉛的"), c(2417, "heavy traffic", "交通擁塞"), c(2418, "bumper-to-bumper", "車陣"), c(2419, "vehicle", "車輛"), c(2420, "automobile", "汽車"),
+            c(2421, "tow-truck", "拖吊車"), c(2422, "hood", "引擎蓋"), c(2423, "rear-view mirror", "後視鏡"), c(2424, "steering wheel", "方向盤"), c(2425, "windshield", "擋風玻璃"), c(2426, "turn signal", "方向燈"), c(2427, "horn", "喇叭"), c(2428, "hybrid", "油電混合"), c(2429, "mileage", "里程"), c(2430, "flat tire", "爆胎"),
+            c(2431, "speeding", "超速"), c(2432, "collision", "碰撞"), c(2433, "rollover", "翻車"), c(2434, "hit-and-run", "肇事逃逸")
+        ];
+        const topic25_Medical1 = [
+            c(2501, "medical benefits", "醫療給付"), c(2502, "dental insurance", "牙醫保險"), c(2503, "premium", "保費"), c(2504, "coverage", "保險範圍"), c(2505, "contribution", "分擔金"), c(2506, "medical insurance", "醫保"), c(2507, "damage insurance", "意外險"), c(2508, "insurer", "保險人"), c(2509, "insured", "被保險人"), c(2510, "recipient", "受領人"),
+            c(2511, "paid-up", "已付清的"), c(2512, "policy", "保單"), c(2513, "certificate", "證明書"), c(2514, "claim", "理賠申請"), c(2515, "spouse", "配偶"), c(2516, "dependent", "受扶養人"), c(2517, "income tax", "所得稅"), c(2518, "alleviate", "減緩"), c(2519, "bacteria", "細菌"), c(2520, "collision", "碰撞"),
+            c(2521, "compensation", "賠償"), c(2522, "contagious", "傳染性的"), c(2523, "crash", "墜毀"), c(2524, "ER", "急診室"), c(2525, "expiration date", "到期日"), c(2526, "general hospital", "綜合醫院"), c(2527, "immune", "免疫的"), c(2528, "infection", "感染"), c(2529, "investigator", "調查員"), c(2530, "mandatory", "強制的")
+        ];
+        const topic26_Medical2 = [
+            c(2601, "option", "選擇"), c(2602, "outpatient", "門診病人"), c(2603, "severe", "嚴重的"), c(2604, "stroke", "中風"), c(2605, "terms", "條款"), c(2606, "vital", "生命攸關的"), c(2607, "antibiotic", "抗生素"), c(2608, "commission", "佣金"), c(2609, "comprehensive", "綜合的"), c(2610, "extensive", "廣泛的"),
+            c(2611, "coverage", "報導/保險"), c(2612, "diagnose", "診斷"), c(2613, "excruciating", "極痛苦的"), c(2614, "indemnity", "賠償"), c(2615, "ICU", "加護病房"), c(2616, "prone to", "易於..."), c(2617, "nutrition", "營養"), c(2618, "organ donor", "器官捐贈者"), c(2619, "pharmaceutical", "製藥的"), c(2620, "purification", "淨化"),
+            c(2621, "side effect", "副作用"), c(2622, "surgery", "手術"), c(2623, "trauma", "創傷"), c(2624, "waive", "放棄"), c(2625, "handicap", "障礙"), c(2626, "insurance", "保險"), c(2627, "healthcare", "醫療保健"), c(2628, "damage", "損害")
+        ];
+        const topic27_Marketing = [
+            c(2701, "banner advertising", "橫幅廣告"), c(2702, "pop-up ads", "彈出式廣告"), c(2703, "billboard", "看板"), c(2704, "advertisement", "廣告"), c(2705, "special offer", "特惠"), c(2706, "front page", "首頁"), c(2707, "high-profile", "高調的"), c(2708, "recognition", "認可"), c(2709, "awareness", "知名度"), c(2710, "display", "展示"),
+            c(2711, "exhibition", "展覽"), c(2712, "session", "場次"), c(2713, "survey", "調查"), c(2714, "questionnaire", "問卷"), c(2715, "respondent", "受訪者"), c(2716, "consumer panel", "消費者小組"), c(2717, "focus group", "焦點團體"), c(2718, "segment", "區隔"), c(2719, "differentiation", "差異化"), c(2720, "upstream", "上游"),
+            c(2721, "customer satisfaction", "滿意度"), c(2722, "consumer", "消費者"), c(2723, "client", "客戶"), c(2724, "niche", "利基"), c(2725, "cannibalize", "侵蝕"), c(2726, "market share", "市佔率"), c(2727, "brand", "品牌"), c(2728, "corporate image", "企業形象"), c(2729, "PR", "公關"), c(2730, "press release", "新聞稿"),
+            c(2731, "advertising", "廣告業"), c(2732, "tailor", "量身打造"), c(2733, "generic", "通用的"), c(2734, "maturity", "成熟期"), c(2735, "saturation", "飽和"), c(2736, "life cycle", "生命週期"), c(2737, "high-end", "高階"), c(2738, "middle-range", "中階"), c(2739, "luxurious", "奢華的"), c(2740, "luxury", "奢侈品"),
+            c(2741, "affordable", "負擔得起的"), c(2742, "authentic", "真實的"), c(2743, "publishing", "出版"), c(2744, "campaign", "活動"), c(2745, "cohesive", "有凝聚力的"), c(2746, "banner", "旗幟"), c(2747, "circular", "傳單"), c(2748, "retailer", "零售商")
+        ];
+        const topic28_Sales = [
+            c(2801, "bargain hunter", "撿便宜的人"), c(2802, "make a bargain", "達成協議"), c(2803, "clearance sale", "清倉"), c(2804, "mark down", "降價"), c(2805, "rebate", "回扣"), c(2806, "coupon", "優惠券"), c(2807, "haggle", "殺價"), c(2808, "haggle over", "討價還價"), c(2809, "tag price", "標價"), c(2810, "list price", "定價"),
+            c(2811, "checkout", "結帳"), c(2812, "loyalty card", "會員卡"), c(2813, "installment", "分期付款"), c(2814, "due", "到期"), c(2815, "acceptable", "可接受的"), c(2816, "voucher", "憑證"), c(2817, "surcharge", "額外費用"), c(2818, "subtract", "減去"), c(2819, "fast-moving", "暢銷的"), c(2820, "brand-new", "全新的"),
+            c(2821, "leading-edge", "領先的"), c(2822, "hip", "時髦的"), c(2823, "cold calls", "陌生電訪"), c(2824, "telemarketing", "電話行銷"), c(2825, "solicitor", "推銷員"), c(2826, "retail", "零售"), c(2827, "wholesale", "批發"), c(2828, "resell", "轉售"), c(2829, "outlet", "暢貨中心"), c(2830, "thrift shop", "二手店"),
+            c(2831, "sales territory", "銷售區"), c(2832, "sales rep", "業務代表"), c(2833, "end user", "終端用戶"), c(2834, "clientele", "客戶群"), c(2835, "white goods", "大型家電"), c(2836, "brown goods", "視聽家電"), c(2837, "durables", "耐用品"), c(2838, "freebie", "贈品"), c(2839, "cash cow", "搖錢樹"), c(2840, "sales", "銷售額"),
+            c(2841, "unit cost", "單位成本"), c(2842, "leaflet", "傳單"), c(2843, "slogan", "口號"), c(2844, "publicity", "宣傳"), c(2845, "outlet", "銷路")
+        ];
+        const topic29_Negotiation = [
+            c(2901, "confirm", "確認"), c(2902, "compromise", "妥協"), c(2903, "describe", "描述"), c(2904, "outline", "大綱"), c(2905, "suggest", "建議"), c(2906, "propose", "提議"), c(2907, "concede", "讓步"), c(2908, "negotiable", "可協商的"), c(2909, "quotation", "報價"), c(2910, "estimate", "估價"),
+            c(2911, "itemize", "逐條列記"), c(2912, "specify", "詳細說明"), c(2913, "purchase order", "訂單"), c(2914, "quantity", "數量"), c(2915, "tentative", "暫時的"), c(2916, "signature", "簽名"), c(2917, "notary public", "公證人"), c(2918, "turn down", "拒絕"), c(2919, "procedure", "程序")
+        ];
+        const topic30_CustomerService = [
+            c(3001, "warranty", "保固"), c(3002, "guarantee", "保證"), c(3003, "defect", "缺陷"), c(3004, "flaw", "瑕疵"), c(3005, "imperfection", "不完美"), c(3006, "inconvenience", "不便"), c(3007, "intact", "完好的"), c(3008, "incur", "招致"), c(3009, "cause", "造成"), c(3010, "misuse", "誤用"),
+            c(3011, "refund", "退款"), c(3012, "liable for", "負責"), c(3013, "compensate for", "賠償"), c(3014, "recall", "召回"), c(3015, "complaint", "客訴"), c(3016, "inquiry", "詢問"), c(3017, "dissatisfied", "不滿意的"), c(3018, "purchaser", "購買人"), c(3019, "receipt", "收據"), c(3020, "call center", "客服中心"),
+            c(3021, "consumer department", "消保部門"), c(3022, "one-stop", "一站式"), c(3023, "customize", "客製化")
+        ];
+        const topic31_Computer1 = [
+            c(3101, "upgrade", "升級"), c(3102, "partition", "分割區"), c(3103, "install", "安裝"), c(3104, "reconfigure", "重新設定"), c(3105, "default", "預設值"), c(3106, "delete", "刪除"), c(3107, "save", "儲存"), c(3108, "shut down", "關機"), c(3109, "start up", "開機"), c(3110, "reboot", "重啟"),
+            c(3111, "duplicate", "複製"), c(3112, "embed", "嵌入"), c(3113, "archive", "存檔"), c(3114, "activate", "啟動"), c(3115, "retrieve", "取回"), c(3116, "compress", "壓縮"), c(3117, "optimize", "最佳化"), c(3118, "initialize", "初始化"), c(3119, "trash bin", "資源回收桶"), c(3120, "icon", "圖示"),
+            c(3121, "wizard", "精靈"), c(3122, "column", "欄"), c(3123, "sum up", "總計"), c(3124, "subtract", "減去"), c(3125, "justify", "左右對齊"), c(3126, "indent", "縮排"), c(3127, "space", "空格"), c(3128, "font", "字體"), c(3129, "peripheral", "周邊"), c(3130, "storage", "儲存"),
+            c(3131, "removable", "可移除的"), c(3132, "plug-in", "外掛"), c(3133, "suite", "套件"), c(3134, "access", "存取")
+        ];
+        const topic32_Computer2 = [
+            c(3201, "automatically", "自動地"), c(3202, "cable", "纜線"), c(3203, "cutting edge", "尖端的"), c(3204, "digital", "數位的"), c(3205, "download", "下載"), c(3206, "hacker", "駭客"), c(3207, "input", "輸入"), c(3208, "Internet", "網際網路"), c(3209, "activate", "啟動"), c(3210, "browse", "瀏覽"),
+            c(3211, "command", "指令"), c(3212, "configuration", "配置"), c(3213, "database", "資料庫"), c(3214, "desktop", "桌機"), c(3215, "downgrade", "降級"), c(3216, "floppy", "軟碟"), c(3217, "hyperlink", "超連結"), c(3218, "install", "安裝"), c(3219, "know-how", "技術訣竅"), c(3220, "omit", "忽略"),
+            c(3221, "scanner", "掃描器"), c(3222, "server", "伺服器"), c(3223, "spreadsheet", "試算表"), c(3224, "switch", "開關"), c(3225, "transmission", "傳輸"), c(3226, "virus", "病毒"), c(3227, "laptop", "筆電"), c(3228, "multimedia", "多媒體"), c(3229, "retrieval", "檢索"), c(3230, "search engine", "搜尋引擎"),
+            c(3231, "state-of-the-art", "最先進的"), c(3232, "terminology", "術語"), c(3233, "troubleshooting", "故障排除"), c(3234, "up-to-date", "最新的")
+        ];
+        const topic33_Office = [
+            c(3301, "office", "辦公室"), c(3302, "appointment", "預約"), c(3303, "attendance", "出勤"), c(3304, "cabinet", "櫃子"), c(3305, "calendar", "行事曆"), c(3306, "clerk", "辦事員"), c(3307, "directory", "通訊錄"), c(3308, "filing", "歸檔"), c(3309, "in-tray", "待辦公文盒"), c(3310, "monitor", "監視器"),
+            c(3311, "out-tray", "已辦公文盒"), c(3312, "partition", "隔板"), c(3313, "postage", "郵資"), c(3314, "punctuality", "準時"), c(3315, "schedule", "行程表"), c(3316, "shift", "輪班"), c(3317, "staff", "員工"), c(3318, "strike", "罷工"), c(3319, "task", "任務"), c(3320, "workforce", "勞動力"),
+            c(3321, "assignment", "任務"), c(3322, "bulletin", "公告"), c(3323, "calculator", "計算機"), c(3324, "carbon copy", "副本"), c(3325, "colleague", "同事"), c(3326, "document", "文件"), c(3327, "extension", "分機"), c(3328, "intercom", "對講機"), c(3329, "memo", "備忘錄"), c(3330, "operator", "總機"),
+            c(3331, "overtime", "加班"), c(3332, "portfolio", "作品集"), c(3333, "printed matter", "印刷品"), c(3334, "receptionist", "櫃台人員"), c(3335, "secretary", "秘書"), c(3336, "shorthand", "速記"), c(3337, "stapler", "釘書機"), c(3338, "tardy", "遲到的"), c(3339, "typist", "打字員"), c(3340, "print", "列印"),
+            c(3341, "spam", "垃圾郵件")
+        ];
+        const topic34_Expansion = [
+            c(3401, "accrue", "積累"), c(3402, "acquisition", "收購"), c(3403, "amplify", "擴大"), c(3404, "buyout", "收購"), c(3405, "corporation", "公司"), c(3406, "cutback", "削減"), c(3407, "equity", "股權"), c(3408, "franchise", "加盟"), c(3409, "launch", "發布"), c(3410, "phase", "階段"),
+            c(3411, "affiliate", "分部"), c(3412, "expand", "擴張"), c(3413, "integrate", "整合"), c(3414, "merger", "合併"), c(3415, "preliminary", "初步的"), c(3416, "propose", "提議"), c(3417, "prospect", "展望"), c(3418, "prosperity", "繁榮"), c(3419, "scheme", "計畫"), c(3420, "thrive", "興旺"),
+            c(3421, "thriving", "繁榮的"), c(3422, "proposition", "提案"), c(3423, "prospectus", "公開說明書"), c(3424, "rival", "對手"), c(3425, "subsidiary", "子公司"), c(3426, "acquire", "取得"), c(3427, "track record", "績效記錄"), c(3428, "achievement", "成就"), c(3429, "benchmark", "基準"), c(3430, "cut down", "削減"),
+            c(3431, "firm", "公司"), c(3432, "undervalue", "低估"), c(3433, "assess", "評估"), c(3434, "profile", "簡介"), c(3435, "carry out", "執行"), c(3436, "consolidate", "鞏固")
+        ];
+        const topic35_Trade = [
+            c(3501, "bid", "投標"), c(3502, "commercial", "商業的"), c(3503, "competitor", "競爭者"), c(3504, "credible", "可信的"), c(3505, "export", "出口"), c(3506, "import", "進口"), c(3507, "long-range", "遠程的"), c(3508, "supply", "供應"), c(3509, "trade deficit", "貿易逆差"), c(3510, "trade surplus", "貿易順差"),
+            c(3511, "WTO", "世貿組織"), c(3512, "bill of lading", "提單"), c(3513, "commodity", "商品"), c(3514, "consignee", "收貨人"), c(3515, "contractor", "承包商"), c(3516, "cost-effective", "划算的"), c(3517, "dealer", "經銷商"), c(3518, "due", "應付的"), c(3519, "endorse", "背書"), c(3520, "trading firm", "貿易公司"),
+            c(3521, "order", "訂單"), c(3522, "patent", "專利"), c(3523, "quota", "配額"), c(3524, "shipment", "裝運"), c(3525, "surplus", "盈餘"), c(3526, "trademark", "商標"), c(3527, "warehouse", "倉庫"), c(3528, "bilateral trade", "雙邊貿易"), c(3529, "import duties", "進口稅")
+        ];
+        const topic36_Meeting = [
+            c(3601, "adjourn", "休會"), c(3602, "amendment", "修正案"), c(3603, "approval", "批准"), c(3604, "attentive", "專心的"), c(3605, "board", "董事會"), c(3606, "brainstorm", "腦力激盪"), c(3607, "concede", "讓步"), c(3608, "conference", "會議"), c(3609, "convention", "大會/慣例"), c(3610, "convince", "說服"),
+            c(3611, "cross-reference", "對照"), c(3612, "delegate", "代表"), c(3613, "demand", "要求"), c(3614, "dispute", "爭議"), c(3615, "negotiation", "談判"), c(3616, "persuade", "說服"), c(3617, "postpone", "延期"), c(3618, "reconcile", "調解"), c(3619, "announce", "宣布"), c(3620, "articulate", "清楚表達"),
+            c(3621, "agenda", "議程"), c(3622, "attorney", "律師"), c(3623, "conclusive", "決定性的"), c(3624, "consensus", "共識"), c(3625, "converse", "交談"), c(3626, "criterion", "標準"), c(3627, "decline", "婉拒/下降"), c(3628, "demonstration", "示範"), c(3629, "diplomacy", "外交"), c(3630, "dissuade", "勸阻"),
+            c(3631, "on behalf of", "代表"), c(3632, "petition", "請願"), c(3633, "seminar", "研討會"), c(3634, "statement", "聲明"), c(3635, "declaration", "宣言"), c(3636, "interrupt", "打斷")
+        ];
+        const topic37_Tech = [
+            c(3701, "advance", "進步"), c(3702, "component", "零件"), c(3703, "device", "裝置"), c(3704, "engineer", "工程師"), c(3705, "facilitate", "促進"), c(3706, "fuel", "燃料"), c(3707, "generator", "發電機"), c(3708, "innovative", "創新的"), c(3709, "inventor", "發明家"), c(3710, "leading edge", "領先優勢"),
+            c(3711, "malfunction", "故障"), c(3712, "mode", "模式"), c(3713, "operate", "操作"), c(3714, "portable", "可攜式的"), c(3715, "satellite", "衛星"), c(3716, "specification", "規格"), c(3717, "substandard", "不合標準"), c(3718, "automaton", "自動裝置"), c(3719, "cell phone", "手機"), c(3720, "devise", "設計"),
+            c(3721, "hands-on", "實作的"), c(3722, "inspect", "檢查"), c(3723, "laboratory", "實驗室"), c(3724, "maintenance", "維護"), c(3725, "manual", "手冊"), c(3726, "network", "網路"), c(3727, "outage", "斷電"), c(3728, "solar", "太陽能"), c(3729, "static", "靜態的"), c(3730, "turn down", "關小")
+        ];
+        const topic38_Transport = [
+            c(3801, "accelerate", "加速"), c(3802, "aircraft", "飛行器"), c(3803, "buckle up", "繫安全帶"), c(3804, "convertible", "敞篷車"), c(3805, "crash landing", "迫降"), c(3806, "delay", "延誤"), c(3807, "forbid", "禁止"), c(3808, "ground crew", "地勤"), c(3809, "jaywalk", "亂穿越馬路"), c(3810, "navigate", "導航"),
+            c(3811, "pilot", "飛行員"), c(3812, "route", "路線"), c(3813, "seat belt", "安全帶"), c(3814, "subway", "地鐵"), c(3815, "highway", "公路"), c(3816, "taxi", "計程車"), c(3817, "transit", "運輸"), c(3818, "transportation", "交通"), c(3819, "air fare", "機票費"), c(3820, "traffic jam", "塞車"),
+            c(3821, "turbulence", "亂流"), c(3822, "aviation", "航空"), c(3823, "jetliner", "噴射客機"), c(3824, "derail", "脫軌"), c(3825, "acrophobia", "恐高症"), c(3826, "airliner", "客機"), c(3827, "aviation", "航空學"), c(3828, "aerospace", "航太"), c(3829, "cabin", "機艙"), c(3830, "conveyance", "運輸工具"),
+            c(3831, "crossroads", "十字路口"), c(3832, "ferry", "渡輪"), c(3833, "freight", "貨運"), c(3834, "jeopardy", "危險"), c(3835, "life vest", "救生衣"), c(3836, "pedestrian", "行人"), c(3837, "restriction", "限制"), c(3838, "take off", "起飛"), c(3839, "timetable", "時刻表"), c(3840, "transport", "運輸"),
+            c(3841, "via", "經由"), c(3842, "prohibit", "禁止")
+        ];
+        const topic39_Shopping = [
+            c(3901, "affordable", "負擔得起的"), c(3902, "bazaar", "市集"), c(3903, "customer", "顧客"), c(3904, "discount", "折扣"), c(3905, "itemize", "列出清單"), c(3906, "latest", "最新的"), c(3907, "pickpocket", "扒手"), c(3908, "pushcart", "手推車"), c(3909, "reimburse", "報銷"), c(3910, "request", "要求"),
+            c(3911, "sample", "樣品"), c(3912, "solicit", "徵求"), c(3913, "trendy", "時髦的"), c(3914, "wholesale", "批發"), c(3915, "non-refundable", "不可退款"), c(3916, "bargain", "便宜貨"), c(3917, "cash register", "收銀機"), c(3918, "coupon", "優惠券"), c(3919, "display", "陳列"), c(3920, "drugstore", "藥妝店"),
+            c(3921, "flea market", "跳蚤市場"), c(3922, "label", "標籤"), c(3923, "modify", "修改"), c(3924, "patron", "老主顧"), c(3925, "purchase", "購買"), c(3926, "quantity", "數量"), c(3927, "shopping mall", "購物中心"), c(3928, "thrift", "節儉"), c(3929, "workmanship", "工藝"), c(3930, "cosmetics", "化妝品"),
+            c(3931, "reconfirmation", "再確認"), c(3932, "service charge", "服務費"), c(3933, "commodities", "日用品"), c(3934, "fancy", "高級的"), c(3935, "incentive", "誘因"), c(3936, "warranty", "保固")
+        ];
+        const topic40_Dining = [
+            c(4001, "alcohol", "酒精"), c(4002, "appetite", "食慾"), c(4003, "bland", "清淡的"), c(4004, "chef", "主廚"), c(4005, "crave", "渴望"), c(4006, "delicacy", "佳餚"), c(4007, "digest", "消化"), c(4008, "fragrant", "芳香的"), c(4009, "ingredient", "食材"), c(4010, "liquor", "烈酒"),
+            c(4011, "munch", "大聲咀嚼"), c(4012, "palatable", "美味的"), c(4013, "pass up", "錯過"), c(4014, "portion", "一份"), c(4015, "ravenous", "極餓的"), c(4016, "refreshment", "茶點"), c(4017, "silverware", "銀餐具"), c(4018, "specialty", "招牌菜"), c(4019, "starve", "挨餓"), c(4020, "aperitif", "餐前酒"),
+            c(4021, "appetizer", "開胃菜"), c(4022, "beverage", "飲料"), c(4023, "buffet", "自助餐"), c(4024, "chopsticks", "筷子"), c(4025, "cuisine", "料理"), c(4026, "entree", "主菜"), c(4027, "hors d'oeuvre", "開胃小菜"), c(4028, "leftovers", "剩菜"), c(4029, "menu", "菜單"), c(4030, "napkin", "餐巾"),
+            c(4031, "parched", "口渴的"), c(4032, "pastry", "糕點"), c(4033, "dessert", "甜點"), c(4034, "preservative", "防腐劑"), c(4035, "recipe", "食譜"), c(4036, "seasoning", "調味料"), c(4037, "snack", "點心"), c(4038, "spice", "香料"), c(4039, "vegetarian", "素食者")
+        ];
+        const topic41_Social = [
+            c(4101, "acceptance", "接受"), c(4102, "acquaintance", "點頭之交"), c(4103, "anniversary", "週年紀念"), c(4104, "associate", "同事"), c(4105, "banquet", "宴會"), c(4106, "commitment", "承諾"), c(4107, "courtesy", "禮貌"), c(4108, "distinguished", "傑出的"), c(4109, "embrace", "擁抱"), c(4110, "etiquette", "禮儀"),
+            c(4111, "farewell", "告別"), c(4112, "get-together", "聚會"), c(4113, "greeting", "問候"), c(4114, "hug", "擁抱"), c(4115, "lavish", "奢華的"), c(4116, "nosy", "愛管閒事的"), c(4117, "offensive", "冒犯的"), c(4118, "protocol", "禮節"), c(4119, "regards", "致意"), c(4120, "salute", "致敬"),
+            c(4121, "acknowledge", "承認"), c(4122, "aggressive", "挑釁的"), c(4123, "apologize", "道歉"), c(4124, "attractive", "迷人的"), c(4125, "barrier", "障礙"), c(4126, "compliment", "讚美"), c(4127, "criticize", "批評"), c(4128, "eloquent", "雄辯的"), c(4129, "encounter", "相遇"), c(4130, "extend", "延伸"),
+            c(4131, "favorable", "有利的"), c(4132, "gossip", "八卦"), c(4133, "hilarious", "滑稽的"), c(4134, "intrude", "打擾"), c(4135, "modest", "謙虛的"), c(4136, "nuisance", "討厭的人事物"), c(4137, "quarrel", "爭吵"), c(4138, "run into", "偶遇")
+        ];
+        const topic42_Entertainment = [
+            c(4201, "amuse", "娛樂"), c(4202, "audience", "觀眾"), c(4203, "ballet", "芭蕾"), c(4204, "cable TV", "有線電視"), c(4205, "celebrity", "名人"), c(4206, "cinema", "電影院"), c(4207, "composer", "作曲家"), c(4208, "conductor", "指揮家"), c(4209, "cue", "提示"), c(4210, "drama", "戲劇"),
+            c(4211, "headline", "頭條"), c(4212, "newscast", "新聞廣播"), c(4213, "periodical", "期刊"), c(4214, "premiere", "首映"), c(4215, "rate", "分級"), c(4216, "scenario", "劇本/場景"), c(4217, "scriptwriter", "編劇"), c(4218, "symphony", "交響樂"), c(4219, "ticket office", "售票處"), c(4220, "applaud", "鼓掌"),
+            c(4221, "audition", "試鏡"), c(4222, "broadcast", "廣播"), c(4223, "carnival", "嘉年華"), c(4224, "choreography", "編舞"), c(4225, "circus", "馬戲團"), c(4226, "concert", "音樂會"), c(4227, "critic", "評論家"), c(4228, "curtain call", "謝幕"), c(4229, "editorial", "社論"), c(4230, "finale", "終曲"),
+            c(4231, "media", "媒體"), c(4232, "performance", "表演"), c(4233, "playwright", "劇作家"), c(4234, "preview", "預告"), c(4235, "rehearsal", "排練"), c(4236, "screen", "銀幕"), c(4237, "stunt", "特技"), c(4238, "theater", "劇場"), c(4239, "violin", "小提琴"), c(4240, "lottery", "彩券"),
+            c(4241, "screening", "放映"), c(4242, "drawing", "抽獎"), c(4243, "entertainment", "娛樂")
+        ];
+        const topic43_Emotions = [
+            c(4301, "affection", "情感"), c(4302, "anticipate", "期待"), c(4303, "brag", "吹噓"), c(4304, "delighted", "高興的"), c(4305, "detest", "痛恨"), c(4306, "disgust", "厭惡"), c(4307, "distress", "悲痛"), c(4308, "enthusiastic", "熱情的"), c(4309, "esteem", "尊敬"), c(4310, "fascination", "著迷"),
+            c(4311, "gloomy", "憂鬱的"), c(4312, "impartial", "公正的"), c(4313, "impulsive", "衝動的"), c(4314, "irritated", "惱怒的"), c(4315, "mad", "生氣的"), c(4316, "objective", "客觀的"), c(4317, "panic", "恐慌"), c(4318, "prejudice", "偏見"), c(4319, "repulsive", "令人反感的"), c(4320, "tranquility", "寧靜"),
+            c(4321, "ambition", "野心"), c(4322, "attraction", "吸引力"), c(4323, "contentment", "滿足"), c(4324, "despair", "絕望"), c(4325, "devoted", "摯愛的"), c(4326, "disposition", "性情"), c(4327, "elegant", "優雅的"), c(4328, "entice", "誘惑"), c(4329, "fondness", "喜愛"), c(4330, "hideous", "醜陋的"),
+            c(4331, "impression", "印象"), c(4332, "instinct", "本能"), c(4333, "jealous", "嫉妒的"), c(4334, "nasty", "惡毒的"), c(4335, "optimistic", "樂觀的"), c(4336, "perceive", "察覺"), c(4337, "provoke", "激怒"), c(4338, "startle", "驚嚇"), c(4339, "upset", "心煩的"), c(4340, "inspire", "激勵"),
+            c(4341, "reassure", "使安心"), c(4342, "remind", "提醒"), c(4343, "tumultuous", "激動的")
+        ];
+        const topic44_OtherNV = [
+            c(4401, "aspect", "方面"), c(4402, "assumption", "假設"), c(4403, "attempt", "嘗試"), c(4404, "call waiting", "電話插播"), c(4405, "endeavor", "努力"), c(4406, "identity", "身分"), c(4407, "implication", "含義"), c(4408, "intention", "意圖"), c(4409, "obstacle", "障礙"), c(4410, "priority", "優先權"),
+            c(4411, "sustain", "維持"), c(4412, "undertake", "承擔"), c(4413, "assurance", "保證"), c(4414, "clarify", "澄清"), c(4415, "discard", "丟棄"), c(4416, "impact", "影響"), c(4417, "instruct", "指導"), c(4418, "interfere", "干涉"), c(4419, "involve", "涉及"), c(4420, "merit", "優點"),
+            c(4421, "permit", "許可"), c(4422, "proceed", "進行"), c(4423, "register", "註冊"), c(4424, "risk", "風險"), c(4425, "submit", "提交"), c(4426, "speculate", "推測"), c(4427, "verify", "證實"), c(4428, "circumstance", "情況"), c(4429, "requirement", "要求"), c(4430, "require", "要求"),
+            c(4431, "derivatives", "衍生物"), c(4432, "royalty", "版稅"), c(4433, "contingency", "意外事故"), c(4434, "deem", "認為"), c(4435, "suspension", "中止"), c(4436, "adult", "成人"), c(4437, "minor", "未成年人"), c(4438, "compliance", "順從")
+        ];
+        const topic45_OtherAdj = [
+            c(4501, "absurd", "荒謬的"), c(4502, "adequate", "足夠的"), c(4503, "ample", "充裕的"), c(4504, "decent", "體面的"), c(4505, "dreadful", "可怕的"), c(4506, "exceptional", "傑出的"), c(4507, "exquisite", "精緻的"), c(4508, "farfetched", "牽強的"), c(4509, "in light of", "鑒於"), c(4510, "ingenious", "巧妙的"),
+            c(4511, "instant", "立即的"), c(4512, "moderate", "適度的"), c(4513, "oblivious", "遺忘的"), c(4514, "random", "隨機的"), c(4515, "relevant", "相關的"), c(4516, "substantially", "相當大地"), c(4517, "temporary", "暫時的"), c(4518, "unprecedented", "史無前例的"), c(4519, "versatile", "多功能的"), c(4520, "accurate", "準確的"),
+            c(4521, "alert", "警覺的"), c(4522, "approximately", "大約"), c(4523, "distinctive", "獨特的"), c(4524, "dynamic", "動態的"), c(4525, "excessive", "過度的"), c(4526, "extraordinary", "非凡的"), c(4527, "inferior", "較差的"), c(4528, "initial", "最初的"), c(4529, "irresistible", "不可抗拒的"), c(4530, "miscellaneous", "混雜的"),
+            c(4531, "noteworthy", "值得注意的"), c(4532, "on and off", "斷斷續續"), c(4533, "rapid", "迅速的"), c(4534, "self-explanatory", "不言自明的"), c(4535, "sufficient", "充足的"), c(4536, "ultimately", "最終"), c(4537, "vague", "模糊的"), c(4538, "vivid", "生動的"), c(4539, "acute", "敏銳的"), c(4540, "self-restraint", "自我克制"),
+            c(4541, "reverse", "相反的"), c(4542, "prompt", "迅速的"), c(4543, "explicitly", "明確地"), c(4544, "implicitly", "含蓄地"), c(4545, "inconclusively", "非決定性地"), c(4546, "unstable", "不穩定的"), c(4547, "provisional", "臨時的"), c(4548, "prevalent", "普遍的"), c(4549, "successive", "連續的"), c(4550, "consolidated", "整合的"),
+            c(4551, "sophisticated", "複雜的"), c(4552, "ubiquitous", "無所不在的"), c(4553, "across-the-broad", "全面的")
         ];
 
         const topics = [
-            { 
-                id: 'topic01', 
-                title: '01_求職、工作相關', 
-                desc: '包含職位、薪資、面試等常用字彙',
-                data: topic01_Job,
-                color: 'blue'
-            },
-            { 
-                id: 'topic02', 
-                title: '02_商業書信用語', 
-                desc: 'Email、信件往來常用單字',
-                data: topic02_Email,
-                color: 'emerald'
-            },
-            {
-                id: 'topic03',
-                title: '03_合約相關單字 (1)',
-                desc: '勞資雙方、合約條款與爭議處理',
-                data: topic03_Contract,
-                color: 'indigo',
-                disabled: false
-            },
-            {
-                id: 'topic04',
-                title: '04_合約相關單字 (2)',
-                desc: '進階法律效力、違約與義務',
-                data: topic04_Contract2,
-                color: 'purple',
-                disabled: false
-            },
-            {
-                id: 'topic05',
-                title: '05_邀請、演說相關單字',
-                desc: '各類聚會、演說及邀請函常用語',
-                data: topic05_Speech,
-                color: 'orange',
-                disabled: false
-            },
-            {
-                id: 'topic06',
-                title: '06_新聞相關單字',
-                desc: '政治、法律與社會新聞常見用語',
-                data: topic06_News,
-                color: 'rose',
-                disabled: false
-            },
-            {
-                id: 'topic07',
-                title: '07_運動及休閒活動 (1)',
-                desc: '各類運動項目、比賽規則與相關術語',
-                data: topic07_Sports,
-                color: 'cyan',
-                disabled: false
-            },
-            {
-                id: 'topic08',
-                title: '08_運動及休閒活動 (2)',
-                desc: '進階運動術語、健身與賽事規則',
-                data: topic08_Sports2,
-                color: 'teal',
-                disabled: false
-            },
-            {
-                id: 'topic09',
-                title: '09_租房/住房相關單字 (1)',
-                desc: '租屋、房地產交易及居家設備',
-                data: topic09_Housing,
-                color: 'pink',
-                disabled: false
-            },
-            {
-                id: 'topic10',
-                title: '10_租房/住房相關單字 (2)',
-                desc: '租賃關係、房屋貸款及居住環境',
-                data: topic10_Housing2,
-                color: 'violet',
-                disabled: false
-            },
-             // Future topics can be added here
-            {
-                id: 'topic11',
-                title: '11_即將推出',
-                desc: '敬請期待更多單字',
-                data: [],
-                color: 'gray',
-                disabled: true
-            }
+            { id: 't01', title: '01_求職與工作', data: topic01 },
+            { id: 't02', title: '02_商業書信', data: topic02 },
+            { id: 't03', title: '03_合約(1)', data: topic03 },
+            { id: 't04', title: '04_合約(2)', data: topic04 },
+            { id: 't05', title: '05_邀請與演說', data: topic05 },
+            { id: 't06', title: '06_新聞英語', data: topic06 },
+            { id: 't07', title: '07_運動休閒(1)', data: topic07 },
+            { id: 't08', title: '08_運動休閒(2)', data: topic08 },
+            { id: 't09', title: '09_租房住房(1)', data: topic09 },
+            { id: 't10', title: '10_租房住房(2)', data: topic10 },
+            { id: 't11', title: '11_統計圖表', data: topic11_Stats },
+            { id: 't12', title: '12_旅遊(1)', data: topic12_Travel1 },
+            { id: 't13', title: '13_旅遊(2)', data: topic13_Travel2 },
+            { id: 't14', title: '14_天氣', data: topic14_Weather },
+            { id: 't15', title: '15_會計', data: topic15_Accounting },
+            { id: 't16', title: '16_財務', data: topic16_Finance },
+            { id: 't17', title: '17_企業(1)', data: topic17_Business1 },
+            { id: 't18', title: '18_企業(2)', data: topic18_Business2 },
+            { id: 't19', title: '19_職位', data: topic19_Positions },
+            { id: 't20', title: '20_投資', data: topic20_Investment },
+            { id: 't21', title: '21_利益及資格', data: topic21_Benefits },
+            { id: 't22', title: '22_生產製造(1)', data: topic22_Production1 },
+            { id: 't23', title: '23_生產製造(2)', data: topic23_Production2 },
+            { id: 't24', title: '24_通勤交通', data: topic24_Commute },
+            { id: 't25', title: '25_醫療保險(1)', data: topic25_Medical1 },
+            { id: 't26', title: '26_醫療保險(2)', data: topic26_Medical2 },
+            { id: 't27', title: '27_市場行銷', data: topic27_Marketing },
+            { id: 't28', title: '28_銷售', data: topic28_Sales },
+            { id: 't29', title: '29_談判', data: topic29_Negotiation },
+            { id: 't30', title: '30_顧客服務', data: topic30_CustomerService },
+            { id: 't31', title: '31_電腦(1)', data: topic31_Computer1 },
+            { id: 't32', title: '32_電腦(2)', data: topic32_Computer2 },
+            { id: 't33', title: '33_辦公室事宜', data: topic33_Office },
+            { id: 't34', title: '34_業務拓展', data: topic34_Expansion },
+            { id: 't35', title: '35_貿易', data: topic35_Trade },
+            { id: 't36', title: '36_會議', data: topic36_Meeting },
+            { id: 't37', title: '37_科技設備', data: topic37_Tech },
+            { id: 't38', title: '38_交通運輸', data: topic38_Transport },
+            { id: 't39', title: '39_購物', data: topic39_Shopping },
+            { id: 't40', title: '40_在外就餐', data: topic40_Dining },
+            { id: 't41', title: '41_社交', data: topic41_Social },
+            { id: 't42', title: '42_娛樂媒體', data: topic42_Entertainment },
+            { id: 't43', title: '43_情緒知覺', data: topic43_Emotions },
+            { id: 't44', title: '44_名詞動詞', data: topic44_OtherNV },
+            { id: 't45', title: '45_形容詞副詞', data: topic45_OtherAdj }
         ];
 
         // --- All Vocabulary for Mixed Distractors ---
-        // Combine all active topic data for global distractors
-        const allVocab = topics
-            .filter(t => !t.disabled)
-            .flatMap(t => t.data);
+        const allVocab = topics.flatMap(t => t.data);
 
         // --- Utility Functions ---
         const shuffleArray = (array) => {
@@ -583,50 +382,37 @@
         };
 
         // --- Icon Components ---
-        const IconGraduationCap = ({ className }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
-        );
-        const IconArrowRight = ({ className }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        );
-        const IconTrophy = ({ className }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10c0 5-1.5 10-6 12-4.5-2-6-7-6-12z"/><path d="M2 9h5"/><path d="M17 9h5"/></svg>
-        );
-        const IconThumbsUp = ({ className }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
-        );
-        const IconBookOpen = ({ className }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-        );
-        const IconCheckCircle = ({ className }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        );
-        const IconCheck = ({ className }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 6 9 17 4 12"/></svg>
-        );
-        const IconX = ({ className }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        );
-        const IconAlertCircle = ({ className }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        );
-        const IconGrid = ({ className }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        );
-        const IconArrowLeft = ({ className }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-        );
-        const IconEye = ({ className }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        );
-        const IconRotate = ({ className }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-        );
+        const IconGraduationCap = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>);
+        const IconArrowRight = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>);
+        const IconTrophy = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10c0 5-1.5 10-6 12-4.5-2-6-7-6-12z"/><path d="M2 9h5"/><path d="M17 9h5"/></svg>);
+        const IconThumbsUp = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>);
+        const IconBookOpen = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>);
+        const IconCheckCircle = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>);
+        const IconCheck = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 6 9 17 4 12"/></svg>);
+        const IconX = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>);
+        const IconAlertCircle = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>);
+        const IconGrid = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>);
+        const IconArrowLeft = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>);
+        const IconEye = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>);
+        const IconEyeOff = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>);
 
         // --- Components ---
 
         // 1. Topic Selection Screen
         const TopicSelectionScreen = ({ onSelectTopic }) => {
+            const colors = [
+                { bg: "bg-blue-50", text: "text-blue-600", border: "hover:border-blue-500" },
+                { bg: "bg-emerald-50", text: "text-emerald-600", border: "hover:border-emerald-500" },
+                { bg: "bg-indigo-50", text: "text-indigo-600", border: "hover:border-indigo-500" },
+                { bg: "bg-purple-50", text: "text-purple-600", border: "hover:border-purple-500" },
+                { bg: "bg-orange-50", text: "text-orange-600", border: "hover:border-orange-500" },
+                { bg: "bg-rose-50", text: "text-rose-600", border: "hover:border-rose-500" },
+                { bg: "bg-cyan-50", text: "text-cyan-600", border: "hover:border-cyan-500" },
+                { bg: "bg-teal-50", text: "text-teal-600", border: "hover:border-teal-500" },
+                { bg: "bg-pink-50", text: "text-pink-600", border: "hover:border-pink-500" },
+                { bg: "bg-violet-50", text: "text-violet-600", border: "hover:border-violet-500" },
+            ];
+
             return (
                 <div className="flex flex-col items-center justify-center min-h-screen p-4 fade-in">
                     <div className="max-w-6xl w-full">
@@ -639,45 +425,23 @@
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                            {topics.map((topic) => {
-                                const isLocked = topic.disabled;
-                                const baseClasses = "relative p-6 rounded-xl border-2 transition-all duration-300 flex flex-col items-start gap-3";
-                                const activeClasses = "bg-white border-white hover:border-blue-500 shadow-md hover:shadow-xl cursor-pointer hover:-translate-y-1";
-                                const lockedClasses = "bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed";
-
-                                const colorClasses = {
-                                    blue: "text-blue-600 bg-blue-50",
-                                    emerald: "text-emerald-600 bg-emerald-50",
-                                    indigo: "text-indigo-600 bg-indigo-50",
-                                    purple: "text-purple-600 bg-purple-50",
-                                    orange: "text-orange-600 bg-orange-50",
-                                    rose: "text-rose-600 bg-rose-50",
-                                    cyan: "text-cyan-600 bg-cyan-50",
-                                    teal: "text-teal-600 bg-teal-50",
-                                    pink: "text-pink-600 bg-pink-50",
-                                    violet: "text-violet-600 bg-violet-50",
-                                    gray: "text-gray-400 bg-gray-100"
-                                };
-
+                            {topics.map((topic, index) => {
+                                const color = colors[index % colors.length];
                                 return (
                                     <button 
                                         key={topic.id}
-                                        onClick={() => !isLocked && onSelectTopic(topic)}
-                                        disabled={isLocked}
-                                        className={`${baseClasses} ${isLocked ? lockedClasses : activeClasses}`}
+                                        onClick={() => onSelectTopic(topic)}
+                                        className={`relative p-6 rounded-xl border-2 bg-white border-white shadow-md hover:shadow-xl cursor-pointer hover:-translate-y-1 transition-all duration-300 flex flex-col items-start gap-3 ${color.border}`}
                                     >
-                                        <div className={`p-3 rounded-lg ${colorClasses[topic.color]}`}>
+                                        <div className={`p-3 rounded-lg ${color.bg} ${color.text}`}>
                                             <IconBookOpen className="w-6 h-6" />
                                         </div>
-                                        <div className="text-left">
-                                            <h3 className="text-lg font-bold mb-1">{topic.title}</h3>
-                                            <p className="text-sm opacity-80">{topic.desc}</p>
-                                        </div>
-                                        {!isLocked && (
-                                            <div className="mt-2 text-xs font-bold px-2 py-1 bg-gray-100 rounded text-gray-600">
+                                        <div className="text-left w-full">
+                                            <h3 className="text-lg font-bold mb-1 truncate">{topic.title}</h3>
+                                            <div className="mt-2 text-xs font-bold px-2 py-1 bg-gray-100 rounded text-gray-600 inline-block">
                                                 {topic.data.length} 個單字
                                             </div>
-                                        )}
+                                        </div>
                                     </button>
                                 );
                             })}
@@ -687,144 +451,98 @@
             );
         };
 
-        // 2. Study Mode Component (Flashcards)
+        // 2. Study Mode Component (Vocabulary List)
         const StudyApp = ({ topicData, onBackToMenu, onStartQuiz }) => {
-            const [currentIndex, setCurrentIndex] = useState(0);
-            const [isFlipped, setIsFlipped] = useState(false);
+            const [hideDefs, setHideDefs] = useState(false);
             const words = topicData.data;
-            const currentWord = words[currentIndex];
-
-            const nextWord = () => {
-                setIsFlipped(false);
-                setTimeout(() => {
-                    setCurrentIndex((prev) => (prev + 1) % words.length);
-                }, 200);
-            };
-
-            const prevWord = () => {
-                setIsFlipped(false);
-                setTimeout(() => {
-                    setCurrentIndex((prev) => (prev - 1 + words.length) % words.length);
-                }, 200);
-            };
 
             return (
-                <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center fade-in bg-gray-100">
-                    <div className="w-full max-w-lg mb-6 flex justify-between items-center">
-                        <button onClick={onBackToMenu} className="text-gray-500 hover:text-gray-700 flex items-center gap-1">
-                            <IconArrowLeft className="w-5 h-5" /> 返回選單
-                        </button>
-                        <h2 className="text-xl font-bold text-gray-800">{topicData.title} <span className="text-sm font-normal text-gray-500">(預習模式)</span></h2>
-                    </div>
-
-                    {/* Progress */}
-                    <div className="w-full max-w-lg mb-4 flex justify-between text-sm text-gray-500">
-                        <span>單字 {currentIndex + 1} / {words.length}</span>
-                        <span>點擊卡片查看解釋</span>
-                    </div>
-
-                    {/* Flashcard Container */}
-                    <div 
-                        className="relative w-full max-w-lg h-80 cursor-pointer perspective-1000 group"
-                        onClick={() => setIsFlipped(!isFlipped)}
-                    >
-                        <div className={`relative w-full h-full duration-500 transform-style-3d transition-transform ${isFlipped ? 'rotate-y-180' : ''}`}>
-                            
-                            {/* Front (English) */}
-                            <div className="absolute w-full h-full bg-white rounded-2xl shadow-xl border-b-4 border-blue-500 flex flex-col items-center justify-center p-8 backface-hidden">
-                                <span className="text-blue-600 mb-4 opacity-50"><IconBookOpen className="w-8 h-8" /></span>
-                                <h3 className="text-4xl font-bold text-gray-800 break-words w-full">{currentWord.term}</h3>
-                                <p className="mt-6 text-gray-400 text-sm font-medium animate-pulse">點擊翻面</p>
-                            </div>
-
-                            {/* Back (Chinese) */}
-                            <div className="absolute w-full h-full bg-blue-600 rounded-2xl shadow-xl text-white flex flex-col items-center justify-center p-8 rotate-y-180 backface-hidden">
-                                <h3 className="text-3xl font-bold mb-4">{currentWord.term}</h3>
-                                <div className="w-16 h-1 bg-white/30 rounded-full mb-6"></div>
-                                <p className="text-2xl font-medium">{currentWord.def}</p>
-                            </div>
+                <div className="flex flex-col items-center min-h-screen p-4 fade-in bg-gray-100">
+                    <div className="w-full max-w-4xl mb-6 flex flex-col md:flex-row justify-between items-center gap-4 sticky top-0 bg-gray-100 py-4 z-10 shadow-sm md:shadow-none px-2 rounded-lg">
+                        <div className="flex items-center gap-4 w-full md:w-auto">
+                            <button onClick={onBackToMenu} className="text-gray-500 hover:text-gray-700 flex items-center gap-1 min-w-fit">
+                                <IconArrowLeft className="w-5 h-5" /> 返回
+                            </button>
+                            <h2 className="text-xl font-bold text-gray-800 truncate">{topicData.title}</h2>
+                        </div>
+                        
+                        <div className="flex gap-2 w-full md:w-auto">
+                            <button 
+                                onClick={() => setHideDefs(!hideDefs)}
+                                className={`flex-1 md:flex-none px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 ${hideDefs ? 'bg-amber-100 text-amber-700 border border-amber-200' : 'bg-white text-gray-600 border border-gray-300'}`}
+                            >
+                                {hideDefs ? <IconEyeOff className="w-4 h-4" /> : <IconEye className="w-4 h-4" />}
+                                {hideDefs ? '顯示中文' : '遮住中文'}
+                            </button>
+                            <button 
+                                onClick={onStartQuiz}
+                                className="flex-1 md:flex-none bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-bold shadow-md transition-transform active:scale-95 flex items-center justify-center gap-2"
+                            >
+                                <IconGraduationCap className="w-4 h-4" />
+                                測驗
+                            </button>
                         </div>
                     </div>
 
-                    {/* Controls */}
-                    <div className="w-full max-w-lg mt-8 flex justify-between items-center gap-4">
-                        <button 
-                            onClick={(e) => { e.stopPropagation(); prevWord(); }}
-                            className="flex-1 bg-white border border-gray-300 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-50 transition-colors shadow-sm"
-                        >
-                            上一個
-                        </button>
-                        <button 
-                            onClick={(e) => { e.stopPropagation(); nextWord(); }}
-                            className="flex-1 bg-white border border-gray-300 text-gray-700 py-3 rounded-xl font-bold hover:bg-gray-50 transition-colors shadow-sm"
-                        >
-                            下一個
-                        </button>
+                    <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
+                        <div className="hidden md:flex bg-gray-50 border-b border-gray-200 text-gray-500 font-medium text-sm">
+                            <div className="w-1/3 p-4">英文單字 (Term)</div>
+                            <div className="w-2/3 p-4">中文釋義 (Definition)</div>
+                        </div>
+                        
+                        <div className="divide-y divide-gray-100">
+                            {words.map((word) => (
+                                <div key={word.id} className="flex flex-col md:flex-row hover:bg-blue-50 transition-colors group">
+                                    <div className="w-full md:w-1/3 p-4 flex items-center">
+                                        <span className="text-lg font-bold text-blue-700">{word.term}</span>
+                                    </div>
+                                    <div className="w-full md:w-2/3 p-4 pt-0 md:pt-4 flex items-center">
+                                        <span className={`text-gray-700 text-base transition-opacity duration-300 ${hideDefs ? 'opacity-0 group-hover:opacity-100 cursor-pointer bg-gray-100 md:bg-transparent rounded px-2 md:px-0' : 'opacity-100'}`}>
+                                            {word.def}
+                                        </span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
-
-                    <div className="mt-8 w-full max-w-lg">
-                        <button 
-                            onClick={onStartQuiz}
-                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-md flex items-center justify-center gap-2 transition-transform active:scale-95"
-                        >
-                            <IconGraduationCap className="w-6 h-6" />
-                            準備好了？開始測驗！
+                    
+                    <div className="mt-8 mb-4">
+                         <button onClick={onStartQuiz} className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-bold shadow-lg transition-transform active:scale-95 flex items-center gap-2">
+                            <IconGraduationCap className="w-5 h-5" />
+                            複習完了？開始測驗！
                         </button>
                     </div>
                 </div>
             );
         };
 
-        // 3. Start Screen (Contextualized with Mode Selection)
+        // 3. Start Screen
         const StartScreen = ({ topic, onStartQuiz, onStartStudy, onBack }) => (
             <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center fade-in">
                 <div className="bg-white p-10 rounded-2xl shadow-xl max-w-lg w-full border-t-4 border-blue-600 relative">
-                    <button 
-                        onClick={onBack}
-                        className="absolute top-4 left-4 text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-1 text-sm font-medium"
-                    >
+                    <button onClick={onBack} className="absolute top-4 left-4 text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-1 text-sm font-medium">
                         <IconArrowLeft className="w-4 h-4" /> 返回選單
                     </button>
-
-                    <div className="mb-6 text-blue-600 flex justify-center mt-4">
-                        <IconGraduationCap className="w-16 h-16" />
-                    </div>
+                    <div className="mb-6 text-blue-600 flex justify-center mt-4"><IconGraduationCap className="w-16 h-16" /></div>
                     <h1 className="text-2xl font-bold text-gray-800 mb-1">{topic.title}</h1>
                     <p className="text-gray-500 mb-8 text-sm">請選擇學習模式</p>
-                    
                     <div className="space-y-4">
-                        <button 
-                            onClick={onStartStudy}
-                            className="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold py-4 px-6 rounded-xl transition-all flex items-center justify-between group"
-                        >
+                        <button onClick={onStartStudy} className="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold py-4 px-6 rounded-xl transition-all flex items-center justify-between group">
                             <div className="flex items-center gap-3">
                                 <div className="bg-white p-2 rounded-full shadow-sm"><IconBookOpen className="w-5 h-5" /></div>
-                                <div className="text-left">
-                                    <div className="text-lg">單字預習卡</div>
-                                    <div className="text-xs font-normal opacity-80">Study Mode</div>
-                                </div>
+                                <div className="text-left"><div className="text-lg">單字預習列表</div><div className="text-xs font-normal opacity-80">Study Mode (List View)</div></div>
                             </div>
                             <IconArrowRight className="w-5 h-5 opacity-50 group-hover:translate-x-1 transition-transform" />
                         </button>
-
-                        <button 
-                            onClick={onStartQuiz}
-                            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md flex items-center justify-between group"
-                        >
+                        <button onClick={onStartQuiz} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md flex items-center justify-between group">
                             <div className="flex items-center gap-3">
                                 <div className="bg-white/20 p-2 rounded-full"><IconCheckCircle className="w-5 h-5" /></div>
-                                <div className="text-left">
-                                    <div className="text-lg">開始測驗挑戰</div>
-                                    <div className="text-xs font-normal opacity-80">Quiz Mode (混雜其他主題干擾項)</div>
-                                </div>
+                                <div className="text-left"><div className="text-lg">開始測驗挑戰</div><div className="text-xs font-normal opacity-80">Quiz Mode (混雜其他主題干擾項)</div></div>
                             </div>
                             <IconArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </button>
                     </div>
-                    
-                    <div className="mt-6 text-xs text-gray-400">
-                        * 測驗模式中，錯誤選項將包含其他主題單字以增加難度
-                    </div>
+                    <div className="mt-6 text-xs text-gray-400">* 測驗模式中，錯誤選項將包含其他主題單字以增加難度</div>
                 </div>
             </div>
         );
@@ -833,72 +551,34 @@
         const ResultScreen = ({ score, totalQuestions, onRestart, wrongAnswers, onBackToMenu }) => {
             const percentage = Math.round((score / totalQuestions) * 100) || 0;
             const [showReview, setShowReview] = useState(false);
-            
-            let message = "";
-            let IconComponent = IconBookOpen;
-            let color = "";
+            let message = "", IconComponent = IconBookOpen, color = "";
 
-            if (percentage >= 90) {
-                message = "太厲害了！專家級表現！";
-                IconComponent = IconTrophy;
-                color = "text-yellow-500";
-            } else if (percentage >= 70) {
-                message = "做得很好！繼續保持！";
-                IconComponent = IconThumbsUp;
-                color = "text-green-500";
-            } else {
-                message = "再接再厲，熟能生巧！";
-                IconComponent = IconBookOpen;
-                color = "text-blue-500";
-            }
+            if (percentage >= 90) { message = "太厲害了！專家級表現！"; IconComponent = IconTrophy; color = "text-yellow-500"; } 
+            else if (percentage >= 70) { message = "做得很好！繼續保持！"; IconComponent = IconThumbsUp; color = "text-green-500"; } 
+            else { message = "再接再厲，熟能生巧！"; IconComponent = IconBookOpen; color = "text-blue-500"; }
 
             return (
                 <div className="flex flex-col items-center min-h-screen p-4 text-center fade-in bg-gray-100 py-8">
                     <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full my-4">
                         <h2 className="text-2xl font-bold text-gray-800 mb-6">測驗成績單</h2>
-                        
-                        <div className={`mb-6 flex justify-center ${color}`}>
-                            <IconComponent className="w-20 h-20" />
-                        </div>
-
-                        <div className="text-6xl font-black text-gray-800 mb-2">
-                            {score} <span className="text-2xl text-gray-400 font-normal">/ {totalQuestions}</span>
-                        </div>
+                        <div className={`mb-6 flex justify-center ${color}`}><IconComponent className="w-20 h-20" /></div>
+                        <div className="text-6xl font-black text-gray-800 mb-2">{score} <span className="text-2xl text-gray-400 font-normal">/ {totalQuestions}</span></div>
                         <p className="text-gray-500 mb-6">答對率 {percentage}%</p>
-                        
-                        <div className="bg-gray-50 p-4 rounded-lg mb-6">
-                            <p className="text-lg font-medium text-gray-800">{message}</p>
-                        </div>
+                        <div className="bg-gray-50 p-4 rounded-lg mb-6"><p className="text-lg font-medium text-gray-800">{message}</p></div>
 
-                        {/* 錯誤單字複習區 - 可折疊式設計 */}
                         {wrongAnswers && wrongAnswers.length > 0 && (
                             <div className="mb-8 text-left w-full">
-                                <button 
-                                    onClick={() => setShowReview(!showReview)}
-                                    className="w-full flex items-center justify-between p-4 bg-red-50 hover:bg-red-100 rounded-xl text-red-700 font-bold transition-all duration-200 border border-red-100"
-                                >
-                                    <span className="flex items-center gap-2">
-                                        <IconAlertCircle className="w-5 h-5" />
-                                        需複習的單字 ({wrongAnswers.length})
-                                    </span>
-                                    <svg 
-                                        xmlns="http://www.w3.org/2000/svg" 
-                                        width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
-                                        className={`transform transition-transform duration-200 ${showReview ? 'rotate-180' : ''}`}
-                                    >
-                                        <polyline points="6 9 12 15 18 9"></polyline>
-                                    </svg>
+                                <button onClick={() => setShowReview(!showReview)} className="w-full flex items-center justify-between p-4 bg-red-50 hover:bg-red-100 rounded-xl text-red-700 font-bold transition-all duration-200 border border-red-100">
+                                    <span className="flex items-center gap-2"><IconAlertCircle className="w-5 h-5" />需複習的單字 ({wrongAnswers.length})</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`transform transition-transform duration-200 ${showReview ? 'rotate-180' : ''}`}><polyline points="6 9 12 15 18 9"></polyline></svg>
                                 </button>
-
                                 {showReview && (
                                     <div className="mt-2 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden fade-in">
                                         <div className="max-h-64 overflow-y-auto custom-scrollbar">
                                             <ul className="divide-y divide-gray-100">
                                                 {wrongAnswers.map((item, idx) => (
                                                     <li key={idx} className="p-3 hover:bg-gray-50 transition-colors">
-                                                        <div className="flex justify-between items-start gap-2">
-                                                            <div className="font-bold text-gray-800 text-left">{item.term}</div>
-                                                        </div>
+                                                        <div className="flex justify-between items-start gap-2"><div className="font-bold text-gray-800 text-left">{item.term}</div></div>
                                                         <div className="text-sm text-gray-500 text-left mt-1">{item.def}</div>
                                                     </li>
                                                 ))}
@@ -908,21 +588,9 @@
                                 )}
                             </div>
                         )}
-
                         <div className="space-y-3">
-                            <button 
-                                onClick={onRestart}
-                                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors shadow-md"
-                            >
-                                重新挑戰此主題
-                            </button>
-                            <button 
-                                onClick={onBackToMenu}
-                                className="w-full bg-white border-2 border-gray-200 hover:bg-gray-50 text-gray-600 font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
-                            >
-                                <IconGrid className="w-5 h-5" />
-                                選擇其他主題
-                            </button>
+                            <button onClick={onRestart} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors shadow-md">重新挑戰此主題</button>
+                            <button onClick={onBackToMenu} className="w-full bg-white border-2 border-gray-200 hover:bg-gray-50 text-gray-600 font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"><IconGrid className="w-5 h-5" />選擇其他主題</button>
                         </div>
                     </div>
                 </div>
@@ -931,22 +599,17 @@
 
         // 5. Quiz Logic Component
         const QuizApp = ({ topicData, onBackToMenu, allVocab }) => {
-            const [gameState, setGameState] = useState('playing'); // playing, end
+            const [gameState, setGameState] = useState('playing'); 
             const [questions, setQuestions] = useState([]);
             const [currentQIndex, setCurrentQIndex] = useState(0);
             const [score, setScore] = useState(0);
             const [feedback, setFeedback] = useState(null);
             const [selectedOption, setSelectedOption] = useState(null);
             const [wrongAnswers, setWrongAnswers] = useState([]);
-
             const vocabList = topicData.data;
             
-            // Initial Shuffle
-            useEffect(() => {
-                setQuestions(shuffleArray(vocabList));
-            }, [vocabList]);
+            useEffect(() => { setQuestions(shuffleArray(vocabList)); }, [vocabList]);
 
-            // Generate options (Correct answer + 3 Global Distractors)
             const currentQuestion = useMemo(() => {
                 if (questions.length === 0 || currentQIndex >= questions.length) return null;
                 return questions[currentQIndex];
@@ -954,174 +617,76 @@
 
             const currentOptions = useMemo(() => {
                 if (!currentQuestion) return [];
-                
-                // Get 3 distractors from ALL topics (Global Distractors)
-                // Filter out the current correct answer to avoid duplicates
-                const globalDistractors = allVocab
-                    .filter(item => item.id !== currentQuestion.id && item.def !== currentQuestion.def)
-                    .sort(() => 0.5 - Math.random()) 
-                    .slice(0, 3);
-                
+                const globalDistractors = allVocab.filter(item => item.id !== currentQuestion.id && item.def !== currentQuestion.def).sort(() => 0.5 - Math.random()).slice(0, 3);
                 return shuffleArray([currentQuestion, ...globalDistractors]);
             }, [currentQuestion, allVocab]);
 
             const handleOptionClick = (option) => {
                 if (feedback !== null) return; 
-
                 setSelectedOption(option);
                 const isCorrect = option.id === currentQuestion.id;
-
                 if (isCorrect) {
-                    setScore(prev => prev + 1);
-                    setFeedback('correct');
-                    setTimeout(() => {
-                        nextQuestion();
-                    }, 1000);
+                    setScore(prev => prev + 1); setFeedback('correct');
+                    setTimeout(() => { nextQuestion(); }, 1000);
                 } else {
-                    setFeedback('incorrect');
-                    setWrongAnswers(prev => [...prev, currentQuestion]);
+                    setFeedback('incorrect'); setWrongAnswers(prev => [...prev, currentQuestion]);
                 }
             };
 
             const nextQuestion = () => {
-                setFeedback(null);
-                setSelectedOption(null);
-                
-                if (currentQIndex + 1 < questions.length) {
-                    setCurrentQIndex(prev => prev + 1);
-                } else {
-                    setGameState('end');
-                }
+                setFeedback(null); setSelectedOption(null);
+                if (currentQIndex + 1 < questions.length) { setCurrentQIndex(prev => prev + 1); } else { setGameState('end'); }
             };
 
-            const endEarly = () => {
-                setGameState('end');
-            };
+            const endEarly = () => { setGameState('end'); };
 
-            // Result Screen Logic
             if (gameState === 'end') {
                 const totalAttempted = score + wrongAnswers.length;
-                return <ResultScreen 
-                    score={score} 
-                    totalQuestions={totalAttempted > 0 ? totalAttempted : 0} 
-                    onRestart={() => {
-                        setQuestions(shuffleArray(vocabList));
-                        setCurrentQIndex(0);
-                        setScore(0);
-                        setFeedback(null);
-                        setWrongAnswers([]);
-                        setGameState('playing');
-                    }} 
-                    wrongAnswers={wrongAnswers}
-                    onBackToMenu={onBackToMenu}
-                />;
+                return <ResultScreen score={score} totalQuestions={totalAttempted > 0 ? totalAttempted : 0} onRestart={() => {
+                        setQuestions(shuffleArray(vocabList)); setCurrentQIndex(0); setScore(0); setFeedback(null); setWrongAnswers([]); setGameState('playing');
+                    }} wrongAnswers={wrongAnswers} onBackToMenu={onBackToMenu} />;
             }
 
-            // Playing View
             return (
                 <div className="min-h-screen flex flex-col items-center p-4 max-w-2xl mx-auto fade-in">
-                    
-                    {/* Header */}
                     <div className="w-full flex justify-between items-center mb-6 bg-white p-4 rounded-xl shadow-sm">
                         <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-4">
-                            <button onClick={onBackToMenu} className="text-gray-400 hover:text-gray-600 flex items-center gap-1 text-sm">
-                                <IconArrowLeft className="w-4 h-4" /> 選單
-                            </button>
-                            <div className="flex items-center gap-2 text-gray-600">
-                                <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-bold">
-                                    Q {currentQIndex + 1}
-                                </span>
-                                <span className="text-sm">剩餘 {questions.length - currentQIndex - 1} 題</span>
-                            </div>
+                            <button onClick={onBackToMenu} className="text-gray-400 hover:text-gray-600 flex items-center gap-1 text-sm"><IconArrowLeft className="w-4 h-4" /> 選單</button>
+                            <div className="flex items-center gap-2 text-gray-600"><span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-bold">Q {currentQIndex + 1}</span><span className="text-sm">剩餘 {questions.length - currentQIndex - 1} 題</span></div>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="text-green-600 font-bold flex items-center gap-1">
-                                <IconCheckCircle className="w-4 h-4" />
-                                {score} 分
-                            </div>
-                            <button 
-                                onClick={endEarly}
-                                className="ml-4 text-xs text-red-500 hover:text-red-700 underline"
-                            >
-                                結算成績
-                            </button>
+                            <div className="text-green-600 font-bold flex items-center gap-1"><IconCheckCircle className="w-4 h-4" />{score} 分</div>
+                            <button onClick={endEarly} className="ml-4 text-xs text-red-500 hover:text-red-700 underline">結算成績</button>
                         </div>
                     </div>
-
-                    {/* Question Card */}
                     <div className="w-full bg-white rounded-2xl shadow-lg overflow-hidden mb-6 relative">
-                        <div className="bg-slate-800 p-8 text-center text-white">
-                            <h2 className="text-3xl font-bold tracking-wide">{currentQuestion?.term}</h2>
-                            <p className="text-xs text-slate-400 mt-2 font-mono">Topic: {topicData.title}</p>
-                        </div>
-                        
-                        {/* Progress Bar */}
-                        <div className="w-full bg-gray-200 h-1.5">
-                            <div 
-                                className="bg-blue-600 h-1.5 transition-all duration-300" 
-                                style={{ width: `${((currentQIndex) / questions.length) * 100}%` }}
-                            ></div>
-                        </div>
+                        <div className="bg-slate-800 p-8 text-center text-white"><h2 className="text-3xl font-bold tracking-wide">{currentQuestion?.term}</h2><p className="text-xs text-slate-400 mt-2 font-mono">Topic: {topicData.title}</p></div>
+                        <div className="w-full bg-gray-200 h-1.5"><div className="bg-blue-600 h-1.5 transition-all duration-300" style={{ width: `${((currentQIndex) / questions.length) * 100}%` }}></div></div>
                     </div>
-
-                    {/* Options Grid */}
                     <div className="w-full grid grid-cols-1 gap-3">
                         {currentOptions.map((option, index) => {
                             const labels = ['A', 'B', 'C', 'D'];
                             let btnClass = "bg-white hover:bg-blue-50 border-2 border-gray-100 text-gray-700";
                             let icon = null;
-
                             if (feedback) {
-                                if (option.id === currentQuestion.id) {
-                                    btnClass = "bg-green-100 border-green-500 text-green-800";
-                                    icon = <IconCheck className="w-5 h-5 text-green-600" />;
-                                } else if (selectedOption && option.id === selectedOption.id && feedback === 'incorrect') {
-                                    btnClass = "bg-red-100 border-red-500 text-red-800";
-                                    icon = <IconX className="w-5 h-5 text-red-600" />;
-                                } else {
-                                    btnClass = "bg-gray-50 border-gray-100 text-gray-400 opacity-60";
-                                }
+                                if (option.id === currentQuestion.id) { btnClass = "bg-green-100 border-green-500 text-green-800"; icon = <IconCheck className="w-5 h-5 text-green-600" />; }
+                                else if (selectedOption && option.id === selectedOption.id && feedback === 'incorrect') { btnClass = "bg-red-100 border-red-500 text-red-800"; icon = <IconX className="w-5 h-5 text-red-600" />; }
+                                else { btnClass = "bg-gray-50 border-gray-100 text-gray-400 opacity-60"; }
                             }
-
                             return (
-                                <button
-                                    key={option.id}
-                                    onClick={() => handleOptionClick(option)}
-                                    disabled={feedback !== null}
-                                    className={`
-                                        relative p-4 rounded-xl text-left transition-all duration-200 shadow-sm flex items-center
-                                        ${btnClass}
-                                        ${feedback === null ? 'hover:scale-[1.01] hover:shadow-md' : ''}
-                                    `}
-                                >
-                                    <span className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-4 text-sm font-bold text-gray-600 shrink-0">
-                                        {labels[index]}
-                                    </span>
-                                    <span className="text-lg font-medium flex-grow">{option.def}</span>
-                                    {icon}
+                                <button key={option.id} onClick={() => handleOptionClick(option)} disabled={feedback !== null} className={`relative p-4 rounded-xl text-left transition-all duration-200 shadow-sm flex items-center ${btnClass} ${feedback === null ? 'hover:scale-[1.01] hover:shadow-md' : ''}`}>
+                                    <span className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-4 text-sm font-bold text-gray-600 shrink-0">{labels[index]}</span>
+                                    <span className="text-lg font-medium flex-grow">{option.def}</span>{icon}
                                 </button>
                             );
                         })}
                     </div>
-
-                    {/* Feedback */}
                     <div className="h-24 w-full mt-6 flex items-center justify-center">
-                        {feedback === 'correct' && (
-                            <div className="flex flex-col items-center text-green-600 animate-bounce">
-                                <span className="text-xl font-bold">Good Job! 答對了！</span>
-                                <span className="text-sm">正在進入下一題...</span>
-                            </div>
-                        )}
+                        {feedback === 'correct' && (<div className="flex flex-col items-center text-green-600 animate-bounce"><span className="text-xl font-bold">Good Job! 答對了！</span><span className="text-sm">正在進入下一題...</span></div>)}
                         {feedback === 'incorrect' && (
                             <div className="w-full bg-red-50 border border-red-200 rounded-xl p-4 flex justify-between items-center fade-in">
-                                <div>
-                                    <p className="text-red-700 font-bold mb-1">Oops! 答錯囉。</p>
-                                    <p className="text-sm text-gray-600">正確意思是：<span className="font-bold text-gray-900">{currentQuestion.def}</span></p>
-                                    <p className="text-xs text-gray-500 mt-1">請默念一次再繼續。</p>
-                                </div>
-                                <button onClick={nextQuestion} className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-bold shadow-md transition-transform active:scale-95">
-                                    下一題
-                                </button>
+                                <div><p className="text-red-700 font-bold mb-1">Oops! 答錯囉。</p><p className="text-sm text-gray-600">正確意思是：<span className="font-bold text-gray-900">{currentQuestion.def}</span></p><p className="text-xs text-gray-500 mt-1">請默念一次再繼續。</p></div>
+                                <button onClick={nextQuestion} className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-bold shadow-md transition-transform active:scale-95">下一題</button>
                             </div>
                         )}
                     </div>
@@ -1132,64 +697,17 @@
         // 6. Main App Controller
         const MainApp = () => {
             const [selectedTopic, setSelectedTopic] = useState(null);
-            const [appMode, setAppMode] = useState('menu'); // menu, start, quiz, study
+            const [appMode, setAppMode] = useState('menu');
 
-            // State management for navigation
-            const handleSelectTopic = (topic) => {
-                setSelectedTopic(topic);
-                setAppMode('start');
-            };
+            const handleSelectTopic = (topic) => { setSelectedTopic(topic); setAppMode('start'); };
+            const handleStartQuiz = () => { setAppMode('quiz'); };
+            const handleStartStudy = () => { setAppMode('study'); };
+            const handleBackToMenu = () => { setSelectedTopic(null); setAppMode('menu'); };
 
-            const handleStartQuiz = () => {
-                setAppMode('quiz');
-            };
-
-            const handleStartStudy = () => {
-                setAppMode('study');
-            };
-
-            const handleBackToMenu = () => {
-                setSelectedTopic(null);
-                setAppMode('menu');
-            };
-
-            // Views Switcher
-            if (appMode === 'menu') {
-                return <TopicSelectionScreen onSelectTopic={handleSelectTopic} />;
-            }
-
-            if (appMode === 'start') {
-                return (
-                    <StartScreen 
-                        topic={selectedTopic} 
-                        onStartQuiz={handleStartQuiz} 
-                        onStartStudy={handleStartStudy}
-                        onBack={handleBackToMenu} 
-                    />
-                );
-            }
-
-            if (appMode === 'study') {
-                return (
-                    <StudyApp 
-                        topicData={selectedTopic}
-                        onBackToMenu={handleBackToMenu}
-                        onStartQuiz={handleStartQuiz}
-                    />
-                );
-            }
-
-            if (appMode === 'quiz') {
-                return (
-                    <QuizApp 
-                        key={selectedTopic.id} 
-                        topicData={selectedTopic} 
-                        allVocab={allVocab}
-                        onBackToMenu={handleBackToMenu} 
-                    />
-                );
-            }
-
+            if (appMode === 'menu') return <TopicSelectionScreen onSelectTopic={handleSelectTopic} />;
+            if (appMode === 'start') return <StartScreen topic={selectedTopic} onStartQuiz={handleStartQuiz} onStartStudy={handleStartStudy} onBack={handleBackToMenu} />;
+            if (appMode === 'study') return <StudyApp topicData={selectedTopic} onBackToMenu={handleBackToMenu} onStartQuiz={handleStartQuiz} />;
+            if (appMode === 'quiz') return <QuizApp key={selectedTopic.id} topicData={selectedTopic} allVocab={allVocab} onBackToMenu={handleBackToMenu} />;
             return null;
         };
 
