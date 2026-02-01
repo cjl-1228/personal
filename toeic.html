@@ -603,7 +603,6 @@
             const [questions, setQuestions] = useState([]);
             const [currentQIndex, setCurrentQIndex] = useState(0);
             const [score, setScore] = useState(0);
-            const [feedback, setFeedback] = useState(null);
             const [selectedOption, setSelectedOption] = useState(null);
             const [wrongAnswers, setWrongAnswers] = useState([]);
             const vocabList = topicData.data;
@@ -622,19 +621,24 @@
             }, [currentQuestion, allVocab]);
 
             const handleOptionClick = (option) => {
-                if (feedback !== null) return; 
+                if (selectedOption) return; // Prevent multiple clicks
                 setSelectedOption(option);
+                
                 const isCorrect = option.id === currentQuestion.id;
                 if (isCorrect) {
-                    setScore(prev => prev + 1); setFeedback('correct');
-                    setTimeout(() => { nextQuestion(); }, 1000);
+                    setScore(prev => prev + 1);
                 } else {
-                    setFeedback('incorrect'); setWrongAnswers(prev => [...prev, currentQuestion]);
+                    setWrongAnswers(prev => [...prev, currentQuestion]);
                 }
+
+                // Short delay then move to next
+                setTimeout(() => {
+                    nextQuestion();
+                }, 300);
             };
 
             const nextQuestion = () => {
-                setFeedback(null); setSelectedOption(null);
+                setSelectedOption(null);
                 if (currentQIndex + 1 < questions.length) { setCurrentQIndex(prev => prev + 1); } else { setGameState('end'); }
             };
 
@@ -643,7 +647,7 @@
             if (gameState === 'end') {
                 const totalAttempted = score + wrongAnswers.length;
                 return <ResultScreen score={score} totalQuestions={totalAttempted > 0 ? totalAttempted : 0} onRestart={() => {
-                        setQuestions(shuffleArray(vocabList)); setCurrentQIndex(0); setScore(0); setFeedback(null); setWrongAnswers([]); setGameState('playing');
+                        setQuestions(shuffleArray(vocabList)); setCurrentQIndex(0); setScore(0); setWrongAnswers([]); setGameState('playing');
                     }} wrongAnswers={wrongAnswers} onBackToMenu={onBackToMenu} />;
             }
 
@@ -667,28 +671,22 @@
                         {currentOptions.map((option, index) => {
                             const labels = ['A', 'B', 'C', 'D'];
                             let btnClass = "bg-white hover:bg-blue-50 border-2 border-gray-100 text-gray-700";
-                            let icon = null;
-                            if (feedback) {
-                                if (option.id === currentQuestion.id) { btnClass = "bg-green-100 border-green-500 text-green-800"; icon = <IconCheck className="w-5 h-5 text-green-600" />; }
-                                else if (selectedOption && option.id === selectedOption.id && feedback === 'incorrect') { btnClass = "bg-red-100 border-red-500 text-red-800"; icon = <IconX className="w-5 h-5 text-red-600" />; }
-                                else { btnClass = "bg-gray-50 border-gray-100 text-gray-400 opacity-60"; }
+                            
+                            // Visual feedback for selection state only (blue outline), not correctness
+                            if (selectedOption && option.id === selectedOption.id) {
+                                btnClass = "bg-blue-50 border-blue-500 text-blue-800 ring-2 ring-blue-200";
                             }
+
                             return (
-                                <button key={option.id} onClick={() => handleOptionClick(option)} disabled={feedback !== null} className={`relative p-4 rounded-xl text-left transition-all duration-200 shadow-sm flex items-center ${btnClass} ${feedback === null ? 'hover:scale-[1.01] hover:shadow-md' : ''}`}>
+                                <button key={option.id} onClick={() => handleOptionClick(option)} disabled={selectedOption !== null} className={`relative p-4 rounded-xl text-left transition-all duration-200 shadow-sm flex items-center ${btnClass} ${!selectedOption ? 'hover:scale-[1.01] hover:shadow-md' : ''}`}>
                                     <span className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-4 text-sm font-bold text-gray-600 shrink-0">{labels[index]}</span>
-                                    <span className="text-lg font-medium flex-grow">{option.def}</span>{icon}
+                                    <span className="text-lg font-medium flex-grow">{option.def}</span>
                                 </button>
                             );
                         })}
                     </div>
                     <div className="h-24 w-full mt-6 flex items-center justify-center">
-                        {feedback === 'correct' && (<div className="flex flex-col items-center text-green-600 animate-bounce"><span className="text-xl font-bold">Good Job! 答對了！</span><span className="text-sm">正在進入下一題...</span></div>)}
-                        {feedback === 'incorrect' && (
-                            <div className="w-full bg-red-50 border border-red-200 rounded-xl p-4 flex justify-between items-center fade-in">
-                                <div><p className="text-red-700 font-bold mb-1">Oops! 答錯囉。</p><p className="text-sm text-gray-600">正確意思是：<span className="font-bold text-gray-900">{currentQuestion.def}</span></p><p className="text-xs text-gray-500 mt-1">請默念一次再繼續。</p></div>
-                                <button onClick={nextQuestion} className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-bold shadow-md transition-transform active:scale-95">下一題</button>
-                            </div>
-                        )}
+                        {/* Space placeholder to prevent layout jump */}
                     </div>
                 </div>
             );
