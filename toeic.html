@@ -2254,6 +2254,15 @@ const topic45_OtherAdj = [
 
             const endEarly = () => { setGameState('end'); };
 
+            const handleUnsure = () => {
+                // 將當前問題加入錯誤答案列表（算錯）
+                setWrongAnswers(prev => [...prev, currentQuestion]);
+                // 繼續下一題，等全部測完後再一起複習
+                setTimeout(() => {
+                    nextQuestion();
+                }, 300);
+            };
+
             if (gameState === 'end') {
                 const totalAttempted = score + wrongAnswers.length;
                 return <ResultScreen score={score} totalQuestions={totalAttempted > 0 ? totalAttempted : 0} onRestart={() => {
@@ -2294,6 +2303,19 @@ const topic45_OtherAdj = [
                                 </button>
                             );
                         })}
+                    </div>
+                    <div className="w-full mt-4 flex justify-center">
+                        <button 
+                            onClick={handleUnsure} 
+                            disabled={selectedOption !== null}
+                            className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 ${
+                                selectedOption !== null 
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                                    : 'bg-orange-50 hover:bg-orange-100 text-orange-700 border-2 border-orange-200 hover:border-orange-300 shadow-sm hover:shadow-md'
+                            }`}
+                        >
+                            ❓ 不是很確定（算錯）
+                        </button>
                     </div>
                     <div className="h-24 w-full mt-6 flex items-center justify-center">
                         {/* Space placeholder to prevent layout jump */}
