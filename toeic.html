@@ -1,0 +1,2370 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEIC 職場英語互動測驗 (Business English Quiz)</title>
+
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 3px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #999;
+        }
+
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+
+        .backface-hidden {
+            backface-visibility: hidden;
+        }
+
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+
+        // --- Data Source Helper ---
+        // Updated helper to accept Example Sentence (ex)
+        const c = (id, term, def, ex = "") => ({ id, term, def, ex });
+
+        // --- Data Source ---
+        // 01-10 (Topic 01 updated with examples as requested)
+        const topic01 = [
+            c(1, "occupation", "職業 / 職位", "Please state your name, age, and occupation."),
+            c(2, "vacancy / opening", "空缺 / 職缺", "We have a vacancy in our sales department."),
+            c(3, "pay", "工資；待遇", "Workers are demanding higher pay."),
+            c(4, "salary / wage", "薪資 (月薪) / (時薪)", "She earns a high salary as a lawyer."),
+            c(5, "minimum wage", "最低薪資", "The government plans to increase the minimum wage."),
+            c(6, "leave", "(n.) 休假", "She is on maternity leave."),
+            c(7, "take a leave", "請假", "I need to take a leave of absence for personal reasons."),
+            c(8, "head office", "總公司", "The head office is located in Tokyo."),
+            c(9, "branch office", "分公司", "We opened a new branch office in Taipei."),
+            c(10, "sales department", "業務部", "Please contact the sales department for a quote."),
+            c(11, "accounting department", "會計部", "The accounting department handles all financial records."),
+            c(12, "promotion", "升遷", "He received a promotion to manager last week."),
+            c(13, "demotion", "降級", "Poor performance led to his demotion."),
+            c(14, "sign up", "簽署(合約/報名)", "You need to sign up for the workshop by Friday."),
+            c(15, "dismissal", "解雇", "His dismissal was due to repeated lateness."),
+            c(16, "a letter of recommendation", "推薦信", "I need a letter of recommendation for my job application."),
+            c(17, "bonus", "紅利；獎金", "Employees will receive a Christmas bonus this year."),
+            c(18, "Applications must arrive no later than", "申請函必須在...前送達", "Applications must arrive no later than March 31st."),
+            c(19, "Applications should be postmarked", "申請函郵戳日期不得晚於...", "Applications should be postmarked by the deadline."),
+            c(20, "is considered", "是被考慮的", "He is considered the best candidate for the job."),
+            c(21, "is preferred", "是被偏好的", "Experience in marketing is preferred but not required."),
+            c(22, "is required", "是必須的", "A valid passport is required for travel."),
+            c(23, "is negotiable", "是可商談的", "The salary is negotiable based on experience."),
+            c(24, "labor management", "勞工管理", "Effective labor management improves productivity."),
+            c(25, "labor market", "勞工市場", "The labor market is currently very competitive."),
+            c(26, "MBA", "工商管理碩士", "She decided to pursue an MBA to advance her career."),
+            c(27, "names of reference", "推薦人", "Please provide three names of reference."),
+            c(28, "reference / endorsement letter", "推薦信 / 背書信", "He wrote a glowing endorsement letter for his former assistant."),
+            c(29, "part-time position", "兼職工作", "I am looking for a part-time position while I study."),
+            c(30, "short-listed applicants", "初審合格者", "Short-listed applicants will be invited for an interview."),
+            c(31, "prior experience", "過去的經驗", "Prior experience in customer service is an asset."),
+            c(32, "competitive salary", "優渥的薪水", "We offer a competitive salary and benefits package."),
+            c(33, "competitive", "有競爭力的", "The market for smartphones is highly competitive."),
+            c(34, "non-renewable", "不可續約", "This is a one-year non-renewable contract."),
+            c(35, "be short-listed", "被列入決選名單", "I was thrilled to be short-listed for the award."),
+            c(36, "short-listed", "入圍的", "The short-listed candidates will be notified soon."),
+            c(37, "interview", "面試 / 採訪", "Good luck with your job interview tomorrow!"),
+            c(38, "evaluation", "評價 / 考績", "Performance evaluations are conducted annually."),
+            c(39, "expertise", "專門技術 / 專業知識", "We need someone with expertise in web design.")
+        ];
+
+        // Other topics follow the same structure. 
+        // Note: Examples are added to Topic 1 for demonstration. 
+        // In a real full app, all would have examples.
+
+        const topic02 = [
+            c(201, "account", "帳戶；帳目", "I would like to open a new bank account."),
+            c(202, "close a deal", "成交", "Salespeople are eager to close a deal before the quarter ends."),
+            c(203, "make a contract", "簽約", "We are ready to make a contract with the supplier."),
+            c(204, "break / breach a contract", "毀約", "You will face legal action if you breach the contract."),
+            c(205, "presentation", "報告；發佈會", "She gave an excellent presentation on the new product."),
+            c(206, "car shipment", "汽車運送", "The car shipment will arrive at the port tomorrow."),
+            c(207, "cargo / goods", "貨物", "The ship was loaded with valuable cargo."),
+            c(208, "merchandise / product", "商品", "We need to display the merchandise more effectively."),
+            c(209, "dumping", "傾銷", "The company was accused of dumping products at low prices."),
+            c(210, "embargo", "禁止通商", "The government lifted the trade embargo."),
+            c(211, "gain compliance", "使人遵守", "Strategies were implemented to gain compliance from the staff."),
+            c(212, "grant / provide", "無償幫助/給予", "The bank agreed to grant him a loan."),
+            c(213, "make concession", "讓步", "Both sides had to make concessions to reach an agreement."),
+            c(214, "margin", "盈餘 (收入-成本後)", "Our profit margin has increased by 5%."),
+            c(215, "loss", "損失", "The company reported a significant loss this year."),
+            c(216, "quotations", "報價 (n.)", "Please send us your price quotations for these items."),
+            c(217, "for your reference", "供你做參考", "I have attached the report for your reference."),
+            c(218, "appendix", "附錄", "Please see the appendix for detailed statistics."),
+            c(219, "attach", "貼上；附上", "I will attach the file to this email."),
+            c(220, "confidential", "機密的", "This document contains confidential information."),
+            c(221, "correspondence", "通信；信件", "All official correspondence must be saved."),
+            c(222, "dictate", "口述；命令", "The boss dictated a letter to his secretary."),
+            c(223, "elaborate", "詳盡說明；精心製作的", "Could you elaborate on your proposal?"),
+            c(224, "forward", "轉寄", "Please forward this email to the marketing team."),
+            c(225, "inquire", "調查；詢問", "I am writing to inquire about the job opening."),
+            c(226, "jot down", "略記下", "Let me jot down your phone number."),
+            c(227, "notify", "通知", "We will notify you as soon as the package arrives."),
+            c(228, "response", "回應", "We are waiting for a response from the client."),
+            c(229, "revise", "修訂", "Please revise the report based on the feedback."),
+            c(230, "urgent", "緊急的", "This is an urgent matter that requires immediate attention."),
+            c(231, "affirm", "堅稱；確認", "The CEO affirmed the company's commitment to quality."),
+            c(232, "ASAP", "越快越好", "Please reply ASAP."),
+            c(233, "composition", "寫作；作品", "Her composition of the report was excellent."),
+            c(234, "convene", "集合；開會", "The committee will convene next Monday."),
+            c(235, "courier", "快遞；信差", "The documents were sent via courier."),
+            c(236, "draft", "草稿；匯票", "I am working on the first draft of the proposal."),
+            c(237, "enclose", "裝入；附入", "I will enclose a check with this letter."),
+            c(238, "inform", "通知", "Please inform us if your address changes."),
+            c(239, "issue", "發行；發佈", "The bank will issue a new credit card."),
+            c(240, "layout", "規劃；版面設計", "The layout of the newsletter looks very professional."),
+            c(241, "legible", "字跡可辨的", "Please ensure your handwriting is legible."),
+            c(242, "postage", "郵資", "How much is the postage for this package?"),
+            c(243, "proofread", "校對", "Always proofread your resume before sending it."),
+            c(244, "regarding", "關於", "I have a question regarding the new policy."),
+            c(245, "restate", "重申", "Let me restate my main point."),
+            c(246, "signature", "簽名", "We need your signature on the bottom line."),
+            c(247, "stationery", "文具", "We need to order more office stationery."),
+            c(248, "write-up", "報告書", "He prepared a detailed write-up of the incident."),
+            c(249, "pending", "未決定的；待處理", "The approval is currently pending."),
+            c(250, "invoice", "發票", "We will send you an invoice for the services."),
+            c(251, "payment", "付款", "Payment is due within 30 days."),
+            c(252, "quote", "報價", "Can you give me a quote for the repair?"),
+            c(253, "inventory", "庫存；清單", "We take inventory at the end of every month."),
+            c(254, "letter of credit", "信用狀", "The buyer opened a letter of credit in favor of the seller."),
+            c(255, "special supplement", "特別附錄", "The magazine included a special supplement on travel.")
+        ];
+        const topic03 = [
+            c(301, "affiliation", "附屬關係", "The hospital has an affiliation with the university."),
+            c(302, "annual wage increase", "年薪調升", "The union negotiated an annual wage increase."),
+            c(303, "call for", "要求(人)", "The situation calls for immediate action."),
+            c(304, "require", "要求(規定)", "Safety regulations require all workers to wear helmets."),
+            c(305, "collective bargaining", "集體交涉", "The union leaders are engaged in collective bargaining."),
+            c(306, "contract", "合約", "Please sign the contract to finalize the deal."),
+            c(307, "cooperation", "合作", "We appreciate your cooperation in this matter."),
+            c(308, "coordination", "協調", "The project requires close coordination between departments."),
+            c(309, "employee", "雇員", "She has been a loyal employee for ten years."),
+            c(310, "employer", "雇主", "The employer is responsible for workplace safety."),
+            c(311, "labor", "勞工", "There is a shortage of skilled labor in the industry."),
+            c(312, "labor accident", "勞工災害", "We must take steps to prevent labor accidents."),
+            c(313, "labor contract", "勞工合約", "Review the labor contract before signing."),
+            c(314, "management", "經營層", "The management team is meeting to discuss the budget."),
+            c(315, "labor-management struggle", "勞資糾葛", "The strike was caused by a long labor-management struggle."),
+            c(316, "penal regulation", "刑罰規則", "Violation of the law will result in penal regulations."),
+            c(317, "penalty", "懲罰；罰金", "There is a penalty for late payment."),
+            c(318, "proposal", "提議", "The board rejected the proposal for a merger."),
+            c(319, "protest", "抗議", "Employees staged a protest against low wages."),
+            c(320, "reach an agreement", "達成協議", "We hope to reach an agreement by tomorrow."),
+            c(321, "draw a conclusion", "做出結論", "It is too early to draw a conclusion."),
+            c(322, "stage a strike", "發起罷工", "Workers threatened to stage a strike if demands weren't met."),
+            c(323, "terms of contract", "合約條款", "You must adhere to the terms of the contract."),
+            c(324, "the right to strike", "罷工權", "The constitution guarantees the right to strike."),
+            c(325, "the right to work", "工作權", "Everyone should have the right to work in a safe environment."),
+            c(326, "wage dispute", "薪資爭議", "The wage dispute was settled in court."),
+            c(327, "working hours", "工作時間", "Our standard working hours are 9 to 5."),
+            c(328, "terminate", "終止", "The company decided to terminate his contract."),
+            c(329, "terms and conditions", "條款", "Please read the terms and conditions carefully."),
+            c(330, "signature", "簽名", "Your signature is required on the dotted line."),
+            c(331, "seal", "印章", "The document was stamped with the official seal.")
+        ];
+        const topic04 = [
+            c(401, "reveal", "揭露", "The audit revealed several financial discrepancies."),
+            c(402, "take effect", "生效", "The new laws will take effect next month."),
+            c(403, "expire", "期滿", "My driver's license will expire soon."),
+            c(404, "waive", "放棄權利", "He decided to waive his right to a lawyer."),
+            c(405, "offend", "冒犯；違規", "I hope I didn't offend you with my comment."),
+            c(406, "breach", "違約；破壞", "They were sued for breach of contract."),
+            c(407, "secure", "安全的；可靠的", "Please keep these documents in a secure place."),
+            c(408, "agreement", "協議", "We signed a nondisclosure agreement."),
+            c(409, "statutory", "法定的", "The company provides statutory sick pay."),
+            c(410, "statutory obligations", "法定義務", "Employers must fulfill their statutory obligations."),
+            c(411, "comply with", "遵守", "All staff must comply with the safety regulations."),
+            c(412, "apply", "適用；申請", "These rules apply to everyone in the building."),
+            c(413, "fulfill", "履行", "We aim to fulfill all customer orders within 24 hours."),
+            c(414, "execute", "執行", "The CEO will execute the new business strategy."),
+            c(415, "obligation", "義務", "You have a legal obligation to report the accident."),
+            c(416, "restrict", "限制", "Access to this area is restricted to authorized personnel."),
+            c(417, "disclose", "揭露", "He refused to disclose the details of the deal."),
+            c(418, "grant", "准予", "Permission was granted to enter the building."),
+            c(419, "exclusive", "獨佔的", "They have exclusive rights to sell the product."),
+            c(420, "in accordance with", "與...一致", "The decision was made in accordance with company policy."),
+            c(421, "stipulate", "規定", "The contract stipulates that payment must be made on delivery."),
+            c(422, "provide for", "規定；準備", "The law provides for severe penalties."),
+            c(423, "refer to", "提到", "Please refer to the manual for instructions."),
+            c(424, "interested party", "利害關係人", "The meeting is open to any interested party."),
+            c(425, "said", "上述的", "The said property is located downtown."),
+            c(426, "shall / may", "應 / 得", "The tenant shall pay the rent on time."),
+            c(427, "licensor", "授權人", "The licensor grants the license to the licensee."),
+            c(428, "settlement", "和解；結算", "They reached an out-of-court settlement."),
+            c(429, "subcontract", "轉包合約", "We will subcontract the electrical work."),
+            c(430, "liable", "有責任的", "You are liable for any damage you cause."),
+            c(431, "alter", "修改", "You cannot alter the contract without permission."),
+            c(432, "legitimate", "合法的", "He has a legitimate reason for being absent."),
+            c(433, "warrant", "授權令；保證", "The police have a warrant for his arrest.")
+        ];
+        const topic05 = [
+            c(501, "write someone over", "寫信請人來", "I will write him over to join our annual meeting."),
+            c(502, "thank-you note", "致謝函", "She sent a thank-you note for the birthday gift."),
+            c(503, "get-together", "聚會", "We are having a small get-together this weekend."),
+            c(504, "cocktail party", "雞尾酒會", "The company hosted a cocktail party for its clients."),
+            c(505, "dress-up party", "盛裝宴會", "It is a dress-up party, so wear your best suit."),
+            c(506, "after-dinner speech", "餐後演說", "The CEO gave an inspiring after-dinner speech."),
+            c(507, "award ceremony", "頒獎儀式", "The award ceremony will be broadcast live."),
+            c(508, "dedication", "獻辭", "He read a dedication to his mentor."),
+            c(509, "deliver a speech", "發表演說", "The president will deliver a speech tomorrow."),
+            c(510, "express condolence", "悼念", "I wrote a letter to express my condolences."),
+            c(511, "farewell address", "告別演說", "His farewell address moved everyone to tears."),
+            c(512, "inaugural ceremony", "就職典禮", "Crowds gathered for the presidential inaugural ceremony."),
+            c(513, "inauguration", "就職", "The inauguration marks the beginning of a new term."),
+            c(514, "nomination speech", "提名演說", "She gave a powerful nomination speech."),
+            c(515, "opening ceremony", "開幕式", "The Olympics opening ceremony was spectacular."),
+            c(516, "party convention", "政黨大會", "Delegates gathered for the national party convention."),
+            c(517, "pay a tribute to", "致敬", "We gathered to pay a tribute to the fallen soldiers."),
+            c(518, "piano recital", "鋼琴獨奏會", "My daughter has a piano recital on Sunday."),
+            c(519, "publication party", "出版酒會", "The author is holding a publication party for his new book."),
+            c(520, "wedding banquet", "婚宴", "The wedding banquet was held at a luxury hotel."),
+            c(521, "welcome party", "歡迎會", "Let's throw a welcome party for the new employees."),
+            c(522, "cordially invited", "誠摯邀請", "You are cordially invited to our wedding."),
+            c(523, "cordial", "誠摯的", "They gave us a cordial welcome."),
+            c(524, "arrival of a guest", "貴賓蒞臨", "We are awaiting the arrival of a guest of honor."),
+            c(525, "campaign", "活動；競選", "The marketing campaign was a huge success."),
+            c(526, "launch a campaign", "發起活動", "We plan to launch a campaign to raise awareness."),
+            c(527, "admission fee", "入場費", "The admission fee for the museum is $10."),
+            c(528, "be admitted to", "獲准進入", "He was admitted to the prestigious university."),
+            c(529, "reception", "接待會", "There will be a reception in the lobby after the meeting.")
+        ];
+        const topic06 = [
+            c(601, "action plan", "行動計畫", "The committee proposed a new action plan to reduce waste."),
+            c(602, "approve protocol", "批准協議", "The board voted to approve the safety protocol."),
+            c(603, "protocol", "議定書；禮儀", "Royal protocol dictates how guests should behave."),
+            c(604, "assume office", "就職", "The new president will assume office in January."),
+            c(605, "coalition government", "聯合政府", "The two parties formed a coalition government."),
+            c(606, "economic summit", "經濟高峰會", "World leaders gathered for the annual economic summit."),
+            c(607, "in favor of", "支持", "I am in favor of the proposed changes."),
+            c(608, "oppose", "反對", "Residents gathered to oppose the construction of the dam."),
+            c(609, "incumbent", "現任的", "The incumbent mayor is running for re-election."),
+            c(610, "interpellation", "質詢", "The minister faced intense interpellation in parliament."),
+            c(611, "legal ground", "法律依據", "There is no legal ground for the lawsuit."),
+            c(612, "mainstream faction", "主流派", "The mainstream faction of the party supported the bill."),
+            c(613, "military buildup", "軍備增強", "The report criticized the rapid military buildup."),
+            c(614, "multi-lateral", "多邊的", "They signed a multi-lateral trade agreement."),
+            c(615, "news agency", "通訊社", "The news agency broke the story first."),
+            c(616, "opposition party", "反對黨", "The opposition party criticized the government's policy."),
+            c(617, "public pledge", "公開承諾", "He made a public pledge to lower taxes."),
+            c(618, "resume talks", "恢復會談", "The two countries agreed to resume peace talks."),
+            c(619, "ruling party", "執政黨", "The ruling party maintained its majority in the election."),
+            c(620, "run in election", "參選", "She decided to run in the upcoming election."),
+            c(621, "sectionalism", "派系主義", "Sectionalism can hinder national unity."),
+            c(622, "trade friction", "貿易摩擦", "Trade friction between the two nations has escalated."),
+            c(623, "friction", "摩擦", "There is some friction between the two departments."),
+            c(624, "troubleshooter", "調停者", "He was brought in as a troubleshooter to solve the crisis."),
+            c(625, "embezzle", "挪用公款", "He was caught trying to embezzle company funds."),
+            c(626, "trespass", "侵入", "Do not trespass on private property."),
+            c(627, "scandal", "醜聞", "The political scandal dominated the headlines."),
+            c(628, "out-of-court settlement", "庭外和解", "The case ended in an out-of-court settlement."),
+            c(629, "accused", "被告", "The accused denied all charges."),
+            c(630, "defendant", "被告", "The defendant stood before the judge."),
+            c(631, "lawyer", "律師", "You should consult a lawyer before signing this."),
+            c(632, "plaintiff", "原告", "The plaintiff is seeking damages for the injury."),
+            c(633, "prosecution", "起訴", "The prosecution presented strong evidence."),
+            c(634, "assembly", "議會", "The national assembly will vote on the bill tomorrow."),
+            c(635, "evidence", "證據", "There is not enough evidence to convict him."),
+            c(636, "under control", "在控制中", "The fire is now under control."),
+            c(637, "in search of", "搜尋", "They went in search of a better life."),
+            c(638, "juvenile delinquency", "少年犯罪", "Programs were launched to reduce juvenile delinquency."),
+            c(639, "juvenile delinquent", "少年犯", "The center helps rehabilitate juvenile delinquents."),
+            c(640, "witness", "證人", "The witness testified in court today."),
+            c(641, "probe", "調查", "The government ordered a probe into the accident."),
+            c(642, "prior to", "在...之前", "Please arrive 10 minutes prior to the meeting."),
+            c(643, "allegedly", "據稱", "He allegedly stole the money from the safe."),
+            c(644, "casualty", "傷亡", "There were no casualties reported in the fire."),
+            c(645, "collide with", "相撞", "The car collided with a truck on the highway."),
+            c(646, "devastating", "毀滅性的", "The earthquake had a devastating effect on the region."),
+            c(647, "emergency landing", "緊急降落", "The pilot made a successful emergency landing."),
+            c(648, "inherit", "繼承", "She will inherit the family business."),
+            c(649, "jolt", "震動", "The sudden jolt woke me up."),
+            c(650, "official communique", "官方公報", "They issued an official communique after the meeting."),
+            c(651, "break out", "爆發", "War broke out in the region last year."),
+            c(652, "benefit from", "受益於", "Small businesses will benefit from the tax cut.")
+        ];
+        const topic07 = [
+            c(701, "baseball", "棒球", "Baseball is one of the most popular sports in Taiwan."),
+            c(702, "football", "美式足球", "The Super Bowl is the biggest event in American football."),
+            c(703, "soccer", "英式足球", "Soccer is played by millions of people worldwide."),
+            c(704, "tennis", "網球", "She takes tennis lessons every Saturday."),
+            c(705, "volleyball", "排球", "We played beach volleyball during our vacation."),
+            c(706, "table tennis", "桌球", "Table tennis requires quick reflexes."),
+            c(707, "billiards", "撞球", "They played a game of billiards at the local hall."),
+            c(708, "scuba diving", "潛水", "Scuba diving allows you to explore the underwater world."),
+            c(709, "fishing", "釣魚", "He went fishing at the lake early this morning."),
+            c(710, "surfing", "衝浪", "The waves today are perfect for surfing."),
+            c(711, "sailing", "帆船", "Sailing requires knowledge of the wind and tides."),
+            c(712, "rowing", "划船", "The university rowing team won the championship."),
+            c(713, "sledding", "雪橇", "The kids went sledding down the hill."),
+            c(714, "skating", "溜冰", "Be careful when skating on the frozen lake."),
+            c(715, "horseback riding", "騎馬", "Horseback riding is a great way to enjoy nature."),
+            c(716, "hiking", "健行", "We went hiking in the national park."),
+            c(717, "rival", "對手", "He defeated his long-time rival in the match."),
+            c(718, "contestant", "參賽者", "Each contestant must perform for three minutes."),
+            c(719, "competition", "比賽", "The competition for the job is very fierce."),
+            c(720, "qualifying round", "資格賽", "She passed the qualifying round with ease."),
+            c(721, "doping check", "藥檢", "Athletes must undergo a mandatory doping check."),
+            c(722, "elimination", "淘汰", "The team faces elimination if they lose this game."),
+            c(723, "final round", "決賽", "The final round will be broadcast live."),
+            c(724, "tournament", "錦標賽", "Our team is competing in a regional tournament."),
+            c(725, "home-town", "主場/當地", "The crowd cheered for the home-town hero."),
+            c(726, "reservation", "預約", "I made a reservation at the tennis court."),
+            c(727, "opening game", "開幕賽", "The opening game of the season starts tonight."),
+            c(728, "play-off", "加賽", "The teams will meet in a play-off to decide the winner."),
+            c(729, "preliminary", "預賽", "He was knocked out in the preliminary heats."),
+            c(730, "quarter finals", "八強賽", "They advanced to the quarter finals."),
+            c(731, "record-breaking", "破紀錄的", "The athlete gave a record-breaking performance."),
+            c(732, "seed", "種子選手", "He is the top seed in the tournament."),
+            c(733, "season-ticket", "季票", "Season-ticket holders get priority seating."),
+            c(734, "secure second place", "獲得亞軍", "She managed to secure second place in the race."),
+            c(735, "semifinals", "準決賽", "Both teams are preparing for the semifinals."),
+            c(736, "sports lottery", "運彩", "He won a small amount in the sports lottery."),
+            c(737, "visitor", "客隊", "The visitor team scored the first goal."),
+            c(738, "ticket agency", "售票處", "You can buy tickets from the online ticket agency."),
+            c(739, "underdog", "居下風者", "Everyone loves to see an underdog win."),
+            c(740, "win the contest", "獲勝", "He trained hard to win the contest.")
+        ];
+        const topic08 = [
+            c(801, "goalkeeper", "守門員", "The goalkeeper made a spectacular save."),
+            c(802, "defense", "防守", "Our team needs to improve its defense."),
+            c(803, "jersey", "球衣", "He wore his favorite player's jersey."),
+            c(804, "aerobics", "有氧運動", "She does aerobics three times a week."),
+            c(805, "coach", "教練", "The coach called a timeout to talk to the players."),
+            c(806, "compete", "競爭", "Hundreds of athletes will compete for the gold medal."),
+            c(807, "defeat", "擊敗", "They finally defeated their rivals."),
+            c(808, "fitness", "健身/健康", "Physical fitness is important for overall health."),
+            c(809, "gym", "健身房", "I go to the gym before work every morning."),
+            c(810, "league", "聯盟", "Our team is at the top of the league."),
+            c(811, "marathon", "馬拉松", "Running a marathon requires months of training."),
+            c(812, "mountaineering", "登山", "Mountaineering can be dangerous in bad weather."),
+            c(813, "participate", "參加", "We encourage everyone to participate in the event."),
+            c(814, "recreation", "娛樂", "The park provides recreation for the whole family."),
+            c(815, "relaxation", "放鬆", "Yoga is great for relaxation."),
+            c(816, "rigor", "嚴格", "He enjoys the rigor of military training."),
+            c(817, "stadium", "體育場", "The stadium was packed with cheering fans."),
+            c(818, "stroll", "散步", "We took a leisurely stroll through the park."),
+            c(819, "surrender", "投降", "The losing team refused to surrender."),
+            c(820, "time-out", "暫停", "The referee signaled a time-out."),
+            c(821, "trophy", "獎盃", "The winners raised the trophy in triumph."),
+            c(822, "usher", "招待員", "The usher guided us to our seats."),
+            c(823, "combative", "好戰的", "The player was ejected for combative behavior."),
+            c(824, "default", "棄權", "They won the match by default."),
+            c(825, "forfeit", "喪失", "If you are late, you will forfeit your entry fee."),
+            c(826, "intensity", "強度", "The intensity of the workout was very high."),
+            c(827, "leisure", "閒暇", "I spend my leisure time reading books."),
+            c(828, "massage", "按摩", "A massage can help relieve muscle tension."),
+            c(829, "muscle", "肌肉", "He pulled a muscle while running."),
+            c(830, "pastime", "消遣", "Gardening is her favorite pastime."),
+            c(831, "runner-up", "亞軍", "The runner-up received a silver medal."),
+            c(832, "spectator", "觀眾", "Thousands of spectators watched the parade."),
+            c(833, "stretch", "伸展", "Always stretch before you exercise."),
+            c(834, "surfing", "衝浪", "He spends his summers surfing in Hawaii."),
+            c(835, "tactic", "戰術", "Changing their tactic helped them win the game."),
+            c(836, "strategy", "策略", "We need a new strategy to beat the competition."),
+            c(837, "tournament", "錦標賽", "She was eliminated early in the tournament."),
+            c(838, "referee", "裁判", "The referee blew the whistle to end the game."),
+            c(839, "record", "紀錄", "He set a new world record for the 100 meters.")
+        ];
+        const topic09 = [
+            c(901, "bank account balance", "銀行存款餘額", "Please check your bank account balance before making a purchase."),
+            c(902, "real estate transaction", "房地產交易", "The lawyer specializes in real estate transactions."),
+            c(903, "credit card", "信用卡", "Do you accept payment by credit card?"),
+            c(904, "utilities", "水電費", "The rent includes all utilities."),
+            c(905, "as long as", "只要", "You can stay here as long as you pay the rent."),
+            c(906, "as many as", "多達", "As many as 50 people attended the open house."),
+            c(907, "as much as", "多達(不可數)", "He spent as much as $5000 on renovations."),
+            c(908, "affluent", "富裕的", "They live in an affluent neighborhood."),
+            c(909, "be on the increase", "增加中", "Housing prices are on the increase."),
+            c(910, "lack", "缺乏", "The apartment lacks natural light."),
+            c(911, "hamper", "阻礙", "High interest rates hamper the housing market."),
+            c(912, "long-standing", "長期的(存在已久)", "They resolved a long-standing dispute over the property line."),
+            c(913, "long-term", "長期的", "We are looking for a long-term lease."),
+            c(914, "short-term", "短期的", "Short-term rentals are popular with tourists."),
+            c(915, "out of control", "失控", "Maintenance costs are getting out of control."),
+            c(916, "out of reach", "遙不可及", "Buying a house is out of reach for many young people."),
+            c(917, "prestigious", "有名望的", "Their office is located in a prestigious building."),
+            c(918, "prospect", "前景", "The prospect of finding a cheap apartment is dim."),
+            c(919, "recession", "衰退", "The housing market often suffers during a recession."),
+            c(920, "surpass", "超越", "The final cost surpassed our budget."),
+            c(921, "exceed", "超過", "Do not exceed the maximum occupancy limit."),
+            c(922, "vicinity", "附近", "There are several schools in the vicinity."),
+            c(923, "appliance", "家電", "All kitchen appliances are included in the sale."),
+            c(924, "room charge", "房費", "The room charge includes breakfast."),
+            c(925, "burglar", "竊賊", "The burglar alarm went off at midnight."),
+            c(926, "community", "社區", "We have a very tight-knit community here."),
+            c(927, "electronics", "電子產品", "This store sells consumer electronics."),
+            c(928, "electronic", "電子的", "Please sign the electronic lease agreement."),
+            c(929, "fire extinguisher", "滅火器", "Every kitchen should have a fire extinguisher."),
+            c(930, "furniture", "傢俱", "The apartment comes with stylish furniture."),
+            c(931, "garbage disposal", "垃圾處理", "The sink is equipped with a garbage disposal unit.")
+        ];
+        const topic10 = [
+            c(1001, "landlord", "房東", "The landlord is responsible for repairs."),
+            c(1002, "laundry", "洗衣", "There is a laundry room in the basement."),
+            c(1003, "lease", "租約", "I signed a one-year lease for the apartment."),
+            c(1004, "mattress", "床墊", "This mattress is very comfortable to sleep on."),
+            c(1005, "mortgage", "房貸", "They applied for a mortgage to buy the house."),
+            c(1006, "ornament", "裝飾品", "The shelf was filled with china ornaments."),
+            c(1007, "plumbing", "管線工程", "The house needs some new plumbing."),
+            c(1008, "possession", "財產", "Please take all your personal possessions with you."),
+            c(1009, "real estate", "房地產", "Investing in real estate can be profitable."),
+            c(1010, "renovate", "翻修", "We plan to renovate the kitchen next year."),
+            c(1011, "rural", "鄉村的", "She prefers living in a rural area."),
+            c(1012, "suburb", "郊區", "Many families choose to live in the suburbs."),
+            c(1013, "urban", "都市的", "Urban planning is essential for a growing city."),
+            c(1014, "down payment", "頭期款", "They saved for years to afford the down payment."),
+            c(1015, "fire alarm", "火警警報", "The fire alarm sounded during the drill."),
+            c(1016, "furnishings", "室內陳設", "The soft furnishings make the room feel cozy."),
+            c(1017, "garage", "車庫", "The house comes with a double garage."),
+            c(1018, "kitchenware", "廚具", "She bought a new set of stainless steel kitchenware."),
+            c(1019, "launderette", "自助洗衣店", "I take my clothes to the launderette every week."),
+            c(1020, "lawn", "草坪", "He mows the lawn every Sunday morning."),
+            c(1021, "loan shark", "放高利貸者", "Stay away from loan sharks."),
+            c(1022, "messy", "髒亂的", "His room is always messy."),
+            c(1023, "neighborhood", "鄰近地區", "This is a quiet and safe neighborhood."),
+            c(1024, "playground", "遊樂場", "The children are playing in the playground."),
+            c(1025, "porch", "門廊", "We sat on the front porch and watched the rain."),
+            c(1026, "property", "財產/房產", "The sign says 'Private Property - Keep Out'."),
+            c(1027, "relocate", "搬遷", "The company decided to relocate to a larger office."),
+            c(1028, "residence", "住所", "This is his official residence."),
+            c(1029, "storage", "儲藏室", "We have extra storage space in the attic."),
+            c(1030, "tenant", "房客", "The tenant pays the rent on the first of the month."),
+            c(1031, "utility", "公用設施", "The utility bills are higher in the winter."),
+            c(1032, "balcony", "陽台", "The apartment features a balcony with a sea view."),
+            c(1033, "chore", "家務雜事", "Washing dishes is my least favorite chore.")
+        ];
+
+        // 11-20 (New from PDF)
+        const topic11_Stats = [
+            c(1101, "bar graph", "柱狀圖", "The bar graph illustrates the sales growth over the last year."),
+            c(1102, "line graph", "折線圖", "A line graph is best for showing trends over time."),
+            c(1103, "pie graph", "圓餅圖", "The pie graph shows the market share of each competitor."),
+            c(1104, "opinion survey", "民意調查", "We conducted an opinion survey to gauge customer satisfaction."),
+            c(1105, "demographics", "人口統計", "Understanding the demographics of our target audience is crucial."),
+            c(1106, "exchange rate", "匯率", "The exchange rate between the dollar and the euro fluctuates daily."),
+            c(1107, "approval rate", "支持率", "The president's approval rate has dropped significantly."),
+            c(1108, "findings", "調查結果", "The findings of the study were published in a medical journal."),
+            c(1109, "advanced age", "高齡", "Despite his advanced age, he remains very active."),
+            c(1110, "alternative", "替代方案", "We need to find an alternative to fossil fuels."),
+            c(1111, "amount to", "總計達到", "The total debts amount to over one million dollars."),
+            c(1112, "at the age of", "在...歲時", "He retired at the age of 65."),
+            c(1113, "in contrast to", "與...相反", "In contrast to last year, profits have increased."),
+            c(1114, "problematic", "有問題的", "The new software update is proving to be problematic."),
+            c(1115, "projections", "預測", "Sales projections for the next quarter look promising."),
+            c(1116, "show a decline", "顯示下降", "The figures show a decline in consumer spending."),
+            c(1117, "replacement", "替換物", "We are looking for a replacement for the broken printer."),
+            c(1118, "table", "表格", "Please refer to the table on page 5 for data."),
+            c(1119, "take a poll", "進行民調", "We will take a poll to decide the location of the party."),
+            c(1120, "widespread", "廣泛的", "There is widespread support for the new policy."),
+            c(1121, "turnout", "出席人數", "There was a high turnout for the election."),
+            c(1122, "turn out", "結果是", "The event turned out to be a huge success."),
+            c(1123, "official statistics", "官方統計", "Official statistics indicate a drop in unemployment."),
+            c(1124, "death toll", "死亡人數", "The death toll from the earthquake continues to rise."),
+            c(1125, "birth rate", "出生率", "The government is concerned about the declining birth rate."),
+            c(1126, "fast-fading", "迅速消失的", "Traditional crafts are a fast-fading art form.")
+        ];
+        const topic12_Travel1 = [
+            c(1201, "line", "鐵路線", "This train line connects the city center to the airport."),
+            c(1202, "passenger car", "客車廂", "The passenger car was crowded during rush hour."),
+            c(1203, "freight car", "貨車廂", "The freight car is loaded with coal."),
+            c(1204, "dining car", "餐車廂", "Let's grab a coffee in the dining car."),
+            c(1205, "conductor", "列車長", "The conductor checked our tickets."),
+            c(1206, "express train", "快車", "The express train does not stop at this station."),
+            c(1207, "local train", "區間車/慢車", "The local train stops at every small town."),
+            c(1208, "junction", "轉運站", "Change trains at the next junction."),
+            c(1209, "on schedule", "準時", "The flight arrived right on schedule."),
+            c(1210, "one-way ticket", "單程票", "I only need a one-way ticket to London."),
+            c(1211, "round-trip ticket", "來回票", "A round-trip ticket is usually cheaper."),
+            c(1212, "lane", "車道", "Stay in the right lane to exit."),
+            c(1213, "turnpike", "收費公路", "We took the turnpike to save time."),
+            c(1214, "shortcut", "捷徑", "He knows a shortcut to the office."),
+            c(1215, "cut corners", "抄捷徑/省事", "Don't cut corners when it comes to safety."),
+            c(1216, "evacuate", "疏散", "Residents were ordered to evacuate the area."),
+            c(1217, "go off on a trip", "去旅行", "They are going off on a trip to Europe."),
+            c(1218, "punctured tire", "爆胎", "We had a punctured tire on the highway."),
+            c(1219, "non-stop", "直達", "This is a non-stop flight to New York."),
+            c(1220, "on board", "搭乘", "Welcome on board flight 747."),
+            c(1221, "opposite side", "對面", "The bus stop is on the opposite side of the street."),
+            c(1222, "out-of-service", "暫停服務", "The elevator is currently out-of-service."),
+            c(1223, "overbooked", "超賣", "The flight was overbooked, so I was bumped to the next one."),
+            c(1224, "trek", "長途跋涉", "They went on a trek through the mountains."),
+            c(1225, "accommodation", "住宿", "Travel expenses include meals and accommodation."),
+            c(1226, "boarding pass", "登機證", "Please show your boarding pass at the gate."),
+            c(1227, "brochure", "小冊子", "I picked up a travel brochure at the agency."),
+            c(1228, "checkout", "退房", "Checkout time is at 11:00 AM."),
+            c(1229, "confirmation", "確認", "I received a booking confirmation via email."),
+            c(1230, "customs", "海關", "You must declare these items at customs."),
+            c(1231, "tariff", "關稅", "The government imposed a new tariff on imported goods."),
+            c(1232, "expedition", "探險", "He led an expedition to the South Pole."),
+            c(1233, "flight", "航班", "My flight was delayed due to bad weather."),
+            c(1234, "itinerary", "行程表", "The tour itinerary includes visits to three museums."),
+            c(1235, "lodge", "小屋", "We stayed in a wooden lodge near the lake."),
+            c(1236, "luxurious", "豪華的", "They stayed in a luxurious five-star hotel."),
+            c(1237, "motel", "汽車旅館", "We stopped at a roadside motel for the night."),
+            c(1238, "carousel", "行李轉盤", "Wait for your bags at carousel number 3."),
+            c(1239, "lost and found", "失物招領", "I left my umbrella in the lobby; check the lost and found."),
+            c(1240, "duty-free", "免稅", "I bought some perfume at the duty-free shop."),
+            c(1241, "fare", "票價", "Bus fares have increased recently."),
+            c(1242, "souvenir", "紀念品", "I bought a souvenir for my mom."),
+            c(1243, "embassy", "大使館", "Contact the embassy if you lose your passport."),
+            c(1244, "consulate", "領事館", "The visa was issued by the consulate."),
+            c(1245, "expatriate", "外派人員", "There is a large community of expatriates in the city."),
+            c(1246, "island hopping", "跳島遊", "We went island hopping in the Philippines."),
+            c(1247, "reception desk", "接待櫃台", "Check in at the reception desk when you arrive."),
+            c(1248, "wake-up call", "晨喚服務", "I requested a wake-up call for 6 AM."),
+            c(1249, "tourist attraction", "景點", "The Eiffel Tower is a major tourist attraction.")
+        ];
+        const topic13_Travel2 = [
+            c(1301, "packing", "打包", "I haven't finished packing yet."),
+            c(1302, "peak season", "旺季", "Hotel prices are higher during peak season."),
+            c(1303, "reservation", "預約", "I'd like to make a reservation for dinner."),
+            c(1304, "sightseeing", "觀光", "We spent the whole day sightseeing."),
+            c(1305, "suite", "套房", "They upgraded us to the presidential suite."),
+            c(1306, "valid", "有效的", "Your passport must be valid for at least six months."),
+            c(1307, "baggage claim", "行李領取處", "Pick up your luggage at the baggage claim area."),
+            c(1308, "breathtaking", "驚人的", "The view from the top was breathtaking."),
+            c(1309, "concierge", "禮賓人員", "The concierge can help you book tickets."),
+            c(1310, "cruise", "郵輪", "We are going on a Caribbean cruise."),
+            c(1311, "deluxe", "豪華的", "The hotel offers deluxe rooms with ocean views."),
+            c(1312, "destination", "目的地", "Our final destination is Paris."),
+            c(1313, "exotic", "異國風情的", "They traveled to exotic locations around the world."),
+            c(1314, "fasten", "繫緊", "Please fasten your seatbelts."),
+            c(1315, "flight attendant", "空服員", "The flight attendant served us drinks."),
+            c(1316, "jet lag", "時差", "I am suffering from jet lag after the long flight."),
+            c(1317, "luggage", "行李", "Do not leave your luggage unattended."),
+            c(1318, "metal detector", "金屬探測器", "You must walk through the metal detector at security."),
+            c(1319, "overseas", "海外的", "He works for an overseas branch of the bank."),
+            c(1320, "passenger", "乘客", "All passengers must remain seated."),
+            c(1321, "porter", "搬運工", "The porter carried our bags to the room."),
+            c(1322, "stopover", "中途停留", "We have a short stopover in Singapore."),
+            c(1323, "vacant", "空缺的", "The sign says the room is vacant."),
+            c(1324, "voyage", "航行", "The voyage across the Atlantic took two weeks."),
+            c(1325, "carry-on", "隨身行李", "You are allowed one carry-on bag."),
+            c(1326, "stow", "裝載", "Please stow your bags in the overhead bin."),
+            c(1327, "personal belongings", "個人物品", "Don't forget your personal belongings."),
+            c(1328, "refreshments", "茶點", "Light refreshments will be served during the flight."),
+            c(1329, "snack", "點心", "I packed a snack for the trip."),
+            c(1330, "aisle seat", "走道位", "I prefer an aisle seat so I can stretch my legs."),
+            c(1331, "window seat", "靠窗位", "She likes the window seat to see the view."),
+            c(1332, "turbulence", "亂流", "The plane experienced some turbulence."),
+            c(1333, "headset", "耳機", "The airline provides a headset for the movie."),
+            c(1334, "crew", "機組員", "The flight crew prepared the cabin for landing."),
+            c(1335, "cabin crew", "客艙組員", "The cabin crew is very professional."),
+            c(1336, "blanket", "毛毯", "Can I have an extra blanket, please?"),
+            c(1337, "toiletries", "盥洗用品", "I forgot to pack my toiletries."),
+            c(1338, "stub", "票根", "Keep your ticket stub in case you need to re-enter."),
+            c(1339, "altitude", "高度", "The plane is flying at an altitude of 30,000 feet."),
+            c(1340, "longitude", "經度", "The ship's position is determined by latitude and longitude."),
+            c(1341, "latitude", "緯度", "This region is located at a high latitude."),
+            c(1342, "bound for", "前往", "This train is bound for Tokyo."),
+            c(1343, "runway", "跑道", "The plane is taxiing to the runway."),
+            c(1344, "departure", "出發", "The departure time is 10:00 AM."),
+            c(1345, "arrival", "抵達", "Our estimated time of arrival is 2:00 PM."),
+            c(1346, "disembarkation", "下機/船", "Disembarkation will begin shortly."),
+            c(1347, "immigration", "移民局", "The immigration officer checked my visa."),
+            c(1348, "immigrant", "移民", "The city has a large population of immigrants."),
+            c(1349, "quarantine", "檢疫", "The animals were kept in quarantine for two weeks."),
+            c(1350, "exploration", "探險", "Space exploration is a costly endeavor.")
+        ];
+        const topic14_Weather = [
+            c(1401, "storm", "暴風雨", "A severe storm is approaching the coast."),
+            c(1402, "rainfall", "降雨量", "The average annual rainfall is 50 inches."),
+            c(1403, "hail", "冰雹", "The car was damaged by hail."),
+            c(1404, "lightning rod", "避雷針", "The building is equipped with a lightning rod."),
+            c(1405, "fog", "霧", "Thick fog delayed the flight."),
+            c(1406, "heavy snowfall", "大雪", "Heavy snowfall blocked the roads."),
+            c(1407, "blizzard", "暴風雪", "They were trapped in a blizzard."),
+            c(1408, "breeze", "微風", "A cool breeze blew in from the ocean."),
+            c(1409, "tornado", "龍捲風", "A tornado warning has been issued."),
+            c(1410, "wind velocity", "風速", "The wind velocity reached 100 mph."),
+            c(1411, "temperature", "氣溫", "The temperature dropped below freezing."),
+            c(1412, "thermometer", "溫度計", "The thermometer shows 30 degrees Celsius."),
+            c(1413, "humidity", "濕度", "The high humidity makes it feel hotter than it is."),
+            c(1414, "atmospheric pressure", "氣壓", "Atmospheric pressure changes with altitude."),
+            c(1415, "flood", "洪水", "The heavy rain caused a flood in the valley."),
+            c(1416, "avalanche", "雪崩", "Skier triggered an avalanche."),
+            c(1417, "Antarctic", "南極", "Penguins live in the Antarctic."),
+            c(1418, "Arctic", "北極", "The Arctic ice cap is melting."),
+            c(1419, "spawn", "釀成", "The hurricane spawned several tornadoes."),
+            c(1420, "chill", "寒意", "There is a chill in the air tonight."),
+            c(1421, "cold wave", "寒流", "A cold wave is sweeping across the country."),
+            c(1422, "crisp", "涼爽的", "It was a crisp autumn morning."),
+            c(1423, "heavy fog", "濃霧", "Driving in heavy fog is dangerous."),
+            c(1424, "Meteorological Agency", "氣象局", "The Meteorological Agency predicts rain for tomorrow."),
+            c(1425, "mild winter", "暖冬", "We had a very mild winter this year."),
+            c(1426, "rain cloud", "雨雲", "Dark rain clouds are gathering."),
+            c(1427, "scorching", "酷熱的", "It was a scorching hot day."),
+            c(1428, "snowstorm", "暴風雪", "The school was closed due to the snowstorm."),
+            c(1429, "taper off", "逐漸減弱", "The rain should taper off by evening."),
+            c(1430, "tropical depression", "熱帶低壓", "The tropical depression may strengthen into a typhoon."),
+            c(1431, "typhoon area", "颱風區", "Taiwan is located in a typhoon area."),
+            c(1432, "visibility", "能見度", "Visibility was reduced to zero due to the fog."),
+            c(1433, "warm current", "暖流", "The warm current affects the local climate."),
+            c(1434, "weather station", "氣象站", "The weather station records daily temperatures."),
+            c(1435, "weatherperson", "氣象員", "The weatherperson said it would be sunny."),
+            c(1436, "wintry", "寒冷的", "We are expecting some wintry weather."),
+            c(1437, "shape up", "成形", "The storm is shaping up to be a big one."),
+            c(1438, "light wind", "輕風", "A light wind rustled the leaves."),
+            c(1439, "muggy", "悶熱的", "It is very muggy today."),
+            c(1440, "precipitation", "降水量", "There is a 50% chance of precipitation.")
+        ];
+        const topic15_Accounting = [
+            c(1501, "accountant", "會計師", "We hired an accountant to handle our taxes."),
+            c(1502, "audit", "審計", "The company undergoes an annual audit."),
+            c(1503, "auditor", "稽核員", "The auditor checked the financial records."),
+            c(1504, "financial statements", "財務報表", "Investors review the financial statements carefully."),
+            c(1505, "income statement", "損益表", "The income statement shows the company's profitability."),
+            c(1506, "balance sheet", "資產負債表", "The balance sheet lists assets and liabilities."),
+            c(1507, "cash flow", "現金流", "Positive cash flow is essential for survival."),
+            c(1508, "fiscal year", "會計年度", "The fiscal year ends on December 31st."),
+            c(1509, "close the book", "結帳", "We need to close the books by the end of the week."),
+            c(1510, "cut-off date", "截止日", "The cut-off date for invoices is the 25th."),
+            c(1511, "transaction", "交易", "Every transaction must be recorded."),
+            c(1512, "profit/loss", "損益", "We calculated the profit/loss for the project."),
+            c(1513, "net profit", "淨利", "Net profit increased by 10% this quarter."),
+            c(1514, "gross", "總的", "His gross income is $50,000 a year."),
+            c(1515, "gross margin", "毛利率", "We aim to improve our gross margin."),
+            c(1516, "GDP", "國內生產毛額", "The country's GDP grew by 3%."),
+            c(1517, "administrative expense", "管理費", "We are trying to reduce administrative expenses."),
+            c(1518, "operating income", "營業利益", "Operating income excludes interest and taxes."),
+            c(1519, "earnings", "盈餘", "Earnings per share were higher than expected."),
+            c(1520, "revenue", "營收", "Advertising revenue has declined."),
+            c(1521, "expense", "費用", "Travel expenses are reimbursed by the company."),
+            c(1522, "pre-tax", "稅前", "These figures are pre-tax profit."),
+            c(1523, "tax provision", "稅金準備", "The company set aside a tax provision."),
+            c(1524, "bottom line", "淨利/底線", "The bottom line is that we need to cut costs."),
+            c(1525, "inventory", "存貨", "We have too much inventory in the warehouse."),
+            c(1526, "credit", "貸方", "We credited your account with $100."),
+            c(1527, "debt", "借方/債務", "The company is in deep debt."),
+            c(1528, "accounts receivable", "應收帳款", "Accounts receivable tracks money owed to us."),
+            c(1529, "accounts payable", "應付帳款", "Please check accounts payable for outstanding bills."),
+            c(1530, "depreciation", "折舊", "Car depreciation is a significant cost."),
+            c(1531, "amortization", "攤銷", "Amortization of the loan will take 10 years."),
+            c(1532, "write off", "註銷", "They decided to write off the bad debt."),
+            c(1533, "cash equivalents", "約當現金", "Cash equivalents include short-term investments."),
+            c(1534, "asset", "資產", "Employees are the company's most valuable asset."),
+            c(1535, "liability", "負債", "The lawsuit is a major liability."),
+            c(1536, "stockholder's equity", "股東權益", "Stockholder's equity represents the owners' claim."),
+            c(1537, "current asset", "流動資產", "Cash is a current asset."),
+            c(1538, "retained earnings", "保留盈餘", "Retained earnings are reinvested in the business."),
+            c(1539, "off balance", "帳不平", "The numbers are off balance; something is wrong."),
+            c(1540, "turnover", "週轉率", "Inventory turnover is a key efficiency metric."),
+            c(1541, "cash basis", "現金制", "Small businesses often use cash basis accounting."),
+            c(1542, "tax-effect", "稅務效應", "Consider the tax-effect of this investment."),
+            c(1543, "quarter", "季度", "Reports are issued every quarter."),
+            c(1544, "window dressing", "美化帳目", "The company was accused of window dressing its accounts.")
+        ];
+        const topic16_Finance = [
+            c(1601, "term", "期限/條款", "The term of the loan is 5 years."),
+            c(1602, "financial", "金融的", "Tokyo is a major financial center."),
+            c(1603, "budget", "預算", "We must stay within the budget."),
+            c(1604, "profit margin", "利潤率", "They operate with a very thin profit margin."),
+            c(1605, "profitable", "獲利的", "The new venture proved to be very profitable."),
+            c(1606, "mark up", "加價", "Retailers mark up the price by 50%."),
+            c(1607, "gain", "收益", "Capital gains are taxed."),
+            c(1608, "operating expense", "營業費用", "Rent is a major operating expense."),
+            c(1609, "overhead", "經常開支", "Reducing overhead helps increase profits."),
+            c(1610, "purchasing expense", "採購費", "Purchasing expenses have risen this year."),
+            c(1611, "expenditure", "支出", "Government expenditure on healthcare has increased."),
+            c(1612, "rent of premises", "租金", "The rent of premises is due on the first."),
+            c(1613, "premise", "場所/前提", "Smoking is prohibited on the premises."),
+            c(1614, "billing", "開票", "The billing department handles invoices."),
+            c(1615, "retrench", "緊縮", "The company had to retrench due to the recession."),
+            c(1616, "cost", "成本", "The cost of living is rising."),
+            c(1617, "direct cost", "直接成本", "Labor is a direct cost of production."),
+            c(1618, "principal", "本金/負責人", "You pay interest on the principal amount."),
+            c(1619, "principal (adj)", "主要的", "Vegetables are the principal ingredients in this dish."),
+            c(1620, "principle", "原則", "It is against my principles to lie."),
+            c(1621, "interest rate", "利率", "The central bank raised the interest rate."),
+            c(1622, "default", "違約", "If you default on the loan, you lose your house."),
+            c(1623, "dividend", "股利", "Shareholders received a dividend this year."),
+            c(1624, "return", "報酬", "High risk can lead to high return."),
+            c(1625, "rate of return", "報酬率", "The rate of return on this investment is 5%."),
+            c(1626, "current savings", "活存", "I keep some money in my current savings account."),
+            c(1627, "time savings", "定存", "Time savings accounts offer higher interest rates."),
+            c(1628, "undervalue", "低估", "Don't undervalue your contribution to the team."),
+            c(1629, "balance", "餘額", "My account balance is low."),
+            c(1630, "bond", "債券", "Government bonds are a safe investment."),
+            c(1631, "chamber of commerce", "商會", "He is a member of the local chamber of commerce."),
+            c(1632, "deficit", "赤字", "The government is trying to reduce the budget deficit."),
+            c(1633, "depreciation", "貶值", "Currency depreciation makes exports cheaper."),
+            c(1634, "devaluation", "貶值", "The devaluation of the currency caused inflation."),
+            c(1635, "exempt", "免除的", "Charities are exempt from tax."),
+            c(1636, "fluctuation", "波動", "Market fluctuation is normal."),
+            c(1637, "inflation", "通膨", "Inflation reduces the purchasing power of money."),
+            c(1638, "withdraw", "提款", "I need to withdraw some cash from the ATM."),
+            c(1639, "bankrupt", "破產", "The company went bankrupt last year."),
+            c(1640, "capital", "資本", "We need more capital to expand the business."),
+            c(1641, "convert", "轉換", "You can convert dollars into euros at the bank."),
+            c(1642, "currency", "貨幣", "The dollar is a strong currency."),
+            c(1643, "deduction", "扣除", "Is this expense tax deductible?"),
+            c(1644, "deposit", "存款/押金", "Please make a deposit to secure the booking."),
+            c(1645, "depression", "蕭條", "The Great Depression caused widespread unemployment."),
+            c(1646, "discrepancy", "差異", "There is a discrepancy between the two reports."),
+            c(1647, "fiscal", "財政的", "The government announced new fiscal policies."),
+            c(1648, "fund", "基金", "We are raising funds for the charity."),
+            c(1649, "holding", "持股", "He reduced his holding in the company."),
+            c(1650, "ledger", "分類帳", "The transaction was recorded in the ledger."),
+            c(1651, "overdue", "逾期的", "Your payment is overdue."),
+            c(1652, "overdraft", "透支", "I have an overdraft facility on my account."),
+            c(1653, "remuneration", "報酬", "She received a generous remuneration package."),
+            c(1654, "currency exchange", "匯兌", "Where is the nearest currency exchange?"),
+            c(1655, "financier", "金融家", "The project is backed by a wealthy financier."),
+            c(1656, "make a claim", "索賠/請款", "You can make a claim on your insurance.")
+        ];
+        const topic17_Business1 = [
+            c(1701, "public-held corporation", "公開上市公司", "Shares of a public-held corporation are traded on the stock market."),
+            c(1702, "listed company", "上市公司", "It is a listed company on the NYSE."),
+            c(1703, "SME", "中小企業", "SMEs are the backbone of the economy."),
+            c(1704, "moms and pops", "雜貨店/家族小店", "Big chains are replacing mom and pop stores."),
+            c(1705, "family owned", "家族企業", "This is a family owned business passed down for generations."),
+            c(1706, "state owned", "國營企業", "The railway is a state owned enterprise."),
+            c(1707, "start-up", "新創公司", "He works for a tech start-up in Silicon Valley."),
+            c(1708, "angel investor", "天使投資人", "The angel investor provided seed funding."),
+            c(1709, "incubator", "孵化器", "The business incubator supports new companies."),
+            c(1710, "corporation", "公司", "It is a multinational corporation."),
+            c(1711, "enterprise", "企業", "He showed great enterprise in starting the business."),
+            c(1712, "firm", "事務所/公司", "She works for a law firm."),
+            c(1713, "affiliate", "關係企業", "The station is an affiliate of the national network."),
+            c(1714, "headquarters", "總部", "The company headquarters is in London."),
+            c(1715, "subsidiary", "子公司", "This company is a subsidiary of a larger group."),
+            c(1716, "branch", "分公司", "We are opening a new branch in Tokyo."),
+            c(1717, "arm", "分支機構", "The investment arm of the bank handles stocks."),
+            c(1718, "parent company", "母公司", "The parent company oversees its subsidiaries."),
+            c(1719, "holding company", "控股公司", "The holding company owns shares in other companies."),
+            c(1720, "joint venture", "合資", "They formed a joint venture to enter the Chinese market."),
+            c(1721, "franchiser", "授權商", "The franchiser provides training to franchisees."),
+            c(1722, "distributor", "經銷商", "We are the exclusive distributor for this product."),
+            c(1723, "consortium", "財團/聯盟", "A consortium of banks funded the project."),
+            c(1724, "department", "部門", "Please contact the HR department."),
+            c(1725, "division", "事業部", "The electronics division is performing well."),
+            c(1726, "found", "創立", "The company was founded in 1990."),
+            c(1727, "establish", "建立", "They established a new branch last year."),
+            c(1728, "incorporate", "成立公司", "We decided to incorporate the business."),
+            c(1729, "articles of incorporation", "公司章程", "The articles of incorporation define the company's purpose."),
+            c(1730, "industry", "產業", "The automotive industry is facing challenges."),
+            c(1731, "sector", "部門/領域", "The service sector is growing rapidly."),
+            c(1732, "multinational", "跨國的", "She works for a multinational company."),
+            c(1733, "local partner", "在地夥伴", "Finding a good local partner is key to success."),
+            c(1734, "be located in", "位於", "Our office is located in the city center."),
+            c(1735, "expansion", "擴張", "The expansion of the factory created new jobs."),
+            c(1736, "leading", "領先的", "They are the leading supplier in the market."),
+            c(1737, "organization", "組織", "It is a non-profit organization."),
+            c(1738, "institution", "機構", "Banks are financial institutions."),
+            c(1739, "shut down", "停工", "The factory had to shut down for maintenance."),
+            c(1740, "alliance", "聯盟", "The two airlines formed an alliance."),
+            c(1741, "M&A", "併購", "M&A activity has increased this year."),
+            c(1742, "takeover", "接管", "The hostile takeover bid was rejected."),
+            c(1743, "amateur", "業餘者", "The tournament is open to amateurs and professionals."),
+            c(1744, "coordinate", "協調", "We need to coordinate our efforts."),
+            c(1745, "deadline", "截止日", "The deadline for the project is Friday."),
+            c(1746, "novice", "新手", "He is a novice at golf."),
+            c(1747, "recommendation", "推薦", "I followed his recommendation and bought the stock."),
+            c(1748, "resign", "辭職", "He decided to resign from his position."),
+            c(1749, "retire", "退休", "She plans to retire at 60."),
+            c(1750, "substitute", "代理人", "There is no substitute for hard work.")
+        ];
+        const topic18_Business2 = [
+            c(1801, "competitive edge", "競爭優勢", "Innovation gives us a competitive edge."),
+            c(1802, "key player", "主要參與者", "China is a key player in the global economy."),
+            c(1803, "monopoly", "壟斷", "The company has a monopoly on the market."),
+            c(1804, "advantage", "優勢", "Being bilingual is a big advantage."),
+            c(1805, "market share", "市佔率", "We want to increase our market share."),
+            c(1806, "marketing", "行銷", "Good marketing is essential for sales."),
+            c(1807, "product portfolio", "產品組合", "We are expanding our product portfolio."),
+            c(1808, "range", "範圍/系列", "They offer a wide range of services."),
+            c(1809, "target market", "目標市場", "Teenagers are our primary target market."),
+            c(1810, "core business", "核心業務", "We are focusing on our core business."),
+            c(1811, "core competence", "核心競爭力", "Design is their core competence."),
+            c(1812, "synergy", "綜效", "The merger created synergy between the two firms."),
+            c(1813, "viable", "可行的", "We need a viable business plan."),
+            c(1814, "break-even point", "損益平衡點", "We expect to reach the break-even point next year."),
+            c(1815, "lucrative", "獲利的", "It was a lucrative deal for the company."),
+            c(1816, "turn around", "好轉", "The new CEO helped turn around the failing company."),
+            c(1817, "streamline", "簡化/效率化", "We need to streamline our production process."),
+            c(1818, "realignment", "重組", "The strategic realignment involved some layoffs."),
+            c(1819, "consolidation", "整併", "The consolidation of the two departments saved money."),
+            c(1820, "rationalize", "合理化", "They decided to rationalize the supply chain."),
+            c(1821, "restructure", "重整", "The company is undergoing a major restructure."),
+            c(1822, "diversify", "多樣化", "You should diversify your investment portfolio."),
+            c(1823, "spin-off", "分拆", "The software division was made into a spin-off company."),
+            c(1824, "disclosure", "揭露", "Full disclosure of financial details is required."),
+            c(1825, "accountability", "當責", "There needs to be more accountability in government."),
+            c(1826, "solvent", "有償債能力的", "The company remains solvent despite the crisis."),
+            c(1827, "collapse", "瓦解", "The stock market collapse caused panic."),
+            c(1828, "go bust", "破產", "Many small businesses went bust during the pandemic."),
+            c(1829, "ailing", "營運不佳的", "The government bailed out the ailing bank."),
+            c(1830, "liquidate", "清算", "They had to liquidate assets to pay debts."),
+            c(1831, "commerce", "商業", "E-commerce has revolutionized retail."),
+            c(1832, "feasibility study", "可行性研究", "We conducted a feasibility study before starting the project."),
+            c(1833, "performance", "績效", "Her performance review was excellent."),
+            c(1834, "due diligence", "盡職調查", "Buyers should perform due diligence before purchasing."),
+            c(1835, "letter of intent", "意向書", "They signed a letter of intent to merge."),
+            c(1836, "allocate", "分配", "We need to allocate resources efficiently."),
+            c(1837, "applicant", "申請人", "There were over 100 applicants for the job."),
+            c(1838, "authorize", "授權", "Only the manager can authorize refunds."),
+            c(1839, "capability", "能力", "The car has off-road capabilities."),
+            c(1840, "collaboration", "合作", "The project was a collaboration between artists."),
+            c(1841, "consultation", "諮詢", "The doctor is available for consultation."),
+            c(1842, "income", "收入", "His income has doubled in the last year."),
+            c(1843, "lay off", "資遣", "The factory had to lay off 50 workers."),
+            c(1844, "part-time", "兼職", "She has a part-time job at the library."),
+            c(1845, "permanent", "正職/永久", "He is looking for a permanent position."),
+            c(1846, "promote", "晉升", "She was promoted to senior manager."),
+            c(1847, "recruit", "招募", "We are recruiting new staff for the summer."),
+            c(1848, "resume", "履歷", "Send your resume to the HR department."),
+            c(1849, "CV", "詳細履歷", "Academic jobs often require a full CV."),
+            c(1850, "memo", "備忘錄", "I sent a memo to all staff."),
+            c(1851, "appoint", "任命", "He was appointed as the new chairman."),
+            c(1852, "candidate", "候選人", "She is the best candidate for the job."),
+            c(1853, "competent", "勝任的", "He is a very competent engineer."),
+            c(1854, "personnel", "人事/員工", "All personnel must wear ID badges.")
+        ];
+        const topic19_Positions = [
+            c(1901, "CFO", "財務長", "The CFO manages the company's finances."),
+            c(1902, "CEO", "執行長", "The CEO makes the final decisions."),
+            c(1903, "chairperson", "主席", "The chairperson called the meeting to order."),
+            c(1904, "president", "總裁/校長", "She is the president of the university."),
+            c(1905, "managing director", "常務董事", "The managing director oversees daily operations."),
+            c(1906, "vice president", "副總裁", "He was promoted to vice president of sales."),
+            c(1907, "executive", "高階主管", "Top executives receive high salaries."),
+            c(1908, "controller", "主計長", "The controller supervises the accounting staff."),
+            c(1909, "senior manager", "資深經理", "Senior managers mentor junior staff."),
+            c(1910, "general manager", "總經理", "The general manager is responsible for the store."),
+            c(1911, "supervisor", "主管", "Ask your supervisor for permission."),
+            c(1912, "hierarchy", "階層", "The corporate hierarchy is very rigid."),
+            c(1913, "flat", "扁平的", "Start-ups often have a flat organizational structure."),
+            c(1914, "corporate ladder", "升遷階梯", "He is climbing the corporate ladder."),
+            c(1915, "bureaucracy", "官僚", "There is too much bureaucracy in the government."),
+            c(1916, "tenure", "任期", "Professors with tenure have job security."),
+            c(1917, "deputy", "代理人", "The deputy will act on behalf of the sheriff."),
+            c(1918, "deputy director", "副局長", "The deputy director handles administrative tasks."),
+            c(1919, "incumbent", "現任的", "The incumbent senator won the election."),
+            c(1920, "entrepreneur", "創業家", "The entrepreneur started her own business."),
+            c(1921, "tycoon", "大亨", "The property tycoon owns half the city.")
+        ];
+        const topic20_Investment = [
+            c(2001, "decision-making", "決策", "Data plays a key role in decision-making."),
+            c(2002, "venture capital", "創投", "They raised $5 million in venture capital."),
+            c(2003, "shareholder", "股東", "Shareholders voted on the merger."),
+            c(2004, "stockbroker", "股票經紀", "My stockbroker advised me to sell."),
+            c(2005, "stock exchange", "證交所", "The company is listed on the New York Stock Exchange."),
+            c(2006, "yield", "殖利率/產出", "The bond yields 4% annually."),
+            c(2007, "IPO", "首次公開募股", "The company's IPO was a huge success."),
+            c(2008, "stock", "股票", "He invests in technology stocks."),
+            c(2009, "share", "股份", "She bought 100 shares of Apple."),
+            c(2010, "securities", "證券", "The bank trades in government securities."),
+            c(2011, "equities", "股票/權益", "Equities generally offer higher returns than bonds."),
+            c(2012, "ordinary share", "普通股", "Ordinary share holders have voting rights."),
+            c(2013, "voting rights", "投票權", "Some shares do not carry voting rights."),
+            c(2014, "preference share", "特別股", "Preference shares pay a fixed dividend."),
+            c(2015, "blue chips", "績優股", "Blue chips are considered safe investments."),
+            c(2016, "futures", "期貨", "He trades in oil futures."),
+            c(2017, "speculation", "投機", "Real estate speculation drove up prices."),
+            c(2018, "insider trading", "內線交易", "Insider trading is illegal."),
+            c(2019, "fraud", "詐欺", "He was convicted of investment fraud."),
+            c(2020, "manipulation", "操縱", "Market manipulation is a serious offense."),
+            c(2021, "nosedive", "暴跌", "The stock market took a nosedive."),
+            c(2022, "take a nosedive", "急跌", "Profits took a nosedive last quarter."),
+            c(2023, "surge", "激增", "There was a surge in demand for electric cars."),
+            c(2024, "rebound", "反彈", "The economy is expected to rebound soon."),
+            c(2025, "recover", "恢復", "It took years for the market to recover."),
+            c(2026, "regain ground", "收復失土", "The currency regained ground against the dollar."),
+            c(2027, "sell-off", "拋售", "News of the scandal triggered a sell-off."),
+            c(2028, "fluctuate", "波動", "Oil prices fluctuate daily."),
+            c(2029, "rally", "回升", "The stock market rallied after the announcement."),
+            c(2030, "profit-taking", "獲利了結", "The drop in price was due to profit-taking."),
+            c(2031, "erratic", "不穩定的", "The stock's behavior has been erratic."),
+            c(2032, "volatile", "波動劇烈的", "Cryptocurrency markets are highly volatile."),
+            c(2033, "bumpy", "顛簸的", "It has been a bumpy ride for investors."),
+            c(2034, "downturn", "低迷", "We are facing an economic downturn."),
+            c(2035, "consecutive", "連續的", "Profits rose for the third consecutive year."),
+            c(2036, "hike", "大幅提高", "The tax hike was unpopular."),
+            c(2037, "reduction", "減少", "Cost reduction is our top priority."),
+            c(2038, "current", "現行的", "The current interest rate is low."),
+            c(2039, "deficit-ridden", "赤字累累", "The deficit-ridden company was sold.")
+        ];
+        const topic21_Benefits = [
+            c(2101, "be entitled to", "有資格", "Employees are entitled to 14 days of paid leave."),
+            c(2102, "be eligible for", "有資格", "You must work here for a year to be eligible for a bonus."),
+            c(2103, "minimum wage", "基本工資", "The government raised the minimum wage last month."),
+            c(2104, "paycheck", "薪資單", "I receive my paycheck on the last Friday of the month."),
+            c(2105, "payroll", "薪資名單", "We have 500 employees on the payroll."),
+            c(2106, "remuneration", "報酬", "He received generous remuneration for his services."),
+            c(2107, "performance-related pay", "績效薪資", "The company introduced a performance-related pay scheme."),
+            c(2108, "hourly payroll", "時薪制", "Temporary staff are on an hourly payroll."),
+            c(2109, "hourly wage", "時薪", "The hourly wage for this job is $15."),
+            c(2110, "retirement allowance", "退休金", "She received a substantial retirement allowance."),
+            c(2111, "raise", "加薪", "He asked his boss for a raise."),
+            c(2112, "award", "獎勵", "He won the Employee of the Year award."),
+            c(2113, "health insurance", "健保", "The company provides full health insurance coverage."),
+            c(2114, "perks", "津貼/福利", "Free lunch is one of the perks of the job."),
+            c(2115, "welfare", "福利", "The company cares about the welfare of its staff."),
+            c(2116, "allowance", "津貼", "Employees receive a travel allowance."),
+            c(2117, "subsidized", "有補助的", "The cafeteria offers subsidized meals."),
+            c(2118, "maternity leave", "產假", "She is currently on maternity leave."),
+            c(2119, "paid holiday", "有薪假", "We get ten paid holidays a year.")
+        ];
+        const topic22_Production1 = [
+            c(2201, "R & D", "研發", "We invest heavily in R & D to stay ahead."),
+            c(2202, "breakthrough", "突破", "Scientists made a major breakthrough in cancer research."),
+            c(2203, "innovation", "創新", "Innovation is key to our success."),
+            c(2204, "laboratory", "實驗室", "The samples were sent to the laboratory for testing."),
+            c(2205, "prototype", "原型", "They built a prototype of the new car."),
+            c(2206, "specifications", "規格", "The product must meet strict safety specifications."),
+            c(2207, "benchmark", "基準", "This model sets the benchmark for quality."),
+            c(2208, "patent", "專利", "They applied for a patent on the new design."),
+            c(2209, "IP rights", "智慧財產權", "We must protect our IP rights."),
+            c(2210, "infringe", "侵犯", "Copying this design would infringe on their copyright."),
+            c(2211, "state of the art", "最先進的", "The factory is equipped with state of the art machinery."),
+            c(2212, "cutting-edge", "尖端的", "We use cutting-edge technology."),
+            c(2213, "gadget", "小裝置", "This kitchen gadget is very useful."),
+            c(2214, "product", "產品", "We are launching a new product next week."),
+            c(2215, "output", "產出", "Factory output increased by 20%."),
+            c(2216, "plant", "工廠", "The automotive plant employs 2,000 workers."),
+            c(2217, "operation", "營運", "The new system is now in operation."),
+            c(2218, "rotation", "輪班/旋轉", "The staff works in rotation."),
+            c(2219, "capacity", "產能", "The factory is running at full capacity."),
+            c(2220, "shortage", "短缺", "There is a shortage of raw materials."),
+            c(2221, "assembly line", "組裝線", "Robots are used on the assembly line."),
+            c(2222, "defective", "有瑕疵的", "Please return any defective items."),
+            c(2223, "phase", "階段", "We are in the final phase of the project."),
+            c(2224, "facility", "設施", "The hotel has excellent conference facilities."),
+            c(2225, "equipment", "設備", "We need to upgrade our office equipment."),
+            c(2226, "inspection", "檢驗", "The building passed the safety inspection."),
+            c(2227, "duplicate", "複製", "Do not duplicate this key."),
+            c(2228, "vendor", "供應商", "We need to find a new vendor for paper."),
+            c(2229, "supplier", "供應商", "Our main supplier is located in China."),
+            c(2230, "procure", "採購", "It was difficult to procure the necessary parts."),
+            c(2231, "in-house", "內部的", "We have an in-house design team."),
+            c(2232, "raw materials", "原料", "The cost of raw materials has gone up."),
+            c(2233, "module", "模組", "The software consists of several modules."),
+            c(2234, "BTO", "接單生產", "The company uses a BTO (Build to Order) model.")
+        ];
+        const topic23_Production2 = [
+            c(2301, "manufacturing", "製造", "Manufacturing jobs are moving overseas."),
+            c(2302, "manufactory", "製造廠", "The old manufactory was converted into apartments."),
+            c(2303, "semiconductor", "半導體", "Taiwan is a leader in the semiconductor industry."),
+            c(2304, "material", "材料", "Concrete is a durable building material."),
+            c(2305, "machinery", "機械", "Heavy machinery is used on the construction site."),
+            c(2306, "automotive", "汽車的", "The automotive industry is shifting to electric vehicles."),
+            c(2307, "construction", "建築", "Construction on the new bridge begins next month."),
+            c(2308, "general contractor", "總承包商", "The general contractor oversees the entire project."),
+            c(2309, "civil engineering", "土木工程", "He is studying civil engineering."),
+            c(2310, "chemical", "化學的", "Handle these chemical substances with care."),
+            c(2311, "petroleum", "石油", "Petroleum prices affect the global economy."),
+            c(2312, "pharmaceutical", "製藥的", "The pharmaceutical company released a new drug."),
+            c(2313, "distiller", "蒸餾廠", "We visited a whisky distiller in Scotland."),
+            c(2314, "logistics", "物流", "Logistics is crucial for e-commerce."),
+            c(2315, "telecommunication", "電信", "The telecommunication network covers the whole country."),
+            c(2316, "fishery", "漁業", "Sustainable fishery practices are important."),
+            c(2317, "forestry", "林業", "Forestry management helps prevent wildfires."),
+            c(2318, "artificial", "人造的", "This juice contains artificial flavors."),
+            c(2319, "manipulate", "操作", "He knows how to manipulate the data."),
+            c(2320, "draft", "草圖", "The architect drew a draft of the building."),
+            c(2321, "fragile", "易碎的", "This box contains fragile items; handle with care.")
+        ];
+        const topic24_Commute = [
+            c(2401, "commute", "通勤", "My daily commute takes about an hour."),
+            c(2402, "commuter", "通勤者", "The train was packed with commuters."),
+            c(2403, "tram", "輕軌", "We took the tram to the city center."),
+            c(2404, "transfer", "轉乘", "You need to transfer to the Blue Line at Central Station."),
+            c(2405, "freeway", "高速公路", "The speed limit on the freeway is 110 km/h."),
+            c(2406, "expressway", "快速道路", "Take the expressway to avoid the traffic lights."),
+            c(2407, "toll booth", "收費站", "Have your change ready for the toll booth."),
+            c(2408, "overpass", "天橋", "Cross the street using the overpass."),
+            c(2409, "intersection", "路口", "Turn left at the next intersection."),
+            c(2410, "median", "分隔島", "There were flowers planted in the median."),
+            c(2411, "dead end", "死路", "The street is a dead end."),
+            c(2412, "detour", "改道", "We had to take a detour due to roadworks."),
+            c(2413, "short cut", "捷徑", "He knows a short cut through the park."),
+            c(2414, "crosswalk", "斑馬線", "Pedestrians should use the crosswalk."),
+            c(2415, "gas station", "加油站", "We need to stop at a gas station."),
+            c(2416, "unleaded", "無鉛的", "This car runs on unleaded petrol."),
+            c(2417, "heavy traffic", "交通擁塞", "I was late because of heavy traffic."),
+            c(2418, "bumper-to-bumper", "車陣", "Traffic was bumper-to-bumper all the way home."),
+            c(2419, "vehicle", "車輛", "Police inspected the vehicle for damage."),
+            c(2420, "automobile", "汽車", "The automobile industry is very competitive."),
+            c(2421, "tow-truck", "拖吊車", "A tow-truck removed the broken-down car."),
+            c(2422, "hood", "引擎蓋", "Smoke was coming from under the hood."),
+            c(2423, "rear-view mirror", "後視鏡", "Check your rear-view mirror before reversing."),
+            c(2424, "steering wheel", "方向盤", "Keep both hands on the steering wheel."),
+            c(2425, "windshield", "擋風玻璃", "A stone cracked the windshield."),
+            c(2426, "turn signal", "方向燈", "Always use your turn signal before changing lanes."),
+            c(2427, "horn", "喇叭", "Don't honk your horn unnecessarily."),
+            c(2428, "hybrid", "油電混合", "Hybrid cars are more fuel-efficient."),
+            c(2429, "mileage", "里程", "The car has low mileage."),
+            c(2430, "flat tire", "爆胎", "I got a flat tire on my way to work."),
+            c(2431, "speeding", "超速", "He was fined for speeding."),
+            c(2432, "collision", "碰撞", "There was a collision between a bus and a taxi."),
+            c(2433, "rollover", "翻車", "The icy road caused a vehicle rollover."),
+            c(2434, "hit-and-run", "肇事逃逸", "Witnesses reported a hit-and-run accident.")
+        ];
+        const topic25_Medical1 = [
+            c(2501, "medical benefits", "醫療給付", "The job offers excellent medical benefits."),
+            c(2502, "dental insurance", "牙醫保險", "Dental insurance is optional."),
+            c(2503, "premium", "保費", "Your insurance premium will increase if you smoke."),
+            c(2504, "coverage", "保險範圍", "This policy provides coverage for travel accidents."),
+            c(2505, "contribution", "分擔金", "The employer pays a contribution towards the pension."),
+            c(2506, "medical insurance", "醫保", "Do you have private medical insurance?"),
+            c(2507, "damage insurance", "意外險", "We recommend taking out damage insurance for the rental car."),
+            c(2508, "insurer", "保險人", "The insurer rejected the claim."),
+            c(2509, "insured", "被保險人", "The insured must report any accidents immediately."),
+            c(2510, "recipient", "受領人", "She is the recipient of a scholarship."),
+            c(2511, "paid-up", "已付清的", "He has a fully paid-up insurance policy."),
+            c(2512, "policy", "保單", "Read the fine print of the insurance policy."),
+            c(2513, "certificate", "證明書", "You need a medical certificate to take sick leave."),
+            c(2514, "claim", "理賠申請", "He filed a claim for the stolen car."),
+            c(2515, "spouse", "配偶", "The invitation extends to your spouse."),
+            c(2516, "dependent", "受扶養人", "He has three dependents to support."),
+            c(2517, "income tax", "所得稅", "Income tax is deducted from your salary."),
+            c(2518, "alleviate", "減緩", "This medicine will help alleviate the pain."),
+            c(2519, "bacteria", "細菌", "Antibiotics are used to kill bacteria."),
+            c(2520, "collision", "碰撞", "The cyclists avoided a collision."),
+            c(2521, "compensation", "賠償", "He received compensation for his injuries."),
+            c(2522, "contagious", "傳染性的", "The flu is highly contagious."),
+            c(2523, "crash", "墜毀", "There was a plane crash yesterday."),
+            c(2524, "ER", "急診室", "They rushed him to the ER."),
+            c(2525, "expiration date", "到期日", "Check the expiration date on the medicine."),
+            c(2526, "general hospital", "綜合醫院", "He works at the local general hospital."),
+            c(2527, "immune", "免疫的", "Vaccines make you immune to certain diseases."),
+            c(2528, "infection", "感染", "Clean the wound to prevent infection."),
+            c(2529, "investigator", "調查員", "The insurance investigator examined the scene."),
+            c(2530, "mandatory", "強制的", "Wearing seatbelts is mandatory.")
+        ];
+        const topic26_Medical2 = [
+            c(2601, "option", "選擇", "You have the option to upgrade your room."),
+            c(2602, "outpatient", "門診病人", "The clinic treats outpatients only."),
+            c(2603, "severe", "嚴重的", "He suffered severe injuries in the accident."),
+            c(2604, "stroke", "中風", "High blood pressure increases the risk of stroke."),
+            c(2605, "terms", "條款", "The terms of the agreement are clear."),
+            c(2606, "vital", "生命攸關的", "Regular exercise is vital for good health."),
+            c(2607, "antibiotic", "抗生素", "The doctor prescribed an antibiotic for the infection."),
+            c(2608, "commission", "佣金", "The agent gets a commission on every policy sold."),
+            c(2609, "comprehensive", "綜合的", "We offer a comprehensive health check-up."),
+            c(2610, "extensive", "廣泛的", "The fire caused extensive damage."),
+            c(2611, "coverage", "報導/保險", "The news coverage of the event was extensive."),
+            c(2612, "diagnose", "診斷", "The doctor diagnosed him with diabetes."),
+            c(2613, "excruciating", "極痛苦的", "She was in excruciating pain."),
+            c(2614, "indemnity", "賠償", "The company paid an indemnity to the victim."),
+            c(2615, "ICU", "加護病房", "The patient is currently in the ICU."),
+            c(2616, "prone to", "易於...", "He is prone to catching colds."),
+            c(2617, "nutrition", "營養", "Good nutrition is essential for children."),
+            c(2618, "organ donor", "器官捐贈者", "He is a registered organ donor."),
+            c(2619, "pharmaceutical", "製藥的", "She works in the pharmaceutical industry."),
+            c(2620, "purification", "淨化", "The water purification system removes impurities."),
+            c(2621, "side effect", "副作用", "Drowsiness is a common side effect of this drug."),
+            c(2622, "surgery", "手術", "She needs knee surgery."),
+            c(2623, "trauma", "創傷", "The accident caused severe physical trauma."),
+            c(2624, "waive", "放棄", "The hospital decided to waive the fees."),
+            c(2625, "handicap", "障礙", "He overcame his handicap to become a champion."),
+            c(2626, "insurance", "保險", "Do you have travel insurance?"),
+            c(2627, "healthcare", "醫療保健", "Access to healthcare is a basic right."),
+            c(2628, "damage", "損害", "Smoking causes damage to your lungs.")
+        ];
+        const topic27_Marketing = [
+            c(2701, "banner advertising", "橫幅廣告", "Banner advertising is common on websites."),
+            c(2702, "pop-up ads", "彈出式廣告", "Pop-up ads can be very annoying."),
+            c(2703, "billboard", "看板", "They rented a billboard on the highway."),
+            c(2704, "advertisement", "廣告", "I saw an advertisement for a new phone."),
+            c(2705, "special offer", "特惠", "Take advantage of our special offer today."),
+            c(2706, "front page", "首頁", "The story made the front page of the newspaper."),
+            c(2707, "high-profile", "高調的", "It was a high-profile marketing campaign."),
+            c(2708, "recognition", "認可", "The brand has achieved global recognition."),
+            c(2709, "awareness", "知名度", "The campaign aims to raise brand awareness."),
+            c(2710, "display", "展示", "The products are on display in the window."),
+            c(2711, "exhibition", "展覽", "We are attending a trade exhibition in Berlin."),
+            c(2712, "session", "場次", "The morning session starts at 9 AM."),
+            c(2713, "survey", "調查", "Please complete this customer satisfaction survey."),
+            c(2714, "questionnaire", "問卷", "Fill out the questionnaire to give us feedback."),
+            c(2715, "respondent", "受訪者", "Most respondents preferred the new design."),
+            c(2716, "consumer panel", "消費者小組", "We tested the product with a consumer panel."),
+            c(2717, "focus group", "焦點團體", "The focus group gave us valuable insights."),
+            c(2718, "segment", "區隔", "We are targeting the luxury market segment."),
+            c(2719, "differentiation", "差異化", "Product differentiation is key in a crowded market."),
+            c(2720, "upstream", "上游", "We need to secure our upstream supply chain."),
+            c(2721, "customer satisfaction", "滿意度", "Our goal is 100% customer satisfaction."),
+            c(2722, "consumer", "消費者", "Consumer confidence is rising."),
+            c(2723, "client", "客戶", "He is meeting with a potential client."),
+            c(2724, "niche", "利基", "They found a niche market for handmade soap."),
+            c(2725, "cannibalize", "侵蝕", "The new product might cannibalize sales of the old one."),
+            c(2726, "market share", "市佔率", "We aim to increase our market share by 5%."),
+            c(2727, "brand", "品牌", "Nike is a famous sports brand."),
+            c(2728, "corporate image", "企業形象", "The scandal damaged the company's corporate image."),
+            c(2729, "PR", "公關", "She works in PR (Public Relations)."),
+            c(2730, "press release", "新聞稿", "The company issued a press release about the merger."),
+            c(2731, "advertising", "廣告業", "He has a career in advertising."),
+            c(2732, "tailor", "量身打造", "We tailor our services to meet your needs."),
+            c(2733, "generic", "通用的", "Generic drugs are cheaper than brand-name ones."),
+            c(2734, "maturity", "成熟期", "The market has reached maturity."),
+            c(2735, "saturation", "飽和", "The smartphone market is nearing saturation."),
+            c(2736, "life cycle", "生命週期", "We manage the entire product life cycle."),
+            c(2737, "high-end", "高階", "They sell high-end audio equipment."),
+            c(2738, "middle-range", "中階", "This is a good middle-range computer."),
+            c(2739, "luxurious", "奢華的", "The hotel offers luxurious accommodation."),
+            c(2740, "luxury", "奢侈品", "He enjoys a life of luxury."),
+            c(2741, "affordable", "負擔得起的", "We provide affordable housing options."),
+            c(2742, "authentic", "真實的", "This restaurant serves authentic Italian food."),
+            c(2743, "publishing", "出版", "She works in the publishing industry."),
+            c(2744, "campaign", "活動", "The advertising campaign was very successful."),
+            c(2745, "cohesive", "有凝聚力的", "We need a cohesive marketing strategy."),
+            c(2746, "banner", "旗幟", "Protesters carried banners."),
+            c(2747, "circular", "傳單", "I received a circular from the supermarket."),
+            c(2748, "retailer", "零售商", "The product is available at major retailers.")
+        ];
+        const topic28_Sales = [
+            c(2801, "bargain hunter", "撿便宜的人", "Bargain hunters flocked to the sale."),
+            c(2802, "make a bargain", "達成協議", "They finally made a bargain."),
+            c(2803, "clearance sale", "清倉", "Everything must go in the clearance sale."),
+            c(2804, "mark down", "降價", "The store marked down the winter coats."),
+            c(2805, "rebate", "回扣", "There is a $50 mail-in rebate on this printer."),
+            c(2806, "coupon", "優惠券", "I have a 20% off coupon."),
+            c(2807, "haggle", "殺價", "Don't be afraid to haggle at the market."),
+            c(2808, "haggle over", "討價還價", "They haggled over the price for hours."),
+            c(2809, "tag price", "標價", "The tag price is $100, but I can give you a discount."),
+            c(2810, "list price", "定價", "The list price includes tax."),
+            c(2811, "checkout", "結帳", "The checkout line is very long."),
+            c(2812, "loyalty card", "會員卡", "Do you have a loyalty card with us?"),
+            c(2813, "installment", "分期付款", "You can pay for the car in monthly installments."),
+            c(2814, "due", "到期", "Payment is due next week."),
+            c(2815, "acceptable", "可接受的", "We need to find a mutually acceptable solution."),
+            c(2816, "voucher", "憑證", "I won a travel voucher in the contest."),
+            c(2817, "surcharge", "額外費用", "There is a surcharge for credit card payments."),
+            c(2818, "subtract", "減去", "Subtract the discount from the total price."),
+            c(2819, "fast-moving", "暢銷的", "These are fast-moving consumer goods."),
+            c(2820, "brand-new", "全新的", "He bought a brand-new car."),
+            c(2821, "leading-edge", "領先的", "This company uses leading-edge technology."),
+            c(2822, "hip", "時髦的", "It is a hip new restaurant in the city."),
+            c(2823, "cold calls", "陌生電訪", "I hate making cold calls to potential customers."),
+            c(2824, "telemarketing", "電話行銷", "Telemarketing can be an effective sales tool."),
+            c(2825, "solicitor", "推銷員", "No solicitors allowed."),
+            c(2826, "retail", "零售", "The retail price is higher than the wholesale price."),
+            c(2827, "wholesale", "批發", "We buy our supplies at wholesale prices."),
+            c(2828, "resell", "轉售", "He buys old furniture to resell for a profit."),
+            c(2829, "outlet", "暢貨中心", "There is a designer outlet near the airport."),
+            c(2830, "thrift shop", "二手店", "She found a vintage dress at a thrift shop."),
+            c(2831, "sales territory", "銷售區", "His sales territory covers the entire west coast."),
+            c(2832, "sales rep", "業務代表", "Our sales rep will visit you tomorrow."),
+            c(2833, "end user", "終端用戶", "The software must be easy for the end user."),
+            c(2834, "clientele", "客戶群", "The restaurant has a loyal clientele."),
+            c(2835, "white goods", "大型家電", "White goods like fridges and washing machines are on sale."),
+            c(2836, "brown goods", "視聽家電", "Sales of brown goods like TVs have slowed down."),
+            c(2837, "durables", "耐用品", "Orders for durable goods increased last month."),
+            c(2838, "freebie", "贈品", "They gave away pens as freebies."),
+            c(2839, "cash cow", "搖錢樹", "This product is the company's cash cow."),
+            c(2840, "sales", "銷售額", "Sales are up this quarter."),
+            c(2841, "unit cost", "單位成本", "We need to lower the unit cost."),
+            c(2842, "leaflet", "傳單", "They handed out leaflets on the street."),
+            c(2843, "slogan", "口號", "The company's new slogan is very catchy."),
+            c(2844, "publicity", "宣傳", "There is no such thing as bad publicity."),
+            c(2845, "outlet", "銷路", "They need to find a new outlet for their products.")
+        ];
+        const topic29_Negotiation = [
+            c(2901, "confirm", "確認", "Please confirm your attendance by Friday."),
+            c(2902, "compromise", "妥協", "We need to reach a compromise."),
+            c(2903, "describe", "描述", "Can you describe the problem in detail?"),
+            c(2904, "outline", "大綱", "He outlined the main points of the proposal."),
+            c(2905, "suggest", "建議", "I suggest we take a break."),
+            c(2906, "propose", "提議", "She proposed a new marketing strategy."),
+            c(2907, "concede", "讓步", "He refused to concede any ground."),
+            c(2908, "negotiable", "可協商的", "The price is negotiable."),
+            c(2909, "quotation", "報價", "Get a written quotation before you agree."),
+            c(2910, "estimate", "估價", "Can you give me a rough estimate of the cost?"),
+            c(2911, "itemize", "逐條列記", "Please itemize the expenses on the bill."),
+            c(2912, "specify", "詳細說明", "The contract specifies the delivery date."),
+            c(2913, "purchase order", "訂單", "We received a purchase order for 100 units."),
+            c(2914, "quantity", "數量", "We offer discounts for large quantities."),
+            c(2915, "tentative", "暫時的", "We have a tentative agreement."),
+            c(2916, "signature", "簽名", "We need your signature here."),
+            c(2917, "notary public", "公證人", "The document must be signed by a notary public."),
+            c(2918, "turn down", "拒絕", "They turned down our offer."),
+            c(2919, "procedure", "程序", "What is the procedure for applying for a visa?")
+        ];
+        const topic30_CustomerService = [
+            c(3001, "warranty", "保固", "The TV comes with a two-year warranty."),
+            c(3002, "guarantee", "保證", "We guarantee satisfaction or your money back."),
+            c(3003, "defect", "缺陷", "The product has a manufacturing defect."),
+            c(3004, "flaw", "瑕疵", "There is a small flaw in the fabric."),
+            c(3005, "imperfection", "不完美", "This handmade item may have slight imperfections."),
+            c(3006, "inconvenience", "不便", "We apologize for the inconvenience."),
+            c(3007, "intact", "完好的", "The package arrived intact."),
+            c(3008, "incur", "招致", "You will incur a fee for late payment."),
+            c(3009, "cause", "造成", "The storm caused a power outage."),
+            c(3010, "misuse", "誤用", "The warranty does not cover damage caused by misuse."),
+            c(3011, "refund", "退款", "I would like a full refund, please."),
+            c(3012, "liable for", "負責", "The company is not liable for lost items."),
+            c(3013, "compensate for", "賠償", "We will compensate you for the delay."),
+            c(3014, "recall", "召回", "The car manufacturer issued a recall."),
+            c(3015, "complaint", "客訴", "He filed a formal complaint."),
+            c(3016, "inquiry", "詢問", "Thank you for your inquiry."),
+            c(3017, "dissatisfied", "不滿意的", "If you are dissatisfied, please let us know."),
+            c(3018, "purchaser", "購買人", "The purchaser is responsible for shipping costs."),
+            c(3019, "receipt", "收據", "Please keep your receipt as proof of purchase."),
+            c(3020, "call center", "客服中心", "Call our call center for assistance."),
+            c(3021, "consumer department", "消保部門", "Contact the consumer department for advice."),
+            c(3022, "one-stop", "一站式", "We offer a one-stop shop for all your needs."),
+            c(3023, "customize", "客製化", "You can customize the settings to your preference.")
+        ];
+        const topic31_Computer1 = [
+            c(3101, "upgrade", "升級", "You should upgrade your operating system regularly."),
+            c(3102, "partition", "分割區", "He created a separate partition for backup files."),
+            c(3103, "install", "安裝", "Follow the instructions to install the software."),
+            c(3104, "reconfigure", "重新設定", "We need to reconfigure the network settings."),
+            c(3105, "default", "預設值", "The factory default password is '1234'."),
+            c(3106, "delete", "刪除", "Be careful not to accidentally delete important files."),
+            c(3107, "save", "儲存", "Remember to save your work frequently."),
+            c(3108, "shut down", "關機", "Please shut down your computer before you leave."),
+            c(3109, "start up", "開機", "The computer takes a long time to start up."),
+            c(3110, "reboot", "重啟", "If the screen freezes, try to reboot the system."),
+            c(3111, "duplicate", "複製", "Make a duplicate copy of the document."),
+            c(3112, "embed", "嵌入", "You can embed the video directly into the presentation."),
+            c(3113, "archive", "存檔", "Old emails are automatically moved to the archive."),
+            c(3114, "activate", "啟動", "Click the link to activate your account."),
+            c(3115, "retrieve", "取回", "I was unable to retrieve the deleted data."),
+            c(3116, "compress", "壓縮", "Compress the files into a ZIP folder before emailing."),
+            c(3117, "optimize", "最佳化", "This tool helps optimize your PC's performance."),
+            c(3118, "initialize", "初始化", "The drive must be initialized before use."),
+            c(3119, "trash bin", "資源回收桶", "You can recover the file from the trash bin."),
+            c(3120, "icon", "圖示", "Click on the printer icon to print."),
+            c(3121, "wizard", "精靈", "The installation wizard guides you through the process."),
+            c(3122, "column", "欄", "Enter the figures in the right-hand column."),
+            c(3123, "sum up", "總計", "The spreadsheet will sum up the costs automatically."),
+            c(3124, "subtract", "減去", "Subtract the expenses from the gross income."),
+            c(3125, "justify", "左右對齊", "Please justify the text to align it on both sides."),
+            c(3126, "indent", "縮排", "Indent the first line of each paragraph."),
+            c(3127, "space", "空格", "Leave a double space between lines."),
+            c(3128, "font", "字體", "Choose a professional font like Arial or Times New Roman."),
+            c(3129, "peripheral", "周邊", "The scanner is a computer peripheral."),
+            c(3130, "storage", "儲存", "We need more cloud storage for our photos."),
+            c(3131, "removable", "可移除的", "Save the data on a removable drive."),
+            c(3132, "plug-in", "外掛", "You need to install a plug-in to view this content."),
+            c(3133, "suite", "套件", "We use the Microsoft Office suite."),
+            c(3134, "access", "存取", "Do you have access to the shared folder?")
+        ];
+        const topic32_Computer2 = [
+            c(3201, "automatically", "自動地", "The file is saved automatically every five minutes."),
+            c(3202, "cable", "纜線", "Check if the Ethernet cable is plugged in."),
+            c(3203, "cutting edge", "尖端的", "This company develops cutting edge technology."),
+            c(3204, "digital", "數位的", "We live in a digital age."),
+            c(3205, "download", "下載", "You can download the app for free."),
+            c(3206, "hacker", "駭客", "The system was compromised by a hacker."),
+            c(3207, "input", "輸入", "Please input your password."),
+            c(3208, "Internet", "網際網路", "The Internet has changed how we communicate."),
+            c(3209, "activate", "啟動", "Voice command activates the device."),
+            c(3210, "browse", "瀏覽", "I like to browse the news online."),
+            c(3211, "command", "指令", "Type the command to execute the program."),
+            c(3212, "configuration", "配置", "The server configuration needs to be updated."),
+            c(3213, "database", "資料庫", "The customer database is secure."),
+            c(3214, "desktop", "桌機", "He prefers a desktop computer for gaming."),
+            c(3215, "downgrade", "降級", "You may need to downgrade the software if the update fails."),
+            c(3216, "floppy", "軟碟", "Floppy disks are obsolete now."),
+            c(3217, "hyperlink", "超連結", "Click the hyperlink to visit our website."),
+            c(3218, "install", "安裝", "It takes a few minutes to install the update."),
+            c(3219, "know-how", "技術訣竅", "We need someone with technical know-how."),
+            c(3220, "omit", "忽略", "Do not omit any details in the report."),
+            c(3221, "scanner", "掃描器", "Use the scanner to digitize the documents."),
+            c(3222, "server", "伺服器", "The server is down for maintenance."),
+            c(3223, "spreadsheet", "試算表", "She organized the data in a spreadsheet."),
+            c(3224, "switch", "開關", "Turn off the main switch."),
+            c(3225, "transmission", "傳輸", "Data transmission speed is very fast."),
+            c(3226, "virus", "病毒", "My computer was infected by a virus."),
+            c(3227, "laptop", "筆電", "I take my laptop everywhere with me."),
+            c(3228, "multimedia", "多媒體", "The presentation included multimedia elements."),
+            c(3229, "retrieval", "檢索", "The system allows for quick information retrieval."),
+            c(3230, "search engine", "搜尋引擎", "Google is the most popular search engine."),
+            c(3231, "state-of-the-art", "最先進的", "The lab has state-of-the-art equipment."),
+            c(3232, "terminology", "術語", "Computer terminology can be confusing."),
+            c(3233, "troubleshooting", "故障排除", "Read the troubleshooting guide if you have problems."),
+            c(3234, "up-to-date", "最新的", "Keep your antivirus software up-to-date.")
+        ];
+        const topic33_Office = [
+            c(3301, "office", "辦公室", "Our office is located downtown."),
+            c(3302, "appointment", "預約", "I have a dentist appointment at 3 PM."),
+            c(3303, "attendance", "出勤", "Attendance at the meeting is mandatory."),
+            c(3304, "cabinet", "櫃子", "The files are stored in the metal cabinet."),
+            c(3305, "calendar", "行事曆", "Check my calendar for availability."),
+            c(3306, "clerk", "辦事員", "The clerk filed the documents."),
+            c(3307, "directory", "通訊錄", "Look up his extension in the staff directory."),
+            c(3308, "filing", "歸檔", "She spent the afternoon doing filing."),
+            c(3309, "in-tray", "待辦公文盒", "My in-tray is full of paperwork."),
+            c(3310, "monitor", "監視器", "I need a larger monitor for my computer."),
+            c(3311, "out-tray", "已辦公文盒", "Put the signed letters in the out-tray."),
+            c(3312, "partition", "隔板", "Glass partitions separate the offices."),
+            c(3313, "postage", "郵資", "The company pays for all postage."),
+            c(3314, "punctuality", "準時", "Punctuality is important in this job."),
+            c(3315, "schedule", "行程表", "We are running behind schedule."),
+            c(3316, "shift", "輪班", "I am working the night shift this week."),
+            c(3317, "staff", "員工", "We have a very dedicated staff."),
+            c(3318, "strike", "罷工", "The workers went on strike for higher wages."),
+            c(3319, "task", "任務", "Prioritize your daily tasks."),
+            c(3320, "workforce", "勞動力", "A skilled workforce is essential for growth."),
+            c(3321, "assignment", "任務", "He completed the assignment on time."),
+            c(3322, "bulletin", "公告", "Check the bulletin board for announcements."),
+            c(3323, "calculator", "計算機", "Use a calculator to check the figures."),
+            c(3324, "carbon copy", "副本", "Keep a carbon copy for your records."),
+            c(3325, "colleague", "同事", "I'm going to lunch with a colleague."),
+            c(3326, "document", "文件", "Please sign this legal document."),
+            c(3327, "extension", "分機", "You can reach me at extension 105."),
+            c(3328, "intercom", "對講機", "Announce the visitor over the intercom."),
+            c(3329, "memo", "備忘錄", "The manager sent a memo about the dress code."),
+            c(3330, "operator", "總機", "The operator will connect your call."),
+            c(3331, "overtime", "加班", "We are working overtime to meet the deadline."),
+            c(3332, "portfolio", "作品集", "The artist showed his portfolio to the gallery."),
+            c(3333, "printed matter", "印刷品", "This envelope contains printed matter only."),
+            c(3334, "receptionist", "櫃台人員", "The receptionist greeted the guests warmly."),
+            c(3335, "secretary", "秘書", "My secretary handles all my travel arrangements."),
+            c(3336, "shorthand", "速記", "She can take dictation in shorthand."),
+            c(3337, "stapler", "釘書機", "I need a stapler to attach these papers."),
+            c(3338, "tardy", "遲到的", "Being tardy for meetings is unprofessional."),
+            c(3339, "typist", "打字員", "She works as a copy typist."),
+            c(3340, "print", "列印", "Click here to print the document."),
+            c(3341, "spam", "垃圾郵件", "My inbox is full of spam.")
+        ];
+        const topic34_Expansion = [
+            c(3401, "accrue", "積累", "Interest will accrue on the account."),
+            c(3402, "acquisition", "收購", "The acquisition will be finalized next month."),
+            c(3403, "amplify", "擴大", "Social media can amplify our message."),
+            c(3404, "buyout", "收購", "The management led a buyout of the company."),
+            c(3405, "corporation", "公司", "It is a global corporation with offices everywhere."),
+            c(3406, "cutback", "削減", "Economic troubles led to cutbacks in spending."),
+            c(3407, "equity", "股權", "He sold his equity in the firm."),
+            c(3408, "franchise", "加盟", "They plan to open a franchise in every city."),
+            c(3409, "launch", "發布", "We will launch the new product in spring."),
+            c(3410, "phase", "階段", "The project will be implemented in phases."),
+            c(3411, "affiliate", "分部", "Our local affiliate handles distribution."),
+            c(3412, "expand", "擴張", "We are looking to expand into Asian markets."),
+            c(3413, "integrate", "整合", "We need to integrate the new software with our system."),
+            c(3414, "merger", "合併", "The merger created the world's largest bank."),
+            c(3415, "preliminary", "初步的", "The preliminary results look promising."),
+            c(3416, "propose", "提議", "The chairman proposed a vote."),
+            c(3417, "prospect", "展望", "The job offers excellent career prospects."),
+            c(3418, "prosperity", "繁榮", "Peace brings prosperity to the nation."),
+            c(3419, "scheme", "計畫", "They devised a scheme to increase sales."),
+            c(3420, "thrive", "興旺", "The business continues to thrive despite the recession."),
+            c(3421, "thriving", "繁榮的", "They have a thriving export business."),
+            c(3422, "proposition", "提案", "He made a business proposition to the investors."),
+            c(3423, "prospectus", "公開說明書", "Read the prospectus before buying shares."),
+            c(3424, "rival", "對手", "They are our main rival in the industry."),
+            c(3425, "subsidiary", "子公司", "The Japanese subsidiary is performing well."),
+            c(3426, "acquire", "取得", "The company hopes to acquire new customers."),
+            c(3427, "track record", "績效記錄", "She has a proven track record in sales."),
+            c(3428, "achievement", "成就", "Winning the contract was a major achievement."),
+            c(3429, "benchmark", "基準", "This product is the industry benchmark."),
+            c(3430, "cut down", "削減", "We need to cut down on waste."),
+            c(3431, "firm", "公司", "He works for a consulting firm."),
+            c(3432, "undervalue", "低估", "The currency is currently undervalued."),
+            c(3433, "assess", "評估", "We need to assess the impact of the changes."),
+            c(3434, "profile", "簡介", "The company has a high profile in the media."),
+            c(3435, "carry out", "執行", "They will carry out the plan immediately."),
+            c(3436, "consolidate", "鞏固", "The company needs to consolidate its position.")
+        ];
+        const topic35_Trade = [
+            c(3501, "bid", "投標", "We put in a bid for the contract."),
+            c(3502, "commercial", "商業的", "The area is zoned for commercial use."),
+            c(3503, "competitor", "競爭者", "Our main competitor lowered their prices."),
+            c(3504, "credible", "可信的", "We need a credible plan to attract investors."),
+            c(3505, "export", "出口", "Germany exports cars to the rest of the world."),
+            c(3506, "import", "進口", "The country imports most of its oil."),
+            c(3507, "long-range", "遠程的", "We need a long-range business strategy."),
+            c(3508, "supply", "供應", "Demand exceeds supply."),
+            c(3509, "trade deficit", "貿易逆差", "The US has a large trade deficit with China."),
+            c(3510, "trade surplus", "貿易順差", "A trade surplus strengthens the currency."),
+            c(3511, "WTO", "世貿組織", "The WTO regulates international trade."),
+            c(3512, "bill of lading", "提單", "The bill of lading is required to claim the cargo."),
+            c(3513, "commodity", "商品", "Gold is a valuable commodity."),
+            c(3514, "consignee", "收貨人", "The goods were delivered to the consignee."),
+            c(3515, "contractor", "承包商", "We hired a contractor to renovate the office."),
+            c(3516, "cost-effective", "划算的", "Email is a cost-effective way to communicate."),
+            c(3517, "dealer", "經銷商", "Contact your local dealer for service."),
+            c(3518, "due", "應付的", "The payment is due next week."),
+            c(3519, "endorse", "背書", "Celebrities often endorse products."),
+            c(3520, "trading firm", "貿易公司", "He works for a Japanese trading firm."),
+            c(3521, "order", "訂單", "We placed a large order for steel."),
+            c(3522, "patent", "專利", "The invention is protected by a patent."),
+            c(3523, "quota", "配額", "The government imposed an import quota."),
+            c(3524, "shipment", "裝運", "The shipment of goods arrived late."),
+            c(3525, "surplus", "盈餘", "We have a budget surplus this year."),
+            c(3526, "trademark", "商標", "You cannot use our registered trademark."),
+            c(3527, "warehouse", "倉庫", "The goods are stored in a bonded warehouse."),
+            c(3528, "bilateral trade", "雙邊貿易", "Bilateral trade between the nations has increased."),
+            c(3529, "import duties", "進口稅", "You have to pay import duties on luxury items.")
+        ];
+        const topic36_Meeting = [
+            c(3601, "adjourn", "休會", "The meeting was adjourned until tomorrow."),
+            c(3602, "amendment", "修正案", "They proposed an amendment to the contract."),
+            c(3603, "approval", "批准", "The plan is subject to board approval."),
+            c(3604, "attentive", "專心的", "The audience was very attentive."),
+            c(3605, "board", "董事會", "The board of directors meets quarterly."),
+            c(3606, "brainstorm", "腦力激盪", "Let's brainstorm some new ideas."),
+            c(3607, "concede", "讓步", "He conceded that he had made a mistake."),
+            c(3608, "conference", "會議", "I am attending a sales conference in Chicago."),
+            c(3609, "convention", "大會/慣例", "The annual convention attracts thousands of visitors."),
+            c(3610, "convince", "說服", "I tried to convince him to stay."),
+            c(3611, "cross-reference", "對照", "Please cross-reference the data with the original report."),
+            c(3612, "delegate", "代表", "He was chosen as a delegate to the conference."),
+            c(3613, "demand", "要求", "The workers demanded a pay raise."),
+            c(3614, "dispute", "爭議", "They are involved in a legal dispute."),
+            c(3615, "negotiation", "談判", "The negotiation lasted for hours."),
+            c(3616, "persuade", "說服", "Can you persuade her to change her mind?"),
+            c(3617, "postpone", "延期", "The meeting was postponed due to bad weather."),
+            c(3618, "reconcile", "調解", "They tried to reconcile their differences."),
+            c(3619, "announce", "宣布", "The company announced a new CEO."),
+            c(3620, "articulate", "清楚表達", "She is a very articulate speaker."),
+            c(3621, "agenda", "議程", "The first item on the agenda is the budget."),
+            c(3622, "attorney", "律師", "You should consult an attorney."),
+            c(3623, "conclusive", "決定性的", "The evidence was conclusive."),
+            c(3624, "consensus", "共識", "We need to reach a consensus."),
+            c(3625, "converse", "交談", "They conversed in low voices."),
+            c(3626, "criterion", "標準", "Success is not the only criterion for happiness."),
+            c(3627, "decline", "婉拒/下降", "He declined the invitation."),
+            c(3628, "demonstration", "示範", "He gave a demonstration of the new software."),
+            c(3629, "diplomacy", "外交", "International diplomacy is complex."),
+            c(3630, "dissuade", "勸阻", "I tried to dissuade him from leaving."),
+            c(3631, "on behalf of", "代表", "I am speaking on behalf of my colleagues."),
+            c(3632, "petition", "請願", "They signed a petition to save the park."),
+            c(3633, "seminar", "研討會", "I attended a seminar on time management."),
+            c(3634, "statement", "聲明", "The police issued a statement."),
+            c(3635, "declaration", "宣言", "The declaration of independence was signed in 1776."),
+            c(3636, "interrupt", "打斷", "Please do not interrupt while I am speaking.")
+        ];
+        const topic37_Tech = [
+            c(3701, "advance", "進步", "Technological advances have changed our lives."),
+            c(3702, "component", "零件", "The engine has thousands of components."),
+            c(3703, "device", "裝置", "This electronic device is very popular."),
+            c(3704, "engineer", "工程師", "She is a software engineer."),
+            c(3705, "facilitate", "促進", "The new software will facilitate teamwork."),
+            c(3706, "fuel", "燃料", "We are running low on fuel."),
+            c(3707, "generator", "發電機", "The hospital has a backup generator."),
+            c(3708, "innovative", "創新的", "That is an innovative solution to the problem."),
+            c(3709, "inventor", "發明家", "Edison was a prolific inventor."),
+            c(3710, "leading edge", "領先優勢", "We are at the leading edge of medical research."),
+            c(3711, "malfunction", "故障", "A mechanical malfunction caused the crash."),
+            c(3712, "mode", "模式", "Switch the phone to airplane mode."),
+            c(3713, "operate", "操作", "Do not operate heavy machinery while taking this medication."),
+            c(3714, "portable", "可攜式的", "It is a portable DVD player."),
+            c(3715, "satellite", "衛星", "The signal is transmitted via satellite."),
+            c(3716, "specification", "規格", "Check the product specifications before buying."),
+            c(3717, "substandard", "不合標準", "The wiring was found to be substandard."),
+            c(3718, "automaton", "自動裝置", "The factory uses automatons for assembly."),
+            c(3719, "cell phone", "手機", "Please turn off your cell phone in the theater."),
+            c(3720, "devise", "設計", "They devised a clever plan."),
+            c(3721, "hands-on", "實作的", "This course offers hands-on experience."),
+            c(3722, "inspect", "檢查", "Inspect the equipment regularly for damage."),
+            c(3723, "laboratory", "實驗室", "Experiments are conducted in the laboratory."),
+            c(3724, "maintenance", "維護", "The machine requires regular maintenance."),
+            c(3725, "manual", "手冊", "Read the instruction manual carefully."),
+            c(3726, "network", "網路", "The computer network is secure."),
+            c(3727, "outage", "斷電", "The storm caused a power outage."),
+            c(3728, "solar", "太陽能", "Solar power is a renewable energy source."),
+            c(3729, "static", "靜態的", "There is too much static on the radio."),
+            c(3730, "turn down", "關小", "Please turn down the volume.")]
+        const topic38_Transport = [
+            c(3801, "accelerate", "加速", "The car can accelerate from 0 to 60 in 5 seconds."),
+            c(3802, "aircraft", "飛行器", "The aircraft carried 300 passengers."),
+            c(3803, "buckle up", "繫安全帶", "Please buckle up for safety."),
+            c(3804, "convertible", "敞篷車", "He drives a red convertible."),
+            c(3805, "crash landing", "迫降", "The pilot made a crash landing in a field."),
+            c(3806, "delay", "延誤", "Sorry for the delay."),
+            c(3807, "forbid", "禁止", "Parking is forbidden here."),
+            c(3808, "ground crew", "地勤", "The ground crew prepared the plane for takeoff."),
+            c(3809, "jaywalk", "亂穿越馬路", "It is dangerous to jaywalk on this busy street."),
+            c(3810, "navigate", "導航", "We used GPS to navigate through the city."),
+            c(3811, "pilot", "飛行員", "The pilot announced that we were landing."),
+            c(3812, "route", "路線", "Which is the shortest route to the airport?"),
+            c(3813, "seat belt", "安全帶", "Fasten your seat belt."),
+            c(3814, "subway", "地鐵", "The subway is the fastest way to get downtown."),
+            c(3815, "highway", "公路", "Driving on the highway is faster."),
+            c(3816, "taxi", "計程車", "We hailed a taxi to the station."),
+            c(3817, "transit", "運輸", "The goods are in transit."),
+            c(3818, "transportation", "交通", "Public transportation is efficient in this city."),
+            c(3819, "air fare", "機票費", "Air fare is expensive during holidays."),
+            c(3820, "traffic jam", "塞車", "We got stuck in a traffic jam."),
+            c(3821, "turbulence", "亂流", "The flight was smooth despite some turbulence."),
+            c(3822, "aviation", "航空", "He works in the aviation industry."),
+            c(3823, "jetliner", "噴射客機", "The jetliner crossed the Atlantic."),
+            c(3824, "derail", "脫軌", "The train derailed, but no one was hurt."),
+            c(3825, "acrophobia", "恐高症", "He won't fly because he suffers from acrophobia."),
+            c(3826, "airliner", "客機", "The commercial airliner landed safely."),
+            c(3827, "aviation", "航空學", "She is studying aviation."),
+            c(3828, "aerospace", "航太", "Aerospace engineering is a complex field."),
+            c(3829, "cabin", "機艙", "The cabin pressure dropped."),
+            c(3830, "conveyance", "運輸工具", "Bicycles are a cheap mode of conveyance."),
+            c(3831, "crossroads", "十字路口", "Turn left at the crossroads."),
+            c(3832, "ferry", "渡輪", "We took a ferry across the river."),
+            c(3833, "freight", "貨運", "The train carries both passengers and freight."),
+            c(3834, "jeopardy", "危險", "His reckless driving put lives in jeopardy."),
+            c(3835, "life vest", "救生衣", "Put on your life vest in an emergency."),
+            c(3836, "pedestrian", "行人", "Watch out for pedestrians."),
+            c(3837, "restriction", "限制", "There are weight restrictions on luggage."),
+            c(3838, "take off", "起飛", "The plane is ready to take off."),
+            c(3839, "timetable", "時刻表", "Check the train timetable."),
+            c(3840, "transport", "運輸", "Trucks transport goods across the country."),
+            c(3841, "via", "經由", "We flew to London via Dubai."),
+            c(3842, "prohibit", "禁止", "Smoking is prohibited on board.")
+        ];
+        const topic39_Shopping = [
+            c(3901, "affordable", "負擔得起的", "This car is very affordable."),
+            c(3902, "bazaar", "市集", "We bought spices at the Grand Bazaar."),
+            c(3903, "customer", "顧客", "The customer is always right."),
+            c(3904, "discount", "折扣", "Students get a 10% discount."),
+            c(3905, "itemize", "列出清單", "Please itemize your expenses."),
+            c(3906, "latest", "最新的", "Have you seen the latest fashion trends?"),
+            c(3907, "pickpocket", "扒手", "Watch out for pickpockets in the crowd."),
+            c(3908, "pushcart", "手推車", "The vendor sold hot dogs from a pushcart."),
+            c(3909, "reimburse", "報銷", "The company will reimburse your travel costs."),
+            c(3910, "request", "要求", "You can request a refund within 30 days."),
+            c(3911, "sample", "樣品", "Try a free sample of our new perfume."),
+            c(3912, "solicit", "徵求", "They are soliciting donations for the charity."),
+            c(3913, "trendy", "時髦的", "She wears trendy clothes."),
+            c(3914, "wholesale", "批發", "He buys clothes at wholesale prices."),
+            c(3915, "non-refundable", "不可退款", "The ticket is non-refundable."),
+            c(3916, "bargain", "便宜貨", "That dress was a real bargain."),
+            c(3917, "cash register", "收銀機", "The cashier opened the cash register."),
+            c(3918, "coupon", "優惠券", "Cut out the coupon to save money."),
+            c(3919, "display", "陳列", "The shoes are on display in the window."),
+            c(3920, "drugstore", "藥妝店", "You can buy aspirin at the drugstore."),
+            c(3921, "flea market", "跳蚤市場", "I bought this old lamp at a flea market."),
+            c(3922, "label", "標籤", "Check the washing instructions on the label."),
+            c(3923, "modify", "修改", "We can modify the dress to fit you."),
+            c(3924, "patron", "老主顧", "He is a regular patron of this restaurant."),
+            c(3925, "purchase", "購買", "Thank you for your purchase."),
+            c(3926, "quantity", "數量", "Check the quantity before signing the receipt."),
+            c(3927, "shopping mall", "購物中心", "Let's go to the shopping mall."),
+            c(3928, "thrift", "節儉", "Thrift is a virtue."),
+            c(3929, "workmanship", "工藝", "The workmanship on this table is excellent."),
+            c(3930, "cosmetics", "化妝品", "She spends a lot of money on cosmetics."),
+            c(3931, "reconfirmation", "再確認", "I called for reconfirmation of my flight."),
+            c(3932, "service charge", "服務費", "A 10% service charge is added to the bill."),
+            c(3933, "commodities", "日用品", "Prices of basic commodities have risen."),
+            c(3934, "fancy", "高級的", "We went to a fancy restaurant."),
+            c(3935, "incentive", "誘因", "Bonus points are an incentive to buy more."),
+            c(3936, "warranty", "保固", "The watch is still under warranty.")
+        ];
+        const topic40_Dining = [
+            c(4001, "alcohol", "酒精", "This drink contains no alcohol."),
+            c(4002, "appetite", "食慾", "I have a healthy appetite."),
+            c(4003, "bland", "清淡的", "The soup tasted a bit bland."),
+            c(4004, "chef", "主廚", "The chef prepared a special meal."),
+            c(4005, "crave", "渴望", "I crave chocolate when I am stressed."),
+            c(4006, "delicacy", "佳餚", "Caviar is considered a delicacy."),
+            c(4007, "digest", "消化", "It takes time to digest a heavy meal."),
+            c(4008, "fragrant", "芳香的", "The curry was very fragrant."),
+            c(4009, "ingredient", "食材", "Fresh ingredients are essential for good cooking."),
+            c(4010, "liquor", "烈酒", "The store sells beer, wine, and liquor."),
+            c(4011, "munch", "大聲咀嚼", "He was munching on an apple."),
+            c(4012, "palatable", "美味的", "The food was simple but palatable."),
+            c(4013, "pass up", "錯過", "I couldn't pass up the chance to try the cake."),
+            c(4014, "portion", "一份", "The restaurant serves generous portions."),
+            c(4015, "ravenous", "極餓的", "I am ravenous after that long walk."),
+            c(4016, "refreshment", "茶點", "Refreshments were served during the break."),
+            c(4017, "silverware", "銀餐具", "Set the table with the best silverware."),
+            c(4018, "specialty", "招牌菜", "The chef's specialty is seafood paella."),
+            c(4019, "starve", "挨餓", "I'm starving! When is dinner?"),
+            c(4020, "aperitif", "餐前酒", "Would you like an aperitif before dinner?"),
+            c(4021, "appetizer", "開胃菜", "We ordered calamari as an appetizer."),
+            c(4022, "beverage", "飲料", "Hot and cold beverages are available."),
+            c(4023, "buffet", "自助餐", "The hotel offers a breakfast buffet."),
+            c(4024, "chopsticks", "筷子", "Can you use chopsticks?"),
+            c(4025, "cuisine", "料理", "I love Italian cuisine."),
+            c(4026, "entree", "主菜", "For the entree, I'll have the steak."),
+            c(4027, "hors d'oeuvre", "開胃小菜", "Waiters passed around trays of hors d'oeuvres."),
+            c(4028, "leftovers", "剩菜", "We ate leftovers for lunch the next day."),
+            c(4029, "menu", "菜單", "Could I see the menu, please?"),
+            c(4030, "napkin", "餐巾", "He wiped his mouth with a napkin."),
+            c(4031, "parched", "口渴的", "I was parched after the run."),
+            c(4032, "pastry", "糕點", "The bakery sells delicious pastries."),
+            c(4033, "dessert", "甜點", "We had ice cream for dessert."),
+            c(4034, "preservative", "防腐劑", "This food contains no artificial preservatives."),
+            c(4035, "recipe", "食譜", "Can you give me the recipe for this cake?"),
+            c(4036, "seasoning", "調味料", "Add some seasoning to taste."),
+            c(4037, "snack", "點心", "I had a quick snack between meals."),
+            c(4038, "spice", "香料", "Pepper is a common spice."),
+            c(4039, "vegetarian", "素食者", "The restaurant has a vegetarian menu.")
+        ];
+const topic41_Social = [
+            c(4101, "acceptance", "接受", "His acceptance of the award was gracious."),
+            c(4102, "acquaintance", "點頭之交", "She is just an acquaintance, not a close friend."),
+            c(4103, "anniversary", "週年紀念", "They celebrated their 10th wedding anniversary."),
+            c(4104, "associate", "同事", "He is a business associate of mine."),
+            c(4105, "banquet", "宴會", "The company held a banquet for its employees."),
+            c(4106, "commitment", "承諾", "Marriage is a lifelong commitment."),
+            c(4107, "courtesy", "禮貌", "He opened the door for her as a courtesy."),
+            c(4108, "distinguished", "傑出的", "We have a distinguished guest with us tonight."),
+            c(4109, "embrace", "擁抱", "They embraced each other warmly."),
+            c(4110, "etiquette", "禮儀", "Business etiquette varies from country to country."),
+            c(4111, "farewell", "告別", "We threw a farewell party for him."),
+            c(4112, "get-together", "聚會", "Let's have a get-together next week."),
+            c(4113, "greeting", "問候", "She sent her greetings to the family."),
+            c(4114, "hug", "擁抱", "She gave her mother a big hug."),
+            c(4115, "lavish", "奢華的", "They hosted a lavish dinner party."),
+            c(4116, "nosy", "愛管閒事的", "Don't be so nosy about other people's business."),
+            c(4117, "offensive", "冒犯的", "His comments were found to be offensive."),
+            c(4118, "protocol", "禮節", "Follow the diplomatic protocol."),
+            c(4119, "regards", "致意", "Please give my regards to your parents."),
+            c(4120, "salute", "致敬", "The soldiers saluted the general."),
+            c(4121, "acknowledge", "承認", "He nodded to acknowledge her presence."),
+            c(4122, "aggressive", "挑釁的", "His aggressive behavior scared everyone."),
+            c(4123, "apologize", "道歉", "You should apologize for being late."),
+            c(4124, "attractive", "迷人的", "The offer was very attractive."),
+            c(4125, "barrier", "障礙", "Language can be a barrier to communication."),
+            c(4126, "compliment", "讚美", "He paid her a nice compliment on her dress."),
+            c(4127, "criticize", "批評", "It is easy to criticize others."),
+            c(4128, "eloquent", "雄辯的", "She made an eloquent speech."),
+            c(4129, "encounter", "相遇", "I had a chance encounter with an old friend."),
+            c(4130, "extend", "延伸", "We decided to extend our stay."),
+            c(4131, "favorable", "有利的", "The terms of the contract are favorable."),
+            c(4132, "gossip", "八卦", "Office gossip can be harmful."),
+            c(4133, "hilarious", "滑稽的", "The movie was absolutely hilarious."),
+            c(4134, "intrude", "打擾", "I didn't mean to intrude on your privacy."),
+            c(4135, "modest", "謙虛的", "He is very modest about his achievements."),
+            c(4136, "nuisance", "討厭的人事物", "The noise from the construction is a nuisance."),
+            c(4137, "quarrel", "爭吵", "They had a quarrel about money."),
+            c(4138, "run into", "偶遇", "I ran into my teacher at the supermarket.")
+        ];
+const topic42_Entertainment = [
+            c(4201, "amuse", "娛樂", "The clown amused the children."),
+            c(4202, "audience", "觀眾", "The audience clapped loudly."),
+            c(4203, "ballet", "芭蕾", "She has been studying ballet for years."),
+            c(4204, "cable TV", "有線電視", "We subscribe to cable TV for the sports channels."),
+            c(4205, "celebrity", "名人", "He became a celebrity overnight."),
+            c(4206, "cinema", "電影院", "Let's go to the cinema tonight."),
+            c(4207, "composer", "作曲家", "Beethoven is a famous composer."),
+            c(4208, "conductor", "指揮家", "The conductor led the orchestra."),
+            c(4209, "cue", "提示", "That was my cue to walk on stage."),
+            c(4210, "drama", "戲劇", "She enjoys watching historical dramas."),
+            c(4211, "headline", "頭條", "The scandal made the front-page headline."),
+            c(4212, "newscast", "新聞廣播", "I watched the evening newscast."),
+            c(4213, "periodical", "期刊", "The library subscribes to many periodicals."),
+            c(4214, "premiere", "首映", "The movie premiere was held in Hollywood."),
+            c(4215, "rate", "分級", "The movie is rated R."),
+            c(4216, "scenario", "劇本/場景", "Let's consider the worst-case scenario."),
+            c(4217, "scriptwriter", "編劇", "The scriptwriter won an award for the screenplay."),
+            c(4218, "symphony", "交響樂", "We went to hear the symphony orchestra."),
+            c(4219, "ticket office", "售票處", "Buy your tickets at the ticket office."),
+            c(4220, "applaud", "鼓掌", "The crowd stood up to applaud."),
+            c(4221, "audition", "試鏡", "She went to an audition for a TV commercial."),
+            c(4222, "broadcast", "廣播", "The game will be broadcast live."),
+            c(4223, "carnival", "嘉年華", "The carnival features rides and games."),
+            c(4224, "choreography", "編舞", "The choreography for the dance was amazing."),
+            c(4225, "circus", "馬戲團", "The circus is coming to town."),
+            c(4226, "concert", "音樂會", "The band is playing a concert tonight."),
+            c(4227, "critic", "評論家", "The film received bad reviews from critics."),
+            c(4228, "curtain call", "謝幕", "The actors came out for a curtain call."),
+            c(4229, "editorial", "社論", "The newspaper published an editorial on the issue."),
+            c(4230, "finale", "終曲", "The grand finale was spectacular."),
+            c(4231, "media", "媒體", "The event attracted a lot of media attention."),
+            c(4232, "performance", "表演", "Her performance was outstanding."),
+            c(4233, "playwright", "劇作家", "Shakespeare is the most famous playwright."),
+            c(4234, "preview", "預告", "We saw a preview of the new film."),
+            c(4235, "rehearsal", "排練", "The dress rehearsal is tonight."),
+            c(4236, "screen", "銀幕", "The movie will be shown on the big screen."),
+            c(4237, "stunt", "特技", "Don't try this dangerous stunt at home."),
+            c(4238, "theater", "劇場", "We enjoy going to the theater."),
+            c(4239, "violin", "小提琴", "He plays the violin in the orchestra."),
+            c(4240, "lottery", "彩券", "He won a million dollars in the lottery."),
+            c(4241, "screening", "放映", "There will be a private screening of the film."),
+            c(4242, "drawing", "抽獎", "We will hold a drawing for the prize."),
+            c(4243, "entertainment", "娛樂", "The hotel provides evening entertainment.")
+        ];
+const topic43_Emotions = [
+            c(4301, "affection", "情感", "He felt a deep affection for his hometown."),
+            c(4302, "anticipate", "期待", "We anticipate a good result."),
+            c(4303, "brag", "吹噓", "He likes to brag about his new car."),
+            c(4304, "delighted", "高興的", "I am delighted to meet you."),
+            c(4305, "detest", "痛恨", "I detest waiting in line."),
+            c(4306, "disgust", "厭惡", "She looked at the food with disgust."),
+            c(4307, "distress", "悲痛", "The news caused her great distress."),
+            c(4308, "enthusiastic", "熱情的", "He is very enthusiastic about the project."),
+            c(4309, "esteem", "尊敬", "He is held in high esteem by his colleagues."),
+            c(4310, "fascination", "著迷", "She has a fascination with ancient history."),
+            c(4311, "gloomy", "憂鬱的", "The weather makes me feel gloomy."),
+            c(4312, "impartial", "公正的", "A judge must remain impartial."),
+            c(4313, "impulsive", "衝動的", "It was an impulsive decision."),
+            c(4314, "irritated", "惱怒的", "I was irritated by the constant noise."),
+            c(4315, "mad", "生氣的", "Don't get mad at me."),
+            c(4316, "objective", "客觀的", "We need an objective opinion."),
+            c(4317, "panic", "恐慌", "Don't panic in an emergency."),
+            c(4318, "prejudice", "偏見", "We must fight against racial prejudice."),
+            c(4319, "repulsive", "令人反感的", "The smell was repulsive."),
+            c(4320, "tranquility", "寧靜", "I enjoy the tranquility of the countryside."),
+            c(4321, "ambition", "野心", "His ambition is to become CEO."),
+            c(4322, "attraction", "吸引力", "The main attraction is the roller coaster."),
+            c(4323, "contentment", "滿足", "She found contentment in her simple life."),
+            c(4324, "despair", "絕望", "He gave up in despair."),
+            c(4325, "devoted", "摯愛的", "He is a devoted father."),
+            c(4326, "disposition", "性情", "She has a cheerful disposition."),
+            c(4327, "elegant", "優雅的", "She looked elegant in her evening gown."),
+            c(4328, "entice", "誘惑", "The smell of coffee enticed customers into the shop."),
+            c(4329, "fondness", "喜愛", "He has a fondness for chocolate."),
+            c(4330, "hideous", "醜陋的", "That is a hideous dress."),
+            c(4331, "impression", "印象", "First impressions are important."),
+            c(4332, "instinct", "本能", "My instinct told me to run."),
+            c(4333, "jealous", "嫉妒的", "He was jealous of his brother's success."),
+            c(4334, "nasty", "惡毒的", "He made a nasty comment."),
+            c(4335, "optimistic", "樂觀的", "I am optimistic about the future."),
+            c(4336, "perceive", "察覺", "I perceived a change in his attitude."),
+            c(4337, "provoke", "激怒", "Don't provoke him."),
+            c(4338, "startle", "驚嚇", "The loud noise startled me."),
+            c(4339, "upset", "心煩的", "She was upset about the bad news."),
+            c(4340, "inspire", "激勵", "His speech inspired us all."),
+            c(4341, "reassure", "使安心", "He reassured me that everything would be fine."),
+            c(4342, "remind", "提醒", "Please remind me to call him."),
+            c(4343, "tumultuous", "激動的", "It was a tumultuous relationship.")
+        ];
+const topic44_OtherNV = [
+            c(4401, "aspect", "方面", "We considered every aspect of the problem."),
+            c(4402, "assumption", "假設", "Your argument is based on a false assumption."),
+            c(4403, "attempt", "嘗試", "He made an attempt to escape."),
+            c(4404, "call waiting", "電話插播", "I have another call on call waiting."),
+            c(4405, "endeavor", "努力", "We wish you success in your future endeavors."),
+            c(4406, "identity", "身分", "The police are trying to establish his identity."),
+            c(4407, "implication", "含義", "What are the implications of this decision?"),
+            c(4408, "intention", "意圖", "I have no intention of resigning."),
+            c(4409, "obstacle", "障礙", "Fear is a major obstacle to success."),
+            c(4410, "priority", "優先權", "Safety is our top priority."),
+            c(4411, "sustain", "維持", "The pillar sustains the roof."),
+            c(4412, "undertake", "承擔", "He undertook the responsibility."),
+            c(4413, "assurance", "保證", "He gave me his assurance that he would help."),
+            c(4414, "clarify", "澄清", "Could you clarify your point?"),
+            c(4415, "discard", "丟棄", "Discard any damaged items."),
+            c(4416, "impact", "影響", "The new tax will have a big impact on sales."),
+            c(4417, "instruct", "指導", "She instructed the students to open their books."),
+            c(4418, "interfere", "干涉", "Don't interfere in my business."),
+            c(4419, "involve", "涉及", "The project involves a lot of work."),
+            c(4420, "merit", "優點", "We judged the plan on its own merits."),
+            c(4421, "permit", "許可", "Do you have a parking permit?"),
+            c(4422, "proceed", "進行", "Please proceed to the gate."),
+            c(4423, "register", "註冊", "You need to register for the course."),
+            c(4424, "risk", "風險", "Investment always involves some risk."),
+            c(4425, "submit", "提交", "Submit your application by Friday."),
+            c(4426, "speculate", "推測", "I don't want to speculate on the reasons."),
+            c(4427, "verify", "證實", "Please verify your email address."),
+            c(4428, "circumstance", "情況", "Under no circumstances should you open this door."),
+            c(4429, "requirement", "要求", "A degree is a requirement for this job."),
+            c(4430, "require", "要求", "This job requires a lot of patience."),
+            c(4431, "derivatives", "衍生物", "Plastics are derivatives of oil."),
+            c(4432, "royalty", "版稅", "The author receives a royalty for every book sold."),
+            c(4433, "contingency", "意外事故", "We have a contingency plan in case of fire."),
+            c(4434, "deem", "認為", "The building was deemed unsafe."),
+            c(4435, "suspension", "中止", "The player received a three-game suspension."),
+            c(4436, "adult", "成人", "Tickets are $20 for adults."),
+            c(4437, "minor", "未成年人", "It is illegal to sell alcohol to minors."),
+            c(4438, "compliance", "順從", "The company is in compliance with the new laws.")
+        ];
+const topic45_OtherAdj = [
+            c(4501, "absurd", "荒謬的", "That is an absurd idea."),
+            c(4502, "adequate", "足夠的", "Is the lighting adequate for reading?"),
+            c(4503, "ample", "充裕的", "There is ample parking space."),
+            c(4504, "decent", "體面的", "He earns a decent salary."),
+            c(4505, "dreadful", "可怕的", "The weather was dreadful."),
+            c(4506, "exceptional", "傑出的", "She showed exceptional talent."),
+            c(4507, "exquisite", "精緻的", "The jewelry is exquisite."),
+            c(4508, "farfetched", "牽強的", "His excuse sounds farfetched."),
+            c(4509, "in light of", "鑒於", "In light of the evidence, he was acquitted."),
+            c(4510, "ingenious", "巧妙的", "It was an ingenious invention."),
+            c(4511, "instant", "立即的", "Just add water for instant coffee."),
+            c(4512, "moderate", "適度的", "Cook over moderate heat."),
+            c(4513, "oblivious", "遺忘的", "He seemed oblivious to the noise."),
+            c(4514, "random", "隨機的", "The computer generates random numbers."),
+            c(4515, "relevant", "相關的", "Please keep your comments relevant to the topic."),
+            c(4516, "substantially", "相當大地", "The price has increased substantially."),
+            c(4517, "temporary", "暫時的", "This is just a temporary solution."),
+            c(4518, "unprecedented", "史無前例的", "The team enjoyed unprecedented success."),
+            c(4519, "versatile", "多功能的", "This is a versatile tool."),
+            c(4520, "accurate", "準確的", "The report is accurate."),
+            c(4521, "alert", "警覺的", "Security guards must stay alert."),
+            c(4522, "approximately", "大約", "The flight takes approximately two hours."),
+            c(4523, "distinctive", "獨特的", "The brand has a distinctive logo."),
+            c(4524, "dynamic", "動態的", "It is a dynamic market."),
+            c(4525, "excessive", "過度的", "Excessive noise is prohibited."),
+            c(4526, "extraordinary", "非凡的", "She is an extraordinary woman."),
+            c(4527, "inferior", "較差的", "This product is of inferior quality."),
+            c(4528, "initial", "最初的", "My initial reaction was surprise."),
+            c(4529, "irresistible", "不可抗拒的", "The offer was irresistible."),
+            c(4530, "miscellaneous", "混雜的", "We have a box for miscellaneous items."),
+            c(4531, "noteworthy", "值得注意的", "It is a noteworthy achievement."),
+            c(4532, "on and off", "斷斷續續", "It has been raining on and off all day."),
+            c(4533, "rapid", "迅速的", "The city is undergoing rapid growth."),
+            c(4534, "self-explanatory", "不言自明的", "The instructions are self-explanatory."),
+            c(4535, "sufficient", "充足的", "We have sufficient food for everyone."),
+            c(4536, "ultimately", "最終", "Ultimately, the decision is yours."),
+            c(4537, "vague", "模糊的", "His explanation was very vague."),
+            c(4538, "vivid", "生動的", "I have vivid memories of my childhood."),
+            c(4539, "acute", "敏銳的", "Dogs have an acute sense of smell."),
+            c(4540, "self-restraint", "自我克制", "He showed great self-restraint."),
+            c(4541, "reverse", "相反的", "The reverse side of the coin."),
+            c(4542, "prompt", "迅速的", "Prompt payment is appreciated."),
+            c(4543, "explicitly", "明確地", "I explicitly told him not to go."),
+            c(4544, "implicitly", "含蓄地", "She implicitly trusts him."),
+            c(4545, "inconclusively", "非決定性地", "The meeting ended inconclusively."),
+            c(4546, "unstable", "不穩定的", "The political situation is unstable."),
+            c(4547, "provisional", "臨時的", "We have a provisional booking."),
+            c(4548, "prevalent", "普遍的", "Flu is prevalent in winter."),
+            c(4549, "successive", "連續的", "It rained for three successive days."),
+            c(4550, "consolidated", "整合的", "The consolidated accounts show a profit."),
+            c(4551, "sophisticated", "複雜的", "This is a sophisticated piece of equipment."),
+            c(4552, "ubiquitous", "無所不在的", "Smartphones are ubiquitous nowadays."),
+            c(4553, "across-the-broad", "全面的", "The company implemented an across-the-board pay cut.")
+        ];
+
+        const topics = [
+            { id: 't01', title: '01_求職與工作', data: topic01 },
+            { id: 't02', title: '02_商業書信', data: topic02 },
+            { id: 't03', title: '03_合約(1)', data: topic03 },
+            { id: 't04', title: '04_合約(2)', data: topic04 },
+            { id: 't05', title: '05_邀請與演說', data: topic05 },
+            { id: 't06', title: '06_新聞英語', data: topic06 },
+            { id: 't07', title: '07_運動休閒(1)', data: topic07 },
+            { id: 't08', title: '08_運動休閒(2)', data: topic08 },
+            { id: 't09', title: '09_租房住房(1)', data: topic09 },
+            { id: 't10', title: '10_租房住房(2)', data: topic10 },
+            { id: 't11', title: '11_統計圖表', data: topic11_Stats },
+            { id: 't12', title: '12_旅遊(1)', data: topic12_Travel1 },
+            { id: 't13', title: '13_旅遊(2)', data: topic13_Travel2 },
+            { id: 't14', title: '14_天氣', data: topic14_Weather },
+            { id: 't15', title: '15_會計', data: topic15_Accounting },
+            { id: 't16', title: '16_財務', data: topic16_Finance },
+            { id: 't17', title: '17_企業(1)', data: topic17_Business1 },
+            { id: 't18', title: '18_企業(2)', data: topic18_Business2 },
+            { id: 't19', title: '19_職位', data: topic19_Positions },
+            { id: 't20', title: '20_投資', data: topic20_Investment },
+            { id: 't21', title: '21_利益及資格', data: topic21_Benefits },
+            { id: 't22', title: '22_生產製造(1)', data: topic22_Production1 },
+            { id: 't23', title: '23_生產製造(2)', data: topic23_Production2 },
+            { id: 't24', title: '24_通勤交通', data: topic24_Commute },
+            { id: 't25', title: '25_醫療保險(1)', data: topic25_Medical1 },
+            { id: 't26', title: '26_醫療保險(2)', data: topic26_Medical2 },
+            { id: 't27', title: '27_市場行銷', data: topic27_Marketing },
+            { id: 't28', title: '28_銷售', data: topic28_Sales },
+            { id: 't29', title: '29_談判', data: topic29_Negotiation },
+            { id: 't30', title: '30_顧客服務', data: topic30_CustomerService },
+            { id: 't31', title: '31_電腦(1)', data: topic31_Computer1 },
+            { id: 't32', title: '32_電腦(2)', data: topic32_Computer2 },
+            { id: 't33', title: '33_辦公室事宜', data: topic33_Office },
+            { id: 't34', title: '34_業務拓展', data: topic34_Expansion },
+            { id: 't35', title: '35_貿易', data: topic35_Trade },
+            { id: 't36', title: '36_會議', data: topic36_Meeting },
+            { id: 't37', title: '37_科技設備', data: topic37_Tech },
+            { id: 't38', title: '38_交通運輸', data: topic38_Transport },
+            { id: 't39', title: '39_購物', data: topic39_Shopping },
+            { id: 't40', title: '40_在外就餐', data: topic40_Dining },
+            { id: 't41', title: '41_社交', data: topic41_Social },
+            { id: 't42', title: '42_娛樂媒體', data: topic42_Entertainment },
+            { id: 't43', title: '43_情緒知覺', data: topic43_Emotions },
+            { id: 't44', title: '44_名詞動詞', data: topic44_OtherNV },
+            { id: 't45', title: '45_形容詞副詞', data: topic45_OtherAdj }
+        ];
+
+        // --- All Vocabulary for Mixed Distractors ---
+        const allVocab = topics.flatMap(t => t.data);
+
+        // --- Utility Functions ---
+        const shuffleArray = (array) => {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        };
+
+        const speak = (text) => {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                window.speechSynthesis.speak(utterance);
+            }
+        };
+
+        // --- Icon Components ---
+        const IconGraduationCap = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 10v6M2 10l10-5 10 5-10 5z" /><path d="M6 12v5c3 3 9 3 12 0v-5" /></svg>);
+        const IconArrowRight = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>);
+        const IconTrophy = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M8 21h8" /><path d="M12 17v4" /><path d="M7 4h10c0 5-1.5 10-6 12-4.5-2-6-7-6-12z" /><path d="M2 9h5" /><path d="M17 9h5" /></svg>);
+        const IconThumbsUp = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" /></svg>);
+        const IconBookOpen = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" /></svg>);
+        const IconCheckCircle = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>);
+        const IconCheck = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 6 9 17 4 12" /></svg>);
+        const IconX = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>);
+        const IconAlertCircle = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>);
+        const IconGrid = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /></svg>);
+        const IconArrowLeft = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" /></svg>);
+        const IconEye = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>);
+        const IconEyeOff = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" /><line x1="1" y1="1" x2="23" y2="23" /></svg>);
+        const IconVolume2 = ({ className }) => (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>);
+
+        // --- Components ---
+
+        // 1. Topic Selection Screen
+// 1. Topic Selection Screen (Updated with Comprehensive Quiz Button)
+        const TopicSelectionScreen = ({ onSelectTopic, onStartMixed }) => {
+            const colors = [
+                { bg: "bg-blue-50", text: "text-blue-600", border: "hover:border-blue-500" },
+                { bg: "bg-emerald-50", text: "text-emerald-600", border: "hover:border-emerald-500" },
+                { bg: "bg-indigo-50", text: "text-indigo-600", border: "hover:border-indigo-500" },
+                { bg: "bg-purple-50", text: "text-purple-600", border: "hover:border-purple-500" },
+                { bg: "bg-orange-50", text: "text-orange-600", border: "hover:border-orange-500" },
+                { bg: "bg-rose-50", text: "text-rose-600", border: "hover:border-rose-500" },
+                { bg: "bg-cyan-50", text: "text-cyan-600", border: "hover:border-cyan-500" },
+                { bg: "bg-teal-50", text: "text-teal-600", border: "hover:border-teal-500" },
+                { bg: "bg-pink-50", text: "text-pink-600", border: "hover:border-pink-500" },
+                { bg: "bg-violet-50", text: "text-violet-600", border: "hover:border-violet-500" },
+            ];
+
+            return (
+                <div className="flex flex-col items-center justify-center min-h-screen p-4 fade-in">
+                    <div className="max-w-6xl w-full">
+                        <div className="text-center mb-10">
+                            <h1 className="text-4xl font-extrabold text-gray-800 mb-2 flex items-center justify-center gap-3">
+                                <IconGraduationCap className="w-10 h-10 text-blue-600" />
+                                TOEIC 職場英語特訓班
+                            </h1>
+                            <p className="text-gray-500 text-lg">請選擇您今天要挑戰的單字主題</p>
+                        </div>
+
+                        {/* New: Comprehensive Quiz Button */}
+                        <div className="mb-8 flex justify-center">
+                            <button 
+                                onClick={onStartMixed}
+                                className="relative group w-full max-w-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex items-center justify-between overflow-hidden"
+                            >
+                                <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity"></div>
+                                <div className="flex items-center gap-4 z-10">
+                                    <div className="bg-white/20 p-3 rounded-xl">
+                                        <IconTrophy className="w-8 h-8 text-yellow-300" />
+                                    </div>
+                                    <div className="text-left">
+                                        <h3 className="text-2xl font-bold">全領域綜合挑戰</h3>
+                                        <p className="text-blue-100 opacity-90">隨機抽取 50 個單字進行測驗</p>
+                                    </div>
+                                </div>
+                                <div className="z-10 bg-white/20 p-2 rounded-full group-hover:bg-white/30 transition-colors">
+                                    <IconArrowRight className="w-6 h-6" />
+                                </div>
+                            </button>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            {topics.map((topic, index) => {
+                                const color = colors[index % colors.length];
+                                return (
+                                    <button 
+                                        key={topic.id}
+                                        onClick={() => onSelectTopic(topic)}
+                                        className={`relative p-6 rounded-xl border-2 bg-white border-white shadow-md hover:shadow-xl cursor-pointer hover:-translate-y-1 transition-all duration-300 flex flex-col items-start gap-3 ${color.border}`}
+                                    >
+                                        <div className={`p-3 rounded-lg ${color.bg} ${color.text}`}>
+                                            <IconBookOpen className="w-6 h-6" />
+                                        </div>
+                                        <div className="text-left w-full">
+                                            <h3 className="text-lg font-bold mb-1 truncate">{topic.title}</h3>
+                                            <div className="mt-2 text-xs font-bold px-2 py-1 bg-gray-100 rounded text-gray-600 inline-block">
+                                                {topic.data.length} 個單字
+                                            </div>
+                                        </div>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // 2. Study Mode Component (Vocabulary List)
+        const StudyApp = ({ topicData, onBackToMenu, onStartQuiz }) => {
+            const [hideDefs, setHideDefs] = useState(false);
+            const words = topicData.data;
+
+            return (
+                <div className="flex flex-col items-center min-h-screen p-4 fade-in bg-gray-100">
+                    <div className="w-full max-w-4xl mb-6 flex flex-col md:flex-row justify-between items-center gap-4 sticky top-0 bg-gray-100 py-4 z-10 shadow-sm md:shadow-none px-2 rounded-lg">
+                        <div className="flex items-center gap-4 w-full md:w-auto">
+                            <button onClick={onBackToMenu} className="text-gray-500 hover:text-gray-700 flex items-center gap-1 min-w-fit">
+                                <IconArrowLeft className="w-5 h-5" /> 返回
+                            </button>
+                            <h2 className="text-xl font-bold text-gray-800 truncate">{topicData.title}</h2>
+                        </div>
+
+                        <div className="flex gap-2 w-full md:w-auto">
+                            <button
+                                onClick={() => setHideDefs(!hideDefs)}
+                                className={`flex-1 md:flex-none px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 ${hideDefs ? 'bg-amber-100 text-amber-700 border border-amber-200' : 'bg-white text-gray-600 border border-gray-300'}`}
+                            >
+                                {hideDefs ? <IconEyeOff className="w-4 h-4" /> : <IconEye className="w-4 h-4" />}
+                                {hideDefs ? '顯示中文' : '遮住中文'}
+                            </button>
+                            <button
+                                onClick={onStartQuiz}
+                                className="flex-1 md:flex-none bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-bold shadow-md transition-transform active:scale-95 flex items-center justify-center gap-2"
+                            >
+                                <IconGraduationCap className="w-4 h-4" />
+                                測驗
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="w-full max-w-4xl bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
+                        <div className="hidden md:flex bg-gray-50 border-b border-gray-200 text-gray-500 font-medium text-sm">
+                            <div className="w-1/3 p-4">英文單字 (Term)</div>
+                            <div className="w-2/3 p-4">釋義與例句 (Definition & Example)</div>
+                        </div>
+
+                        <div className="divide-y divide-gray-100">
+                            {words.map((word) => (
+                                <div key={word.id} className="flex flex-col md:flex-row hover:bg-blue-50 transition-colors group relative">
+                                    {/* Term Column */}
+                                    <div className="w-full md:w-1/3 p-4 flex flex-col justify-center border-b md:border-b-0 border-gray-50">
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                onClick={() => speak(word.term)}
+                                                className="p-2 rounded-full hover:bg-blue-100 text-blue-600 transition-colors shrink-0"
+                                                title="Play Audio"
+                                            >
+                                                <IconVolume2 className="w-5 h-5" />
+                                            </button>
+                                            <span className="text-lg font-bold text-blue-700 break-words">{word.term}</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Definition & Example Column */}
+                                    <div className="w-full md:w-2/3 p-4 flex flex-col justify-center">
+                                        <span className={`text-gray-800 text-base font-medium transition-opacity duration-300 ${hideDefs ? 'opacity-0 group-hover:opacity-100 cursor-pointer bg-gray-100 md:bg-transparent rounded px-2 md:px-0 select-none' : 'opacity-100'}`}>
+                                            {word.def}
+                                        </span>
+
+                                        {/* Example Sentence Section */}
+                                        {word.ex && (
+                                            <div className={`mt-2 pl-3 border-l-2 border-blue-200 text-sm text-slate-500 italic transition-opacity duration-300 ${hideDefs ? 'opacity-0 group-hover:opacity-100' : 'opacity-100'}`}>
+                                                {word.ex}
+                                                <button
+                                                    onClick={(e) => { e.stopPropagation(); speak(word.ex); }}
+                                                    className="ml-2 inline-block align-middle p-1 rounded-full hover:bg-slate-200 text-slate-400 hover:text-blue-500 transition-colors"
+                                                    title="Play Example"
+                                                >
+                                                    <IconVolume2 className="w-3 h-3" />
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="mt-8 mb-4">
+                        <button onClick={onStartQuiz} className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-bold shadow-lg transition-transform active:scale-95 flex items-center gap-2">
+                            <IconGraduationCap className="w-5 h-5" />
+                            複習完了？開始測驗！
+                        </button>
+                    </div>
+                </div>
+            );
+        };
+
+        // 3. Start Screen
+        const StartScreen = ({ topic, onStartQuiz, onStartStudy, onBack }) => (
+            <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center fade-in">
+                <div className="bg-white p-10 rounded-2xl shadow-xl max-w-lg w-full border-t-4 border-blue-600 relative">
+                    <button onClick={onBack} className="absolute top-4 left-4 text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-1 text-sm font-medium">
+                        <IconArrowLeft className="w-4 h-4" /> 返回選單
+                    </button>
+                    <div className="mb-6 text-blue-600 flex justify-center mt-4"><IconGraduationCap className="w-16 h-16" /></div>
+                    <h1 className="text-2xl font-bold text-gray-800 mb-1">{topic.title}</h1>
+                    <p className="text-gray-500 mb-8 text-sm">請選擇學習模式</p>
+                    <div className="space-y-4">
+                        <button onClick={onStartStudy} className="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 font-bold py-4 px-6 rounded-xl transition-all flex items-center justify-between group">
+                            <div className="flex items-center gap-3">
+                                <div className="bg-white p-2 rounded-full shadow-sm"><IconBookOpen className="w-5 h-5" /></div>
+                                <div className="text-left"><div className="text-lg">單字預習列表</div><div className="text-xs font-normal opacity-80">Study Mode (List View)</div></div>
+                            </div>
+                            <IconArrowRight className="w-5 h-5 opacity-50 group-hover:translate-x-1 transition-transform" />
+                        </button>
+                        <button onClick={onStartQuiz} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md flex items-center justify-between group">
+                            <div className="flex items-center gap-3">
+                                <div className="bg-white/20 p-2 rounded-full"><IconCheckCircle className="w-5 h-5" /></div>
+                                <div className="text-left"><div className="text-lg">開始測驗挑戰</div><div className="text-xs font-normal opacity-80">Quiz Mode (混雜其他主題干擾項)</div></div>
+                            </div>
+                            <IconArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        </button>
+                    </div>
+                    <div className="mt-6 text-xs text-gray-400">* 測驗模式中，錯誤選項將包含其他主題單字以增加難度</div>
+                </div>
+            </div>
+        );
+
+        // 4. Result Screen
+        const ResultScreen = ({ score, totalQuestions, onRestart, wrongAnswers, onBackToMenu }) => {
+            const percentage = Math.round((score / totalQuestions) * 100) || 0;
+            const [showReview, setShowReview] = useState(false);
+            let message = "", IconComponent = IconBookOpen, color = "";
+
+            if (percentage >= 90) { message = "太厲害了！專家級表現！"; IconComponent = IconTrophy; color = "text-yellow-500"; }
+            else if (percentage >= 70) { message = "做得很好！繼續保持！"; IconComponent = IconThumbsUp; color = "text-green-500"; }
+            else { message = "再接再厲，熟能生巧！"; IconComponent = IconBookOpen; color = "text-blue-500"; }
+
+            return (
+                <div className="flex flex-col items-center min-h-screen p-4 text-center fade-in bg-gray-100 py-8">
+                    <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full my-4">
+                        <h2 className="text-2xl font-bold text-gray-800 mb-6">測驗成績單</h2>
+                        <div className={`mb-6 flex justify-center ${color}`}><IconComponent className="w-20 h-20" /></div>
+                        <div className="text-6xl font-black text-gray-800 mb-2">{score} <span className="text-2xl text-gray-400 font-normal">/ {totalQuestions}</span></div>
+                        <p className="text-gray-500 mb-6">答對率 {percentage}%</p>
+                        <div className="bg-gray-50 p-4 rounded-lg mb-6"><p className="text-lg font-medium text-gray-800">{message}</p></div>
+
+                        {wrongAnswers && wrongAnswers.length > 0 && (
+                            <div className="mb-8 text-left w-full">
+                                <button onClick={() => setShowReview(!showReview)} className="w-full flex items-center justify-between p-4 bg-red-50 hover:bg-red-100 rounded-xl text-red-700 font-bold transition-all duration-200 border border-red-100">
+                                    <span className="flex items-center gap-2"><IconAlertCircle className="w-5 h-5" />需複習的單字 ({wrongAnswers.length})</span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`transform transition-transform duration-200 ${showReview ? 'rotate-180' : ''}`}><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                </button>
+                                {showReview && (
+                                    <div className="mt-2 bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden fade-in">
+                                        <div className="max-h-64 overflow-y-auto custom-scrollbar">
+                                            <ul className="divide-y divide-gray-100">
+                                                {wrongAnswers.map((item, idx) => (
+                                                    <li key={idx} className="p-3 hover:bg-gray-50 transition-colors">
+                                                        <div className="flex justify-between items-start gap-2">
+                                                            <div className="font-bold text-gray-800 text-left flex items-center gap-2">
+                                                                {item.term}
+                                                                <button onClick={(e) => { e.stopPropagation(); speak(item.term) }} className="text-blue-500 hover:text-blue-700"><IconVolume2 className="w-4 h-4" /></button>
+                                                            </div>
+                                                        </div>
+                                                        <div className="text-sm text-gray-500 text-left mt-1">{item.def}</div>
+                                                        {item.ex && <div className="text-xs text-gray-400 text-left mt-1 italic pl-2 border-l-2 border-gray-300">{item.ex}</div>}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                        <div className="space-y-3">
+                            <button onClick={onRestart} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors shadow-md">重新挑戰此主題</button>
+                            <button onClick={onBackToMenu} className="w-full bg-white border-2 border-gray-200 hover:bg-gray-50 text-gray-600 font-bold py-3 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"><IconGrid className="w-5 h-5" />選擇其他主題</button>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // 5. Quiz Logic Component
+        const QuizApp = ({ topicData, onBackToMenu, allVocab }) => {
+            const [gameState, setGameState] = useState('playing');
+            const [questions, setQuestions] = useState([]);
+            const [currentQIndex, setCurrentQIndex] = useState(0);
+            const [score, setScore] = useState(0);
+            const [selectedOption, setSelectedOption] = useState(null);
+            const [wrongAnswers, setWrongAnswers] = useState([]);
+            const vocabList = topicData.data;
+
+            useEffect(() => { setQuestions(shuffleArray(vocabList)); }, [vocabList]);
+
+            const currentQuestion = useMemo(() => {
+                if (questions.length === 0 || currentQIndex >= questions.length) return null;
+                return questions[currentQIndex];
+            }, [questions, currentQIndex]);
+
+            const currentOptions = useMemo(() => {
+                if (!currentQuestion) return [];
+                const globalDistractors = allVocab.filter(item => item.id !== currentQuestion.id && item.def !== currentQuestion.def).sort(() => 0.5 - Math.random()).slice(0, 3);
+                return shuffleArray([currentQuestion, ...globalDistractors]);
+            }, [currentQuestion, allVocab]);
+
+            const handleOptionClick = (option) => {
+                if (selectedOption) return; // Prevent multiple clicks
+                setSelectedOption(option);
+
+                const isCorrect = option.id === currentQuestion.id;
+                if (isCorrect) {
+                    setScore(prev => prev + 1);
+                } else {
+                    setWrongAnswers(prev => [...prev, currentQuestion]);
+                }
+
+                // Short delay then move to next
+                setTimeout(() => {
+                    nextQuestion();
+                }, 300);
+            };
+
+            const nextQuestion = () => {
+                setSelectedOption(null);
+                if (currentQIndex + 1 < questions.length) { setCurrentQIndex(prev => prev + 1); } else { setGameState('end'); }
+            };
+
+            const endEarly = () => { setGameState('end'); };
+
+            const handleUnsure = () => {
+                // 將當前問題加入錯誤答案列表（算錯）
+                setWrongAnswers(prev => [...prev, currentQuestion]);
+                // 繼續下一題，等全部測完後再一起複習
+                setTimeout(() => {
+                    nextQuestion();
+                }, 300);
+            };
+
+            if (gameState === 'end') {
+                const totalAttempted = score + wrongAnswers.length;
+                return <ResultScreen score={score} totalQuestions={totalAttempted > 0 ? totalAttempted : 0} onRestart={() => {
+                    setQuestions(shuffleArray(vocabList)); setCurrentQIndex(0); setScore(0); setWrongAnswers([]); setGameState('playing');
+                }} wrongAnswers={wrongAnswers} onBackToMenu={onBackToMenu} />;
+            }
+
+            return (
+                <div className="min-h-screen flex flex-col items-center p-4 max-w-2xl mx-auto fade-in">
+                    <div className="w-full flex justify-between items-center mb-6 bg-white p-4 rounded-xl shadow-sm">
+                        <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-4">
+                            <button onClick={onBackToMenu} className="text-gray-400 hover:text-gray-600 flex items-center gap-1 text-sm"><IconArrowLeft className="w-4 h-4" /> 選單</button>
+                            <div className="flex items-center gap-2 text-gray-600"><span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-bold">Q {currentQIndex + 1}</span><span className="text-sm">剩餘 {questions.length - currentQIndex - 1} 題</span></div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <div className="text-green-600 font-bold flex items-center gap-1"><IconCheckCircle className="w-4 h-4" />{score} 分</div>
+                            <button onClick={endEarly} className="ml-4 text-xs text-red-500 hover:text-red-700 underline">結算成績</button>
+                        </div>
+                    </div>
+                    <div className="w-full bg-white rounded-2xl shadow-lg overflow-hidden mb-6 relative">
+                        <div className="bg-slate-800 p-8 text-center text-white"><h2 className="text-3xl font-bold tracking-wide">{currentQuestion?.term}</h2><p className="text-xs text-slate-400 mt-2 font-mono">Topic: {topicData.title}</p></div>
+                        <div className="w-full bg-gray-200 h-1.5"><div className="bg-blue-600 h-1.5 transition-all duration-300" style={{ width: `${((currentQIndex) / questions.length) * 100}%` }}></div></div>
+                    </div>
+                    <div className="w-full grid grid-cols-1 gap-3">
+                        {currentOptions.map((option, index) => {
+                            const labels = ['A', 'B', 'C', 'D'];
+                            let btnClass = "bg-white hover:bg-blue-50 border-2 border-gray-100 text-gray-700";
+
+                            // Visual feedback for selection state only (blue outline), not correctness
+                            if (selectedOption && option.id === selectedOption.id) {
+                                btnClass = "bg-blue-50 border-blue-500 text-blue-800 ring-2 ring-blue-200";
+                            }
+
+                            return (
+                                <button key={option.id} onClick={() => handleOptionClick(option)} disabled={selectedOption !== null} className={`relative p-4 rounded-xl text-left transition-all duration-200 shadow-sm flex items-center ${btnClass} ${!selectedOption ? 'hover:scale-[1.01] hover:shadow-md' : ''}`}>
+                                    <span className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-4 text-sm font-bold text-gray-600 shrink-0">{labels[index]}</span>
+                                    <span className="text-lg font-medium flex-grow">{option.def}</span>
+                                </button>
+                            );
+                        })}
+                    </div>
+                    <div className="w-full mt-4 flex justify-center">
+                        <button 
+                            onClick={handleUnsure} 
+                            disabled={selectedOption !== null}
+                            className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 ${
+                                selectedOption !== null 
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                                    : 'bg-orange-50 hover:bg-orange-100 text-orange-700 border-2 border-orange-200 hover:border-orange-300 shadow-sm hover:shadow-md'
+                            }`}
+                        >
+                            ❓ 不是很確定（算錯）
+                        </button>
+                    </div>
+                    <div className="h-24 w-full mt-6 flex items-center justify-center">
+                        {/* Space placeholder to prevent layout jump */}
+                    </div>
+                </div>
+            );
+        };
+
+// 6. Main App Controller (Updated with Mixed Quiz Logic)
+        const MainApp = () => {
+            const [selectedTopic, setSelectedTopic] = useState(null);
+            const [appMode, setAppMode] = useState('menu');
+
+            // Handle regular topic selection
+            const handleSelectTopic = (topic) => { 
+                setSelectedTopic(topic); 
+                setAppMode('start'); 
+            };
+
+            // New: Handle Comprehensive Quiz (Pick 50 random words)
+            const handleStartMixed = () => {
+                // Shuffle all vocabulary and pick first 50
+                const mixedWords = shuffleArray(allVocab).slice(0, 50);
+                
+                // Create a temporary topic object
+                const mixedTopic = {
+                    id: 'mixed-50',
+                    title: '🔥 全領域綜合挑戰 (50題)',
+                    data: mixedWords
+                };
+
+                setSelectedTopic(mixedTopic);
+                setAppMode('start'); // Go to start screen so user can choose to review list or start quiz
+            };
+
+            const handleStartQuiz = () => { setAppMode('quiz'); };
+            const handleStartStudy = () => { setAppMode('study'); };
+            const handleBackToMenu = () => { setSelectedTopic(null); setAppMode('menu'); };
+
+            if (appMode === 'menu') return <TopicSelectionScreen onSelectTopic={handleSelectTopic} onStartMixed={handleStartMixed} />;
+            if (appMode === 'start') return <StartScreen topic={selectedTopic} onStartQuiz={handleStartQuiz} onStartStudy={handleStartStudy} onBack={handleBackToMenu} />;
+            if (appMode === 'study') return <StudyApp topicData={selectedTopic} onBackToMenu={handleBackToMenu} onStartQuiz={handleStartQuiz} />;
+            if (appMode === 'quiz') return <QuizApp key={selectedTopic.id} topicData={selectedTopic} allVocab={allVocab} onBackToMenu={handleBackToMenu} />;
+            return null;
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<MainApp />);
+    </script>
+</body>
+
+</html>
