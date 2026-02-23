@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TOEIC 職場英語互動測驗 (Business English Quiz)</title>
-
+    <link rel="icon" type="image/png" href="assets/eng.png">
     <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -1965,9 +1965,9 @@
         // --- Components ---
 
         // 1. Topic Selection Screen
-// 1. Topic Selection Screen
+        // 1. Topic Selection Screen
         const TopicSelectionScreen = ({ onSelectTopic, onStartMixed, savedScrollPos }) => {
-            
+
             // 新增這段 useEffect：當畫面載入時，恢復之前的捲動高度
             useEffect(() => {
                 if (savedScrollPos > 0) {
@@ -2003,7 +2003,7 @@
                         </div>
 
                         <div className="mb-8 flex justify-center">
-                            <button 
+                            <button
                                 onClick={onStartMixed}
                                 className="relative group w-full max-w-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex items-center justify-between overflow-hidden"
                             >
@@ -2027,7 +2027,7 @@
                             {topics.map((topic, index) => {
                                 const color = colors[index % colors.length];
                                 return (
-                                    <button 
+                                    <button
                                         key={topic.id}
                                         onClick={() => onSelectTopic(topic)}
                                         className={`relative p-6 rounded-xl border-2 bg-white border-white shadow-md hover:shadow-xl cursor-pointer hover:-translate-y-1 transition-all duration-300 flex flex-col items-start gap-3 ${color.border}`}
@@ -2349,28 +2349,28 @@
         };
 
         // 6. Main App Controller (Updated with Mixed Quiz Logic)
-// 6. Main App Controller
+        // 6. Main App Controller
         const MainApp = () => {
             const [selectedTopic, setSelectedTopic] = useState(null);
             const [appMode, setAppMode] = useState('menu');
-            
+
             // 新增：用來記錄選單的捲動位置
             const [menuScrollPos, setMenuScrollPos] = useState(0);
 
             // Handle regular topic selection
-            const handleSelectTopic = (topic) => { 
+            const handleSelectTopic = (topic) => {
                 setMenuScrollPos(window.scrollY); // 記錄當前捲動高度
-                setSelectedTopic(topic); 
-                setAppMode('start'); 
+                setSelectedTopic(topic);
+                setAppMode('start');
             };
 
             // Handle Comprehensive Quiz (Pick 50 random words)
             const handleStartMixed = () => {
                 setMenuScrollPos(window.scrollY); // 記錄當前捲動高度
-                
+
                 // Shuffle all vocabulary and pick first 50
                 const mixedWords = shuffleArray(allVocab).slice(0, 50);
-                
+
                 // Create a temporary topic object
                 const mixedTopic = {
                     id: 'mixed-50',
